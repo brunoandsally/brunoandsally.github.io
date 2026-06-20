@@ -227,6 +227,55 @@
       color: var(--ink-light);
     }
 
+    /* ── OUR STORY ── */
+    #story { background: var(--cream); }
+    .timeline { margin-top: 2.5rem; position: relative; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 18px;
+      top: 0; bottom: 0;
+      width: 3px;
+      background: linear-gradient(to bottom, var(--coral), var(--sun), var(--mint), var(--sky));
+      border-radius: 2px;
+    }
+    .tl-item {
+      display: flex;
+      gap: 1.4rem;
+      margin-bottom: 2.2rem;
+      position: relative;
+    }
+    .tl-dot {
+      flex-shrink: 0;
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.15rem;
+      position: relative;
+      z-index: 1;
+    }
+    .tl-dot.coral  { background: #FFE8E9; border: 2px solid var(--coral); }
+    .tl-dot.sun    { background: #FFF6D6; border: 2px solid var(--sun); }
+    .tl-dot.mint   { background: #E4F9E6; border: 2px solid var(--mint); }
+    .tl-dot.sky    { background: #E3F2FC; border: 2px solid var(--sky); }
+    .tl-body { padding-top: 0.4rem; }
+    .tl-date {
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      margin-bottom: 0.25rem;
+    }
+    .tl-title {
+      font-family: 'Fraunces', serif;
+      font-weight: 400;
+      font-size: 1.1rem;
+      color: var(--ink);
+      margin-bottom: 0.4rem;
+    }
+    .tl-body p { font-size: 0.93rem; margin-bottom: 0; }
+
     /* ── RSVP ── */
     #rsvp { background: var(--cream); }
     .rsvp-form {
@@ -326,6 +375,7 @@
   <span class="nav-logo">B & S</span>
   <ul class="nav-links">
     <li><a href="#home">Home</a></li>
+    <li><a href="#story">Our story</a></li>
     <li><a href="#details">Details</a></li>
     <li><a href="#rsvp">RSVP</a></li>
     <li><a href="#faq">FAQ</a></li>
@@ -360,6 +410,129 @@
   </div>
 
   <a href="#rsvp" class="hero-cta">RSVP now 🎉</a>
+</section>
+
+<!-- OUR STORY -->
+<section id="story">
+  <div class="section-inner">
+    <span class="section-tag">Our story</span>
+    <h2>How we got here</h2>
+    <p>Aperol Spritz, questionable sunburns, and a location notification that gave the game away. Here's the full story.</p>
+
+    <div class="timeline">
+
+      <div class="tl-item">
+        <div class="tl-dot coral">🍺</div>
+        <div class="tl-body">
+          <p class="tl-date">14 March 2024</p>
+          <p class="tl-title">A Hinge date at BrewDog</p>
+          <p>It started, as many great love stories do, with an app and a craft beer. Bruno and Sally met for the first time at BrewDog and, against all odds, both had a genuinely good time. A few more dates followed — the Three Colts Tavern, Victoria Park, a bottomless brunch — and somewhere between the prosecco refills, they became boyfriend and girlfriend.</p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot sun">☀️</div>
+        <div class="tl-body">
+          <p class="tl-date">Summer 2024</p>
+          <p class="tl-title">The staycation tour</p>
+          <p>First holiday: a grand tour of family. They went canoeing, made pasta from scratch, visited Sally's family in Devon for the first time, got on Sally's parents' boat Tinker, and made it to Adriana's 30th festival party. Low budget, high chaos, absolutely the right call.</p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot mint">✈️</div>
+        <div class="tl-body">
+          <p class="tl-date">November 2024</p>
+          <p class="tl-title">First holiday abroad: Tenerife</p>
+          <p>Their first trip abroad together. Bruno managed to sleep ten hours on the flight to Australia later that year after a couple of bottles of wine; Sally had an allergic reaction en route to Perth. Travelling together, it turns out, is never boring.</p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot sky">🦘</div>
+        <div class="tl-body">
+          <p class="tl-date">February 2025</p>
+          <p class="tl-title">Australia — the big one</p>
+          <p>Sally's brother Max lives near Busselton, Western Australia, so the whole family flew out to visit. Bruno arrived bright red after approximately fifteen minutes in the Australian sun and remained that colour for the rest of the trip. The sunburn became a running joke. Sally has never let it go.</p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot coral">🏃</div>
+        <div class="tl-body">
+          <p class="tl-date">2025</p>
+          <p class="tl-title">Sally gets Bruno running (against his will)</p>
+          <p>Bruno was sporty — rugby, yes — but parkruns for fun? Absolutely not. Sally had other ideas. She got him out the door, then to the start line of the Big Half marathon 2025, which they ran together. He's still not entirely sure how it happened, but he's grateful.</p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot sun">🏉</div>
+        <div class="tl-body">
+          <p class="tl-date">2025</p>
+          <p class="tl-title">Touch rugby Wednesdays</p>
+          <p>Every Wednesday: touch rugby, beers, and a loss. A perfect week, repeated faithfully throughout 2025. Some things are non-negotiable.</p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot mint">🍹</div>
+        <div class="tl-body">
+          <p class="tl-date">May 2025</p>
+          <p class="tl-title">Corfu with the Renuccis</p>
+          <p>Sally joined Bruno's family in Corfu — a lovely villa, good weather, and the first big test of being fully absorbed into the Renucci clan. She passed.</p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot sky">🏉</div>
+        <div class="tl-body">
+          <p class="tl-date">Autumn 2025</p>
+          <p class="tl-title">Boys' trip to Treviso (and Venice, briefly)</p>
+          <p>Bruno, his dad, his brother, his brother's friend, and Sally headed to Treviso for the Glasgow rugby match. They did visit Venice. Mostly, though, they drank Aperol Spritz. An honourable trip.</p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot coral">🏠</div>
+        <div class="tl-body">
+          <p class="tl-date">October 2025</p>
+          <p class="tl-title">Moving in together</p>
+          <p>Bruno moved out of Bethnal Green, Sally out of Stratford, and together they moved into Sally's newly bought flat in Rotherhithe — overlooking the river. On their very first night, they received a noise complaint. For playing games. They consider this a strong start.</p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot sun">⛷️</div>
+        <div class="tl-body">
+          <p class="tl-date">January 2026</p>
+          <p class="tl-title">First ski trip: Chamonix</p>
+          <p>Bruno's family went to Chamonix. Sally wasn't sure she was a great skier. Bruno helped her remember that she was. She was.</p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot mint">🌧️</div>
+        <div class="tl-body">
+          <p class="tl-date">Early 2026</p>
+          <p class="tl-title">Six Nations: Scotland v Italy, Rome</p>
+          <p>Torrential rain. Scotland lost. More Aperol Spritz. Honestly, a perfect day.</p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-dot coral">💍</div>
+        <div class="tl-body">
+          <p class="tl-date">2026</p>
+          <p class="tl-title">The proposal — Bologna</p>
+          <p>Their friend Bao took Sally to dinner to find out, very casually, what she might want in a ring. Bruno's best friend Jamie — who happens to be Bao's fiancé — then went with Bruno to the jeweller (the same one Jamie had used months earlier) to design one from scratch. The plot was nearly blown when Bruno turned his location off to collect the ring, then turned it back on — and Sally's phone notified her immediately. She kept quiet.</p>
+          <p style="margin-top:0.6rem;">In Bologna, they did a wine tasting on the first night, had a beautiful dinner, drank more Aperols, then went back to the Airbnb to play cards on the balcony. Bruno proposed there, both of them quite happily tipsy. Sally said yes. Many phone calls followed — including one to Max in Australia that Bruno fell asleep on, courtesy of the time difference and the Aperols.</p>
+          <p style="margin-top:0.6rem; font-weight:500; color: var(--coral);">And now we're getting married. 🥂</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </section>
 
 <!-- DETAILS -->
