@@ -139,4 +139,27 @@ footer{background:var(--ink);color:rgba(255,255,255,0.4);text-align:center;paddi
  </div>
 </div>
 <footer><p class="ft-name">Bruno &amp; Sally</p><p>18th September 2027 &middot; Newton Ferrers &amp; Carswell, Devon</p><p style="margin-top:0.7rem;font-size:0.67rem">Made with love, Aperol Spritz, and a lot of games &#x1F9E9;</p></footer>
+<script>
+function shellNav(page) {
+  if(window.parent !== window) {
+    window.parent.postMessage({nav: page}, '*');
+  } else {
+    window.location.href = '/' + page;
+  }
+}
+// Also intercept all same-site links automatically
+document.addEventListener('click', function(e) {
+  var a = e.target.closest('a');
+  if(!a) return;
+  var href = a.getAttribute('href') || '';
+  if(href.startsWith('/') && !href.startsWith('//')) {
+    var page = href.replace(/^\//, '').split('/')[0];
+    var valid = ['home','the-day','our-story','rsvp','faq','wedding-party','day-after','games'];
+    if(valid.indexOf(page) >= 0) {
+      e.preventDefault();
+      shellNav(page);
+    }
+  }
+});
+</script>
 </body></html>
