@@ -34,6 +34,15 @@ h2{font-family:"Cormorant Garamond",serif;font-weight:300;font-size:clamp(2rem,5
 @media(max-width:800px){.fl{grid-template-columns:1fr;gap:2rem;padding:4rem 1.4rem}}
 </style>
 </head><body>
+<script>
+(function(){
+  if(window.self === window.top){
+    // Loaded directly, not in shell iframe — redirect to shell
+    var page = window.location.pathname.replace(/^\//, '').split('/')[0];
+    window.location.replace('/' + (page ? '#' + page : ''));
+  }
+})();
+</script>
 <div style="background:linear-gradient(135deg,#5C7A5C,#4A7FA8);height:30vh;min-height:200px;display:flex;align-items:flex-end;padding:2rem">
   <div style="max-width:1100px;width:100%;margin:0 auto;color:#fff">
     <p style="font-size:0.78rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.65);margin-bottom:0.3rem">Good questions</p>
@@ -117,7 +126,8 @@ document.querySelectorAll(".fq").forEach(function(b){b.onclick=function(){b.pare
 <p style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:300;color:rgba(255,255,255,0.8);margin-bottom:0.4rem">Bruno &amp; Sally</p>
 <p>18th September 2027 &middot; Newton Ferrers &amp; Carswell, Devon</p>
 <p style="margin-top:0.7rem;font-size:0.67rem">Made with love, Aperol Spritz, and a lot of games &#x1F9E9;</p>
-</footer><script>
+</footer>
+<script>
 (function() {
   var VALID = ['home','the-day','our-story','rsvp','faq','wedding-party','day-after','games'];
   function shellNav(page) {
@@ -128,7 +138,7 @@ document.querySelectorAll(".fq").forEach(function(b){b.onclick=function(){b.pare
     }
   }
   window.shellNav = shellNav;
-  // Intercept internal nav links
+  // Capture all internal link clicks and route through shell
   document.addEventListener('click', function(e) {
     var a = e.target.closest('a[href]');
     if (!a) return;
@@ -137,10 +147,10 @@ document.querySelectorAll(".fq").forEach(function(b){b.onclick=function(){b.pare
     var page = href.replace(/^\//, '').split('/')[0];
     if (VALID.indexOf(page) >= 0) {
       e.preventDefault();
-      e.stopPropagation();
+      e.stopImmediatePropagation();
       shellNav(page);
     }
-  }, true); // capture phase so it fires before any other handlers
+  }, true);
 })();
 </script>
 </body></html>

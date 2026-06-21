@@ -114,6 +114,15 @@ footer .fn{font-family:"Cormorant Garamond",serif;font-size:1.2rem;color:rgba(25
 </style>
 </head>
 <body>
+<script>
+(function(){
+  if(window.self === window.top){
+    // Loaded directly, not in shell iframe — redirect to shell
+    var page = window.location.pathname.replace(/^\//, '').split('/')[0];
+    window.location.replace('/' + (page ? '#' + page : ''));
+  }
+})();
+</script>
 <div class="games-hero">
   <p class="eyebrow">454 days to go</p>
   <h1>The Pre-Wedding<br/>Games Room</h1>
@@ -616,17 +625,25 @@ newWordleGame(); startTrivia(); buildCW(); newSudoku('easy');
 (function() {
   var VALID = ['home','the-day','our-story','rsvp','faq','wedding-party','day-after','games'];
   function shellNav(page) {
-    if (window.parent !== window) { window.parent.postMessage({nav: page}, '*'); }
-    else { window.location.href = '/' + page; }
+    if (window.parent !== window) {
+      window.parent.postMessage({nav: page}, '*');
+    } else {
+      window.location.href = '/' + page;
+    }
   }
   window.shellNav = shellNav;
+  // Capture all internal link clicks and route through shell
   document.addEventListener('click', function(e) {
     var a = e.target.closest('a[href]');
     if (!a) return;
     var href = a.getAttribute('href') || '';
     if (!href.startsWith('/') || href.startsWith('//')) return;
     var page = href.replace(/^\//, '').split('/')[0];
-    if (VALID.indexOf(page) >= 0) { e.preventDefault(); e.stopPropagation(); shellNav(page); }
+    if (VALID.indexOf(page) >= 0) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      shellNav(page);
+    }
   }, true);
 })();
 </script>

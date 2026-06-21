@@ -222,8 +222,15 @@ window.addEventListener('popstate', function(e) {
   nav(page, false);
 });
 
-// ── Detect initial page from URL ────────────────────────────
+// ── Detect initial page from URL or hash (set by redirect) ──
 function getInitialPage() {
+  // Check hash first — set by content pages when loaded directly
+  var hash = window.location.hash.replace(/^#/, '');
+  if (hash && VALID.indexOf(hash) >= 0) {
+    // Clean the hash from the URL
+    history.replaceState({page: hash}, '', '/' + hash);
+    return hash;
+  }
   var path = window.location.pathname.replace(/^\//, '').split('/')[0];
   return VALID.indexOf(path) >= 0 ? path : 'home';
 }
