@@ -125,7 +125,7 @@ body{display:flex;flex-direction:column;background:var(--cream)}
   <div class="nav-inner">
     <a class="nav-brand" onclick="nav('home');return false" href="/home">Bruno <span>&amp;</span> Sally</a>
     <ul class="nav-links" id="desktopNav">
-      <li><a onclick="nav('home');return false" href="/home" data-page="home">Home</a></li>
+      <li></li>
       <li><a onclick="nav('the-day');return false" href="/the-day" data-page="the-day">The Day</a></li>
       <li><a onclick="nav('our-story');return false" href="/our-story" data-page="our-story">Our Story</a></li>
       <li><a onclick="nav('rsvp');return false" href="/rsvp" data-page="rsvp">RSVP</a></li>
@@ -140,7 +140,6 @@ body{display:flex;flex-direction:column;background:var(--cream)}
 
 <!-- MOBILE DRAWER -->
 <nav class="nav-drawer" id="drawer">
-  <a onclick="nav('home');closeDrawer();return false" href="/home">Home</a>
   <a onclick="nav('the-day');closeDrawer();return false" href="/the-day">The Day</a>
   <a onclick="nav('our-story');closeDrawer();return false" href="/our-story">Our Story</a>
   <a onclick="nav('rsvp');closeDrawer();return false" href="/rsvp">RSVP</a>
