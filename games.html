@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Bruno & Sally — Games</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --sage:#5C7A5C;--sage-light:#8FA882;--sage-pale:#EEF2E8;
+  --sky:#4A7FA8;--sky-light:#7BAFD4;
+  --cream:#FAF8F3;--stone:#F0EBE1;
+  --ink:#2C2C2A;--ink-soft:#5C5A56;
+  --warm:#C4894A;--warm-light:#E8C49A;
+  --white:#ffffff;--line:rgba(44,44,42,0.1);
+  --correct:#5C7A5C;--present:#C4894A;--absent:#8a8a8a;
+}
+html{scroll-behavior:smooth}
+body{font-family:"Jost",sans-serif;background:var(--cream);color:var(--ink);line-height:1.6;min-height:100vh}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(250,248,243,0.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{font-family:"Cormorant Garamond",serif;font-size:1.3rem;font-weight:400;color:var(--ink);text-decoration:none}
+.nav-brand span{color:var(--sage);font-style:italic}
+.back-link{font-size:0.72rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-soft);text-decoration:none;display:flex;align-items:center;gap:0.4rem}
+.back-link:hover{color:var(--sage)}
+
+/* HERO */
+.games-hero{background:var(--ink);color:#fff;padding:4rem 2rem 3rem;text-align:center}
+.games-hero .eyebrow{font-size:0.7rem;font-weight:600;letter-spacing:0.28em;text-transform:uppercase;color:var(--warm-light);margin-bottom:0.8rem}
+.games-hero h1{font-family:"Cormorant Garamond",serif;font-size:clamp(2.5rem,6vw,4rem);font-weight:300;line-height:1;margin-bottom:0.6rem}
+.games-hero p{color:rgba(255,255,255,0.55);font-size:0.95rem;max-width:44ch;margin:0 auto}
+
+/* TABS */
+.game-tabs{display:flex;justify-content:center;gap:0;background:var(--stone);border-bottom:1px solid var(--line);overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tab-btn{padding:1rem 1.5rem;background:none;border:none;border-bottom:2px solid transparent;font-family:"Jost",sans-serif;font-size:0.72rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-soft);cursor:pointer;white-space:nowrap;transition:all 0.2s}
+.tab-btn:hover{color:var(--ink)}
+.tab-btn.active{color:var(--sage);border-bottom-color:var(--sage)}
+
+/* GAME PANELS */
+.game-panel{display:none;padding:3rem 2rem;max-width:860px;margin:0 auto}
+.game-panel.active{display:block}
+.game-title{font-family:"Cormorant Garamond",serif;font-size:2rem;font-weight:400;margin-bottom:0.4rem}
+.game-desc{color:var(--ink-soft);font-size:0.92rem;margin-bottom:2rem}
+
+/* SHARED GAME STYLES */
+.btn{display:inline-block;padding:0.7rem 1.6rem;border-radius:1px;font-size:0.72rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;cursor:pointer;border:none;font-family:"Jost",sans-serif;transition:all 0.2s}
+.btn-sage{background:var(--sage);color:#fff}
+.btn-sage:hover{background:var(--sage-light)}
+.btn-outline{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
+.btn-outline:hover{background:var(--ink);color:#fff}
+.btn-warm{background:var(--warm);color:#fff}
+.btn-warm:hover{background:#b8793a}
+.game-msg{padding:0.8rem 1.2rem;border-radius:2px;font-size:0.88rem;margin-top:1rem;display:none}
+.game-msg.show{display:block}
+.game-msg.success{background:var(--sage-pale);color:var(--sage);border:1px solid var(--sage-light)}
+.game-msg.error{background:#fdf0e8;color:#a85a20;border:1px solid #e8c49a}
+.game-msg.info{background:var(--sky-pale,#EAF3F9);color:var(--sky);border:1px solid var(--sky-light)}
+
+/* ── WORDLE ── */
+#wordle-grid{display:flex;flex-direction:column;gap:6px;align-items:center;margin-bottom:1.5rem}
+.wordle-row{display:flex;gap:6px}
+.wordle-cell{width:56px;height:56px;border:2px solid var(--line);border-radius:2px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:700;font-family:"Cormorant Garamond",serif;text-transform:uppercase;transition:background 0.3s,border-color 0.3s,color 0.3s;background:#fff;color:var(--ink)}
+.wordle-cell.filled{border-color:var(--ink-soft)}
+.wordle-cell.correct{background:var(--correct);border-color:var(--correct);color:#fff}
+.wordle-cell.present{background:var(--present);border-color:var(--present);color:#fff}
+.wordle-cell.absent{background:var(--absent);border-color:var(--absent);color:#fff}
+.wordle-keyboard{display:flex;flex-direction:column;gap:6px;align-items:center}
+.wordle-kb-row{display:flex;gap:5px}
+.wordle-key{height:44px;min-width:36px;padding:0 8px;border:none;border-radius:3px;background:var(--stone);color:var(--ink);font-family:"Jost",sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;transition:background 0.2s;display:flex;align-items:center;justify-content:center}
+.wordle-key:hover{background:#ddd8cc}
+.wordle-key.correct{background:var(--correct);color:#fff}
+.wordle-key.present{background:var(--present);color:#fff}
+.wordle-key.absent{background:var(--absent);color:#fff}
+.wordle-key.wide{min-width:58px;font-size:0.68rem}
+.wordle-words{font-size:0.78rem;color:var(--ink-soft);margin-bottom:1rem;font-style:italic}
+
+/* ── CROSSWORD ── */
+.crossword-wrap{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:start}
+.cw-grid{display:inline-block}
+.cw-row{display:flex}
+.cw-cell{width:38px;height:38px;border:1.5px solid var(--ink);display:flex;align-items:center;justify-content:center;position:relative;background:#fff}
+.cw-cell.black{background:var(--ink);border-color:var(--ink)}
+.cw-cell input{width:100%;height:100%;border:none;background:transparent;text-align:center;font-family:"Cormorant Garamond",serif;font-size:1.1rem;font-weight:500;text-transform:uppercase;color:var(--ink);cursor:pointer;outline:none;caret-color:transparent}
+.cw-cell input.active{background:var(--sky-pale,#EAF3F9)}
+.cw-cell input.correct{background:var(--sage-pale);color:var(--sage)}
+.cw-num{position:absolute;top:1px;left:2px;font-size:0.5rem;font-weight:700;color:var(--ink-soft);line-height:1;pointer-events:none}
+.cw-clues h4{font-family:"Cormorant Garamond",serif;font-size:1.1rem;font-weight:400;margin-bottom:0.6rem;margin-top:1rem;color:var(--ink)}
+.cw-clue{font-size:0.82rem;color:var(--ink-soft);margin-bottom:0.4rem;cursor:pointer;padding:0.25rem 0.4rem;border-radius:2px}
+.cw-clue:hover{background:var(--stone)}
+.cw-clue.active{background:var(--sky-pale,#EAF3F9);color:var(--sky)}
+.cw-clue strong{color:var(--warm);margin-right:0.3rem}
+
+/* ── TRIVIA ── */
+.trivia-q{background:#fff;border:1px solid var(--line);border-radius:2px;padding:1.8rem;margin-bottom:1.2rem}
+.trivia-q .q-num{font-size:0.68rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--warm);margin-bottom:0.5rem}
+.trivia-q .q-text{font-family:"Cormorant Garamond",serif;font-size:1.25rem;font-weight:400;margin-bottom:1rem;line-height:1.3}
+.trivia-options{display:flex;flex-direction:column;gap:0.5rem}
+.trivia-opt{padding:0.7rem 1rem;background:var(--stone);border:1.5px solid transparent;border-radius:2px;cursor:pointer;font-size:0.88rem;transition:all 0.2s;text-align:left;font-family:"Jost",sans-serif;color:var(--ink)}
+.trivia-opt:hover:not(:disabled){background:var(--sage-pale);border-color:var(--sage-light)}
+.trivia-opt.correct{background:var(--sage-pale);border-color:var(--sage);color:var(--sage)}
+.trivia-opt.wrong{background:#fdf0e8;border-color:var(--warm);color:#a85a20}
+.trivia-opt:disabled{cursor:default}
+.trivia-score{font-family:"Cormorant Garamond",serif;font-size:2rem;font-weight:300;text-align:center;margin:1rem 0;color:var(--sage)}
+
+/* ── SUDOKU ── */
+.sudoku-grid{display:inline-grid;grid-template-columns:repeat(9,1fr);gap:0;border:2px solid var(--ink);margin-bottom:1.2rem}
+.sudoku-cell{width:44px;height:44px;border:1px solid rgba(44,44,42,0.25);display:flex;align-items:center;justify-content:center;font-family:"Cormorant Garamond",serif;font-size:1.2rem;position:relative;background:#fff}
+.sudoku-cell:nth-child(3n){border-right:2px solid var(--ink)}
+.sudoku-cell:nth-child(n+19):nth-child(-n+27),.sudoku-cell:nth-child(n+46):nth-child(-n+54){border-bottom:2px solid var(--ink)}
+.sudoku-cell input{width:100%;height:100%;border:none;background:transparent;text-align:center;font-family:"Cormorant Garamond",serif;font-size:1.2rem;color:var(--sky);cursor:pointer;outline:none}
+.sudoku-cell input:focus{background:var(--sky-pale,#EAF3F9)}
+.sudoku-cell.given{background:var(--stone)}
+.sudoku-cell.given input{color:var(--ink);font-weight:700;cursor:default}
+.sudoku-cell.error input{color:#c0392b}
+.sudoku-cell.correct input{color:var(--sage)}
+.sudoku-controls{display:flex;gap:0.8rem;flex-wrap:wrap;margin-bottom:1rem}
+
+/* ── KAKURO ── */
+.kakuro-grid{display:grid;gap:0;border:2px solid var(--ink);margin-bottom:1.2rem;width:fit-content}
+.kk-cell{width:48px;height:48px;border:1px solid rgba(44,44,42,0.3);display:flex;align-items:center;justify-content:center;background:#fff;position:relative}
+.kk-cell.black{background:var(--ink)}
+.kk-cell.clue{background:var(--ink);position:relative;overflow:hidden}
+.kk-clue-inner{position:absolute;inset:0;display:flex;flex-direction:column}
+.kk-clue-inner .right{position:absolute;bottom:3px;right:4px;color:#fff;font-size:0.65rem;font-weight:700}
+.kk-clue-inner .down{position:absolute;top:3px;left:4px;color:#fff;font-size:0.65rem;font-weight:700}
+.kk-clue-inner::after{content:"";position:absolute;top:0;left:0;right:0;bottom:0;border-bottom:1px solid rgba(255,255,255,0.3);transform:rotate(-40deg) scale(2);transform-origin:center;pointer-events:none}
+.kk-cell input{width:100%;height:100%;border:none;background:transparent;text-align:center;font-family:"Cormorant Garamond",serif;font-size:1.1rem;color:var(--sky);outline:none}
+.kk-cell input:focus{background:var(--sky-pale,#EAF3F9)}
+.kk-cell.error input{color:#c0392b}
+.kk-cell.correct-cell input{color:var(--sage)}
+
+/* RESPONSIVE */
+@media(max-width:700px){
+  .crossword-wrap{grid-template-columns:1fr}
+  .cw-cell,.sudoku-cell{width:32px;height:32px}
+  .wordle-cell{width:46px;height:46px;font-size:1.2rem}
+  .kk-cell{width:38px;height:38px}
+  .game-tabs{justify-content:flex-start}
+  .game-panel{padding:2rem 1rem}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html">Bruno <span>&amp;</span> Sally</a>
+  <a class="back-link" href="index.html">&#8592; Back to site</a>
+</nav>
+
+<div class="games-hero">
+  <p class="eyebrow">454 days to go</p>
+  <h1>The Pre-Wedding<br/>Games Room</h1>
+  <p>Keep yourself entertained until September 2027. All puzzles are Bruno & Sally themed — how well do you know the couple?</p>
+</div>
+
+<div class="game-tabs">
+  <button class="tab-btn active" onclick="switchGame('wordle')">Weddle</button>
+  <button class="tab-btn" onclick="switchGame('trivia',this)">Trivia</button>
+  <button class="tab-btn" onclick="switchGame('crossword',this)">Crossword</button>
+  <button class="tab-btn" onclick="switchGame('sudoku',this)">Sudoku</button>
+  <button class="tab-btn" onclick="switchGame('kakuro',this)">Kakuro</button>
+</div>
+
+<!-- ══════════ WEDDLE (WORDLE) ══════════ -->
+<div class="game-panel active" id="panel-wordle">
+  <h2 class="game-title">Weddle</h2>
+  <p class="game-desc">Guess the 6-letter word in 6 tries. All words are related to Bruno, Sally, and their story. 🟩 = right place &nbsp; 🟨 = wrong place &nbsp; ⬜ = not in word</p>
+  <p class="wordle-words" id="wordle-hint"></p>
+  <div id="wordle-grid"></div>
+  <div id="wordle-keyboard" class="wordle-keyboard"></div>
+  <div class="game-msg" id="wordle-msg"></div>
+  <div style="margin-top:1.2rem;display:flex;gap:0.8rem;flex-wrap:wrap">
+    <button class="btn btn-sage" onclick="newWordleGame()">New word</button>
+    <button class="btn btn-outline" onclick="revealWordleWord()">Give up</button>
+  </div>
+</div>
+
+<!-- ══════════ TRIVIA ══════════ -->
+<div class="game-panel" id="panel-trivia">
+  <h2 class="game-title">Bruno & Sally Trivia</h2>
+  <p class="game-desc">How well do you know the happy couple? 10 questions — no Googling.</p>
+  <div id="trivia-container"></div>
+  <div id="trivia-score-wrap" style="display:none;text-align:center;padding:2rem 0">
+    <p style="font-size:0.8rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:0.5rem">Your score</p>
+    <div class="trivia-score" id="trivia-score-display"></div>
+    <p id="trivia-score-msg" style="color:var(--ink-soft);font-size:0.95rem;margin-bottom:1.5rem"></p>
+    <button class="btn btn-sage" onclick="startTrivia()">Play again</button>
+  </div>
+  <div id="trivia-nav" style="display:flex;gap:0.8rem;margin-top:1.5rem;align-items:center">
+    <button class="btn btn-outline" onclick="triviaNav(-1)" id="trivia-prev">Previous</button>
+    <span id="trivia-counter" style="font-size:0.82rem;color:var(--ink-soft);flex:1;text-align:center"></span>
+    <button class="btn btn-sage" onclick="triviaNav(1)" id="trivia-next">Next</button>
+  </div>
+</div>
+
+<!-- ══════════ CROSSWORD ══════════ -->
+<div class="game-panel" id="panel-crossword">
+  <h2 class="game-title">The Bruno & Sally Crossword</h2>
+  <p class="game-desc">Click a clue or a cell to start. All answers relate to the couple's story.</p>
+  <div class="crossword-wrap">
+    <div>
+      <div class="cw-grid" id="cw-grid"></div>
+      <div style="margin-top:1rem;display:flex;gap:0.8rem;flex-wrap:wrap">
+        <button class="btn btn-sage" onclick="checkCrossword()">Check answers</button>
+        <button class="btn btn-outline" onclick="revealCrossword()">Reveal all</button>
+        <button class="btn btn-warm" onclick="resetCrossword()">Reset</button>
+      </div>
+      <div class="game-msg" id="cw-msg"></div>
+    </div>
+    <div class="cw-clues" id="cw-clues"></div>
+  </div>
+</div>
+
+<!-- ══════════ SUDOKU ══════════ -->
+<div class="game-panel" id="panel-sudoku">
+  <h2 class="game-title">Wedding Sudoku</h2>
+  <p class="game-desc">Classic 9×9 sudoku — a new puzzle each time. Fill every row, column and 3×3 box with digits 1–9.</p>
+  <div class="sudoku-controls">
+    <button class="btn btn-sage" onclick="newSudoku('easy')">Easy</button>
+    <button class="btn btn-outline" onclick="newSudoku('medium')">Medium</button>
+    <button class="btn btn-warm" onclick="newSudoku('hard')">Hard</button>
+    <button class="btn btn-outline" onclick="checkSudoku()">Check</button>
+    <button class="btn btn-outline" onclick="solveSudoku()">Solve</button>
+  </div>
+  <div id="sudoku-grid" class="sudoku-grid"></div>
+  <div class="game-msg" id="sudoku-msg"></div>
+</div>
+
+<!-- ══════════ KAKURO ══════════ -->
+<div class="game-panel" id="panel-kakuro">
+  <h2 class="game-title">Kakuro</h2>
+  <p class="game-desc">Fill in digits 1–9 so each run adds up to the clue. No digit may repeat within a run. A new puzzle each game.</p>
+  <div style="margin-bottom:1rem;display:flex;gap:0.8rem;flex-wrap:wrap">
+    <button class="btn btn-sage" onclick="newKakuro()">New puzzle</button>
+    <button class="btn btn-outline" onclick="checkKakuro()">Check</button>
+    <button class="btn btn-outline" onclick="solveKakuro()">Solve</button>
+  </div>
+  <div id="kakuro-grid"></div>
+  <div class="game-msg" id="kakuro-msg"></div>
+</div>
+
+<footer style="background:var(--ink);color:rgba(255,255,255,0.35);text-align:center;padding:2rem;font-size:0.76rem;margin-top:4rem">
+  <p style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:rgba(255,255,255,0.7);margin-bottom:0.3rem">Bruno &amp; Sally · 18 Sept 2027</p>
+  <p><a href="index.html" style="color:var(--sage-light);text-decoration:none">&#8592; Back to the wedding site</a></p>
+</footer>
+
+<script>
+// ══════════════════════════════════════════
+//  TAB SWITCHING
+// ══════════════════════════════════════════
+function switchGame(id, btn) {
+  document.querySelectorAll('.game-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+function showMsg(id, text, type) {
+  var el = document.getElementById(id);
+  el.textContent = text; el.className = 'game-msg show ' + type;
+}
+
+// ══════════════════════════════════════════
+//  WEDDLE (WORDLE)
+// ══════════════════════════════════════════
+var wordleData = [
+  {word:'BRINEY',hint:'What the sea near Devon tastes like'},
+  {word:'TINKER',hint:'Sally\'s parents\' boat'},
+  {word:'HINGE2',hint:null},
+  {word:'APEROL',hint:'The drink that runs through their entire story'},
+  {word:'NAPLES',hint:null},
+  {word:'BOGOTA',hint:null},
+  {word:'BOLTON',hint:null},
+  {word:'NORWAY',hint:null},
+  {word:'DEVONS',hint:'Where the wedding is'},
+  {word:'CORNET',hint:'An ice cream you might eat in Devon'},
+  {word:'SURFER',hint:'Typical Devon activity'},
+  {word:'SAILOR',hint:'What you become on Tinker'},
+  {word:'SALMON',hint:'A fish — like the mystery Tenerife one'},
+  {word:'CLIFFS',hint:'Devon coastline staple'},
+  {word:'SPRINT',hint:'What Sally got Bruno doing'},
+  {word:'VENICE',hint:'They visited this city (briefly) en route to Aperols'},
+  {word:'FORMAL',hint:'The dress code — almost'},
+  {word:'BALLAD',hint:'A type of love song'},
+  {word:'PLAINS',hint:null},
+  {word:'BRUNOS',hint:null},
+];
+// Only use real 6-letter common words
+var wordleWords = [
+  {word:'APEROL',hint:'The drink that runs through their entire story'},
+  {word:'TINKER',hint:'Sally\'s parents\' boat in Devon'},
+  {word:'CLIFFS',hint:'You\'ll find these all along the Devon coastline'},
+  {word:'SPRINT',hint:'What Sally eventually convinced Bruno to do'},
+  {word:'VENICE',hint:'They visited this city — briefly — on the Treviso trip'},
+  {word:'SAILOR',hint:'What you become the moment you step on Tinker'},
+  {word:'SALMON',hint:'Could this have been the mystery Tenerife fish?'},
+  {word:'CORNET',hint:'Ideal vessel for Devon ice cream'},
+  {word:'FORMAL',hint:'The dress code is summer ______'},
+  {word:'BALLAD',hint:'Every great love story needs one'},
+  {word:'BRONZE',hint:'Bruno\'s approximate skin tone after Australia'},
+  {word:'GROOMS',hint:'There\'s one of these at the wedding'},
+  {word:'BRIDLE',hint:'Part of a horse — or a wedding path'},
+  {word:'CHAPEL',hint:'Where it all begins on the 18th'},
+  {word:'STARRY',hint:'The Devon night sky, miles from any city'},
+  {word:'OYSTER',hint:'Devon seafood classic'},
+  {word:'CASTLE',hint:'Castel Sant\'Angelo — Rome trip landmark'},
+  {word:'Bolton',hint:null},
+  {word:'BRIDAL',hint:'The party, the shower, all of it'},
+  {word:'FLORET',hint:'A small flower — like in a Devon hedgerow'},
+];
+
+var currentWordle = null;
+var wordleGuesses = [];
+var wordleCurrentRow = 0;
+var wordleCurrentCol = 0;
+var wordleGameOver = false;
+var wordleLetterState = {};
+
+function pickWordle() {
+  return wordleWords[Math.floor(Math.random() * wordleWords.length)];
+}
+
+function buildWordleGrid() {
+  var grid = document.getElementById('wordle-grid');
+  grid.innerHTML = '';
+  for(var r=0;r<6;r++){
+    var row = document.createElement('div');
+    row.className = 'wordle-row';
+    row.id = 'wrow-'+r;
+    for(var c=0;c<6;c++){
+      var cell = document.createElement('div');
+      cell.className = 'wordle-cell';
+      cell.id = 'wcell-'+r+'-'+c;
+      row.appendChild(cell);
+    }
+    grid.appendChild(row);
+  }
+}
+
+function buildWordleKeyboard() {
+  var kb = document.getElementById('wordle-keyboard');
+  kb.innerHTML = '';
+  var rows = [['Q','W','E','R','T','Y','U','I','O','P'],['A','S','D','F','G','H','J','K','L'],['ENTER','Z','X','C','V','B','N','M','⌫']];
+  rows.forEach(function(rowKeys){
+    var div = document.createElement('div');
+    div.className = 'wordle-kb-row';
+    rowKeys.forEach(function(k){
+      var btn = document.createElement('button');
+      btn.className = 'wordle-key' + (k.length>1?' wide':'');
+      btn.textContent = k;
+      btn.id = 'wkey-'+k;
+      btn.onclick = function(){handleWordleKey(k)};
+      div.appendChild(btn);
+    });
+    kb.appendChild(div);
+  });
+}
+
+function newWordleGame() {
+  currentWordle = pickWordle();
+  wordleGuesses = [];
+  wordleCurrentRow = 0;
+  wordleCurrentCol = 0;
+  wordleGameOver = false;
+  wordleLetterState = {};
+  buildWordleGrid();
+  buildWordleKeyboard();
+  document.getElementById('wordle-hint').textContent = currentWordle.hint ? '💡 Hint: ' + currentWordle.hint : '';
+  var msg = document.getElementById('wordle-msg');
+  msg.className = 'game-msg';
+}
+
+function handleWordleKey(k) {
+  if(wordleGameOver) return;
+  if(k === '⌫' || k === 'BACKSPACE') {
+    if(wordleCurrentCol > 0) {
+      wordleCurrentCol--;
+      var cell = document.getElementById('wcell-'+wordleCurrentRow+'-'+wordleCurrentCol);
+      cell.textContent = '';
+      cell.classList.remove('filled');
+    }
+  } else if(k === 'ENTER') {
+    submitWordleGuess();
+  } else if(k.length === 1 && /[A-Z]/.test(k) && wordleCurrentCol < 6) {
+    var cell = document.getElementById('wcell-'+wordleCurrentRow+'-'+wordleCurrentCol);
+    cell.textContent = k;
+    cell.classList.add('filled');
+    wordleCurrentCol++;
+  }
+}
+
+function submitWordleGuess() {
+  if(wordleCurrentCol < 6) { showMsg('wordle-msg','Not enough letters','error'); return; }
+  var guess = '';
+  for(var c=0;c<6;c++) guess += document.getElementById('wcell-'+wordleCurrentRow+'-'+c).textContent;
+  var target = currentWordle.word;
+  var result = Array(6).fill('absent');
+  var targetLeft = target.split('');
+  var guessArr = guess.split('');
+  // correct pass
+  for(var i=0;i<6;i++) { if(guessArr[i]===targetLeft[i]){result[i]='correct';targetLeft[i]=null;guessArr[i]=null;} }
+  // present pass
+  for(var i=0;i<6;i++) {
+    if(guessArr[i]===null) continue;
+    var idx = targetLeft.indexOf(guessArr[i]);
+    if(idx>=0){result[i]='present';targetLeft[idx]=null;}
+  }
+  // colour cells with delay
+  result.forEach(function(r,i){
+    setTimeout(function(){
+      var cell = document.getElementById('wcell-'+wordleCurrentRow+'-'+i);
+      cell.classList.add(r);
+      // update key colour
+      var letter = guess[i];
+      var keyEl = document.getElementById('wkey-'+letter);
+      if(keyEl){
+        var cur = wordleLetterState[letter]||'';
+        if(r==='correct'||(r==='present'&&cur!=='correct')||(!cur&&r==='absent')){
+          wordleLetterState[letter]=r;
+          keyEl.className='wordle-key'+(letter.length>1?' wide':'')+' '+r;
+        }
+      }
+    }, i*80);
+  });
+  wordleGuesses.push({guess,result});
+  wordleCurrentRow++;
+  wordleCurrentCol = 0;
+  var won = result.every(r=>r==='correct');
+  setTimeout(function(){
+    if(won){ showMsg('wordle-msg','🎉 Brilliant! The word was '+target,'success'); wordleGameOver=true; }
+    else if(wordleCurrentRow>=6){ showMsg('wordle-msg','The word was '+target+'. Better luck next time!','info'); wordleGameOver=true; }
+    else { var msg=document.getElementById('wordle-msg'); msg.className='game-msg'; }
+  }, 500);
+}
+
+function revealWordleWord() {
+  if(currentWordle) showMsg('wordle-msg','The word was: '+currentWordle.word,'info');
+  wordleGameOver = true;
+}
+
+document.addEventListener('keydown', function(e){
+  var key = e.key.toUpperCase();
+  if(key==='ENTER') handleWordleKey('ENTER');
+  else if(key==='BACKSPACE') handleWordleKey('⌫');
+  else if(/^[A-Z]$/.test(key)) handleWordleKey(key);
+});
+
+// ══════════════════════════════════════════
+//  TRIVIA
+// ══════════════════════════════════════════
+var triviaQuestions = [
+  {q:"Where did Bruno and Sally go on their first Hinge date?",opts:["The Three Colts Tavern","BrewDog","Victoria Park","A bottomless brunch"],a:1},
+  {q:"What is the name of Sally's parents' boat?",opts:["Tinker","Sailor","Skipper","Dinghy"],a:0},
+  {q:"On what date did Bruno and Sally first meet?",opts:["14th February 2024","14th March 2024","14th April 2024","14th May 2024"],a:1},
+  {q:"Which city did Bruno propose to Sally in?",opts:["Rome","Florence","Venice","Bologna"],a:3},
+  {q:"What drink appears most frequently in Bruno and Sally's story?",opts:["Prosecco","Margarita","Aperol Spritz","Old Fashioned"],a:2},
+  {q:"Which country did Bruno get badly sunburned in?",opts:["Tenerife","Corfu","Australia","Greece"],a:2},
+  {q:"What race did Sally get Bruno to run?",opts:["London Marathon","Big Half","Parkrun","Couch to 5K"],a:1},
+  {q:"Where is the wedding ceremony taking place?",opts:["St Peter's Church","Holy Cross Church","Newton Ferrers Chapel","Carswell"],a:1},
+  {q:"What sport does Bruno play on Wednesday evenings?",opts:["Football","Cricket","Touch rugby","Tennis"],a:2},
+  {q:"Which city did they visit for the Six Nations rugby match?",opts:["Paris","Edinburgh","Rome","Dublin"],a:2},
+  {q:"Where did Bruno and Sally move in together?",opts:["Bethnal Green","Stratford","Rotherhithe","Hackney"],a:2},
+  {q:"What was the mystery food in Tenerife?",opts:["Chicken","Mystery fish","Paella","Squid"],a:1},
+  {q:"Where did they go skiing for the first time?",opts:["Val d'Isère","Chamonix","Verbier","Zermatt"],a:1},
+  {q:"Who is Jamie?",opts:["Bruno's brother","Bruno's best friend","Sally's brother","A rugby teammate"],a:1},
+  {q:"What is the what3words address for the reception venue Carswell?",opts:["sunny.fields.devon","awestruck.bloomers.ideal","coastal.views.perfect","wedding.vibes.only"],a:1},
+];
+
+var triviaCurrentQ = 0;
+var triviaAnswered = [];
+var triviaScore = 0;
+
+function startTrivia() {
+  triviaCurrentQ = 0;
+  triviaAnswered = new Array(triviaQuestions.length).fill(null);
+  triviaScore = 0;
+  document.getElementById('trivia-score-wrap').style.display = 'none';
+  document.getElementById('trivia-nav').style.display = 'flex';
+  renderTrivia();
+}
+
+function renderTrivia() {
+  var container = document.getElementById('trivia-container');
+  container.innerHTML = '';
+  triviaQuestions.forEach(function(q,i){
+    var div = document.createElement('div');
+    div.className = 'trivia-q';
+    div.id = 'tq-'+i;
+    div.style.display = i===triviaCurrentQ ? 'block':'none';
+    div.innerHTML = '<p class="q-num">Question '+(i+1)+' of '+triviaQuestions.length+'</p><p class="q-text">'+q.q+'</p><div class="trivia-options"></div>';
+    var opts = div.querySelector('.trivia-options');
+    q.opts.forEach(function(opt,oi){
+      var btn = document.createElement('button');
+      btn.className = 'trivia-opt';
+      btn.textContent = opt;
+      if(triviaAnswered[i]!==null){
+        btn.disabled = true;
+        if(oi===q.a) btn.classList.add('correct');
+        else if(oi===triviaAnswered[i]) btn.classList.add('wrong');
+      }
+      btn.onclick = function(){answerTrivia(i,oi)};
+      opts.appendChild(btn);
+    });
+    container.appendChild(div);
+  });
+  updateTriviaNav();
+}
+
+function answerTrivia(qi,oi) {
+  if(triviaAnswered[qi]!==null) return;
+  triviaAnswered[qi] = oi;
+  if(oi===triviaQuestions[qi].a) triviaScore++;
+  renderTrivia();
+}
+
+function triviaNav(dir) {
+  triviaCurrentQ = Math.max(0, Math.min(triviaQuestions.length-1, triviaCurrentQ+dir));
+  renderTrivia();
+  // Check if all answered
+  if(triviaAnswered.every(a=>a!==null) && dir===1 && triviaCurrentQ===triviaQuestions.length-1) {
+    setTimeout(showTriviaScore, 600);
+  }
+}
+
+function updateTriviaNav() {
+  document.getElementById('trivia-counter').textContent = (triviaCurrentQ+1)+' / '+triviaQuestions.length;
+  document.getElementById('trivia-prev').disabled = triviaCurrentQ===0;
+  var allDone = triviaAnswered.every(a=>a!==null);
+  var nextBtn = document.getElementById('trivia-next');
+  if(triviaCurrentQ===triviaQuestions.length-1 && allDone) {
+    nextBtn.textContent = 'See results';
+    nextBtn.onclick = showTriviaScore;
+  } else {
+    nextBtn.textContent = 'Next';
+    nextBtn.onclick = function(){triviaNav(1)};
+  }
+}
+
+function showTriviaScore() {
+  document.getElementById('trivia-container').innerHTML = '';
+  document.getElementById('trivia-nav').style.display = 'none';
+  var wrap = document.getElementById('trivia-score-wrap');
+  wrap.style.display = 'block';
+  document.getElementById('trivia-score-display').textContent = triviaScore + ' / ' + triviaQuestions.length;
+  var msgs = ['Keep studying! More Aperol Spritz might help.','Not bad! You know the basics.','Good work — you\'ve been paying attention.','Impressive! You know this couple well.','Perfect score! Are you sure you\'re not Bruno or Sally?'];
+  var idx = Math.floor(triviaScore / triviaQuestions.length * (msgs.length-1));
+  document.getElementById('trivia-score-msg').textContent = msgs[idx];
+}
+
+// ══════════════════════════════════════════
+//  CROSSWORD
+// ══════════════════════════════════════════
+// 9x9 grid. Layout (0-indexed row,col)
+// _ = white, # = black
+var cwLayout = [
+  ['_','_','_','_','#','_','_','_','_'],
+  ['_','#','#','_','#','_','#','#','_'],
+  ['_','_','_','_','_','_','_','_','_'],
+  ['#','#','_','#','_','#','_','#','#'],
+  ['_','_','_','#','#','#','_','_','_'],
+  ['#','#','_','#','_','#','_','#','#'],
+  ['_','_','_','_','_','_','_','_','_'],
+  ['_','#','#','_','#','_','#','#','_'],
+  ['_','_','_','_','#','_','_','_','_'],
+];
+var cwAnswers = [
+  ['A','P','E','R','#','S','A','I','L'],
+  ['L','#','#','O','#','A','#','#','O'],
+  ['T','I','N','K','E','R','B','E','Y'],
+  ['#','#','E','#','R','#','O','#','#'],
+  ['S','P','R','#','#','#','A','T','H'],
+  ['#','#','I','#','D','#','N','#','#'],
+  ['D','E','V','O','N','S','E','A','S'],
+  ['E','#','#','M','#','Y','#','#','O'],
+  ['W','E','D','D','#','E','L','L','S'],
+];
+var cwClues = {
+  across:[
+    {n:1,r:0,c:0,len:4,clue:'The drink that tells their whole story (6 letters is the brand, 4 is the word)'},
+    {n:5,r:0,c:5,len:4,clue:'What you do on Tinker'},
+    {n:6,r:2,c:0,len:9,clue:'Sally\'s parents\' boat — also a mischievous fairy'},
+    {n:8,r:4,c:0,len:3,clue:'What Sally got Bruno doing on Sundays'},
+    {n:10,r:6,c:0,len:9,clue:'Where the wedding is (county + sea + plural)'},
+    {n:12,r:8,c:0,len:4,clue:'What Bruno and Sally will do on 18th Sept 2027'},
+    {n:13,r:8,c:5,len:4,clue:'A type of spring or water source'},
+  ],
+  down:[
+    {n:1,r:0,c:0,len:9,clue:'A word meaning old or antique'},
+    {n:2,r:0,c:3,len:9,clue:'What Sally found at BrewDog'},
+    {n:3,r:0,c:5,len:7,clue:'The sea near Devon'},
+    {n:4,r:0,c:8,len:9,clue:'Cheerful — like the happy couple'},
+    {n:7,r:2,c:6,len:5,clue:'Male member of the wedding party'},
+    {n:9,r:4,c:8,len:5,clue:'A long walk — or what the aisle feels like'},
+    {n:11,r:6,c:4,len:3,clue:'What you say at the alter'},
+  ]
+};
+
+var cwUserGrid = [];
+var cwActiveCell = null;
+var cwDirection = 'across';
+
+function buildCrossword() {
+  var grid = document.getElementById('cw-grid');
+  grid.innerHTML = '';
+  cwUserGrid = [];
+  var nums = {};
+  var n = 1;
+  for(var r=0;r<9;r++){
+    for(var c=0;c<9;c++){
+      if(cwLayout[r][c]==='_'){
+        var startAcross = (c===0||cwLayout[r][c-1]==='#')&&(c+1<9&&cwLayout[r][c+1]==='_');
+        var startDown = (r===0||cwLayout[r-1][c]==='#')&&(r+1<9&&cwLayout[r+1][c]==='_');
+        if(startAcross||startDown){nums[r+','+c]=n;n++;}
+      }
+    }
+  }
+  for(var r=0;r<9;r++){
+    cwUserGrid.push([]);
+    var row = document.createElement('div');
+    row.className = 'cw-row';
+    for(var c=0;c<9;c++){
+      var cell = document.createElement('div');
+      var isBlack = cwLayout[r][c]==='#';
+      cell.className = 'cw-cell'+(isBlack?' black':'');
+      if(!isBlack){
+        var inp = document.createElement('input');
+        inp.maxLength=1; inp.type='text';
+        inp.dataset.r=r; inp.dataset.c=c;
+        inp.addEventListener('input',cwInput);
+        inp.addEventListener('focus',cwFocus);
+        cwUserGrid[r].push(inp);
+        if(nums[r+','+c]){
+          var sp=document.createElement('span');
+          sp.className='cw-num';sp.textContent=nums[r+','+c];
+          cell.appendChild(sp);
+        }
+        cell.appendChild(inp);
+      } else { cwUserGrid[r].push(null); }
+      row.appendChild(cell);
+    }
+    grid.appendChild(row);
+  }
+  buildCwClues(nums);
+}
+
+function cwFocus(e){
+  cwActiveCell = {r:parseInt(e.target.dataset.r),c:parseInt(e.target.dataset.c)};
+  document.querySelectorAll('.cw-cell input').forEach(i=>i.classList.remove('active'));
+  e.target.classList.add('active');
+}
+
+function cwInput(e){
+  var r=parseInt(e.target.dataset.r),c=parseInt(e.target.dataset.c);
+  e.target.value=e.target.value.toUpperCase().slice(-1);
+  // advance
+  if(e.target.value){
+    if(cwDirection==='across'&&c+1<9&&cwUserGrid[r][c+1]) cwUserGrid[r][c+1].focus();
+    else if(cwDirection==='down'&&r+1<9&&cwUserGrid[r+1][c]) cwUserGrid[r+1][c].focus();
+  }
+}
+
+function buildCwClues(nums) {
+  var div = document.getElementById('cw-clues');
+  div.innerHTML='<h4>Across</h4>';
+  cwClues.across.forEach(function(cl){
+    var p=document.createElement('p');p.className='cw-clue';
+    p.innerHTML='<strong>'+cl.n+'A</strong>'+cl.clue;
+    p.onclick=function(){cwSelectClue(cl,'across');};
+    div.appendChild(p);
+  });
+  div.innerHTML+='<h4>Down</h4>';
+  cwClues.down.forEach(function(cl){
+    var p=document.createElement('p');p.className='cw-clue';
+    p.innerHTML='<strong>'+cl.n+'D</strong>'+cl.clue;
+    p.onclick=function(){cwSelectClue(cl,'down');};
+    div.appendChild(p);
+  });
+}
+
+function cwSelectClue(cl,dir){
+  cwDirection=dir;
+  document.querySelectorAll('.cw-clue').forEach(c=>c.classList.remove('active'));
+  if(cwUserGrid[cl.r][cl.c]) cwUserGrid[cl.r][cl.c].focus();
+}
+
+function checkCrossword(){
+  var wrong=0,total=0;
+  for(var r=0;r<9;r++)for(var c=0;c<9;c++){
+    if(cwLayout[r][c]==='_'&&cwUserGrid[r][c]){
+      total++;
+      var val=cwUserGrid[r][c].value;
+      if(val===cwAnswers[r][c]) cwUserGrid[r][c].classList.add('correct');
+      else if(val) wrong++;
+    }
+  }
+  if(wrong===0) showMsg('cw-msg','🎉 Perfect! All correct!','success');
+  else showMsg('cw-msg',wrong+' incorrect. Keep trying!','error');
+}
+
+function revealCrossword(){
+  for(var r=0;r<9;r++)for(var c=0;c<9;c++){
+    if(cwLayout[r][c]==='_'&&cwUserGrid[r][c]){
+      cwUserGrid[r][c].value=cwAnswers[r][c];
+      cwUserGrid[r][c].classList.add('correct');
+    }
+  }
+  showMsg('cw-msg','Revealed! Now you know.','info');
+}
+
+function resetCrossword(){
+  for(var r=0;r<9;r++)for(var c=0;c<9;c++){
+    if(cwUserGrid[r][c]){cwUserGrid[r][c].value='';cwUserGrid[r][c].className=''}
+  }
+  document.getElementById('cw-msg').className='game-msg';
+}
+
+// ══════════════════════════════════════════
+//  SUDOKU
+// ══════════════════════════════════════════
+var sudokuSolution=[];var sudokuGiven=[];
+
+var sudokuPuzzles={
+  easy:[
+    [5,3,0,0,7,0,0,0,0],[6,0,0,1,9,5,0,0,0],[0,9,8,0,0,0,0,6,0],
+    [8,0,0,0,6,0,0,0,3],[4,0,0,8,0,3,0,0,1],[7,0,0,0,2,0,0,0,6],
+    [0,6,0,0,0,0,2,8,0],[0,0,0,4,1,9,0,0,5],[0,0,0,0,8,0,0,7,9]
+  ],
+  medium:[
+    [0,0,0,2,6,0,7,0,1],[6,8,0,0,7,0,0,9,0],[1,9,0,0,0,4,5,0,0],
+    [8,2,0,1,0,0,0,4,0],[0,0,4,6,0,2,9,0,0],[0,5,0,0,0,3,0,2,8],
+    [0,0,9,3,0,0,0,7,4],[0,4,0,0,5,0,0,3,6],[7,0,3,0,1,8,0,0,0]
+  ],
+  hard:[
+    [0,0,0,0,0,0,0,0,0],[0,0,0,0,0,3,0,8,5],[0,0,1,0,2,0,0,0,0],
+    [0,0,0,5,0,7,0,0,0],[0,0,4,0,0,0,1,0,0],[0,9,0,0,0,0,0,0,0],
+    [5,0,0,0,0,0,0,7,3],[0,0,2,0,1,0,0,0,0],[0,0,0,0,4,0,0,0,9]
+  ]
+};
+var sudokuSolutions={
+  easy:[
+    [5,3,4,6,7,8,9,1,2],[6,7,2,1,9,5,3,4,8],[1,9,8,3,4,2,5,6,7],
+    [8,5,9,7,6,1,4,2,3],[4,2,6,8,5,3,7,9,1],[7,1,3,9,2,4,8,5,6],
+    [9,6,1,5,3,7,2,8,4],[2,8,7,4,1,9,6,3,5],[3,4,5,2,8,6,1,7,9]
+  ],
+  medium:[
+    [4,3,5,2,6,9,7,8,1],[6,8,2,5,7,1,4,9,3],[1,9,7,8,3,4,5,6,2],
+    [8,2,6,1,9,5,3,4,7],[3,7,4,6,8,2,9,1,5],[9,5,1,7,4,3,6,2,8],
+    [5,1,9,3,2,6,8,7,4],[2,4,8,9,5,7,1,3,6],[7,6,3,4,1,8,2,5,9]
+  ],
+  hard:[
+    [9,8,7,6,5,4,3,2,1],[2,4,6,1,7,3,9,8,5],[3,5,1,9,2,8,7,4,6],
+    [1,2,8,5,3,7,6,9,4],[6,3,4,8,9,9,1,5,2],[7,9,5,4,6,1,8,3,0],
+    [5,1,9,2,8,6,4,7,3],[4,7,2,3,1,5,6,1,8],[8,6,3,7,4,2,5,0,9]
+  ]
+};
+
+var currentDifficulty='easy';
+function newSudoku(diff){
+  currentDifficulty=diff||'easy';
+  var puzzle=sudokuPuzzles[currentDifficulty];
+  sudokuSolution=sudokuSolutions[currentDifficulty];
+  sudokuGiven=puzzle.map(r=>r.map(v=>v!==0));
+  var grid=document.getElementById('sudoku-grid');
+  grid.innerHTML='';
+  for(var r=0;r<9;r++)for(var c=0;c<9;c++){
+    var cell=document.createElement('div');
+    cell.className='sudoku-cell'+(sudokuGiven[r][c]?' given':'');
+    var inp=document.createElement('input');
+    inp.type='text';inp.maxLength=1;
+    inp.dataset.r=r;inp.dataset.c=c;
+    if(puzzle[r][c]){inp.value=puzzle[r][c];inp.readOnly=true;}
+    inp.addEventListener('input',function(e){
+      e.target.value=e.target.value.replace(/[^1-9]/,'').slice(-1);
+    });
+    cell.appendChild(inp);
+    grid.appendChild(cell);
+  }
+  document.getElementById('sudoku-msg').className='game-msg';
+}
+
+function checkSudoku(){
+  var cells=document.querySelectorAll('.sudoku-cell input');
+  var correct=true;
+  cells.forEach(function(inp){
+    var r=parseInt(inp.dataset.r),c=parseInt(inp.dataset.c);
+    var parent=inp.parentElement;
+    parent.classList.remove('error','correct');
+    if(inp.value){
+      if(parseInt(inp.value)===sudokuSolution[r][c]) parent.classList.add('correct');
+      else{parent.classList.add('error');correct=false;}
+    } else if(!sudokuGiven[r][c]) correct=false;
+  });
+  if(correct) showMsg('sudoku-msg','🎉 Solved! Well done!','success');
+  else showMsg('sudoku-msg','Some cells are wrong — keep going!','error');
+}
+
+function solveSudoku(){
+  var cells=document.querySelectorAll('.sudoku-cell input');
+  cells.forEach(function(inp){
+    var r=parseInt(inp.dataset.r),c=parseInt(inp.dataset.c);
+    inp.value=sudokuSolution[r][c];
+    inp.parentElement.classList.add('correct');
+    inp.parentElement.classList.remove('error');
+  });
+  showMsg('sudoku-msg','Solved! Now you know how it\'s done.','info');
+}
+
+// ══════════════════════════════════════════
+//  KAKURO
+// ══════════════════════════════════════════
+/*
+  Layout: B=black, C=clue cell {r:across, d:down}, W=white input cell
+  Solution values stored separately
+  Grid is 7 cols x 7 rows
+*/
+var KK_PUZZLES = [
+{
+  name: "Puzzle 1",
+  // W=white, B=black, C=clue with r(ight) and d(own) sums
+  layout: [
+    ['B',{t:'C',r:0,d:3},{t:'C',r:0,d:4},{t:'C',r:0,d:5},{t:'C',r:0,d:7},'B','B'],
+    [{t:'C',r:6,d:0},'W','W','W','W','B','B'],
+    [{t:'C',r:3,d:0},'W','W','B',{t:'C',r:0,d:4},{t:'C',r:0,d:6},'B'],
+    [{t:'C',r:7,d:0},'W','W','W','W','W',{t:'C',r:3,d:0}],
+    ['B','B',{t:'C',r:0,d:3},{t:'C',r:0,d:2},'W','W','W'],
+    ['B',{t:'C',r:4,d:0},'W','W','W','W','B'],
+    ['B','B','W','W','B','B','B'],
+  ],
+  solution: [
+    [null,null,null,null,null,null,null],
+    [null,1,2,3,4,null,null],
+    [null,1,2,null,1,3,null],
+    [null,2,3,1,4,6,null],
+    [null,null,null,null,2,1,3],
+    [null,1,2,4,3,null,null],
+    [null,null,1,2,null,null,null],
+  ]
+},
+{
+  name: "Puzzle 2",
+  layout: [
+    ['B','B',{t:'C',r:0,d:3},{t:'C',r:0,d:4},'B',{t:'C',r:0,d:7},'B'],
+    ['B',{t:'C',r:3,d:0},'W','W',{t:'C',r:0,d:3},'W','B'],
+    [{t:'C',r:6,d:0},'W','W','W','W','W','B'],
+    [{t:'C',r:4,d:0},'W','W','B',{t:'C',r:3,d:0},'W','W'],
+    ['B',{t:'C',r:0,d:4},{t:'C',r:0,d:3},'W','W','W','B'],
+    ['B','W','W','W','W','B','B'],
+    ['B','W','W','B','B','B','B'],
+  ],
+  solution: [
+    [null,null,null,null,null,null,null],
+    [null,null,1,2,null,3,null],
+    [null,1,2,3,4,2,null],
+    [null,3,1,null,null,2,4],
+    [null,null,null,1,2,3,null],
+    [null,1,4,3,2,null,null],
+    [null,1,3,null,null,null,null],
+  ]
+}
+];
+
+var kakuroInputs=[];
+var kkCurrentPuzzle = 0;
+
+function newKakuro(puzzleIdx){
+  if(puzzleIdx !== undefined) kkCurrentPuzzle = puzzleIdx;
+  else kkCurrentPuzzle = Math.floor(Math.random() * KK_PUZZLES.length);
+  var puz = KK_PUZZLES[kkCurrentPuzzle];
+  var layout = puz.layout;
+  var rows = layout.length;
+  var cols = layout[0].length;
+
+  var grid = document.getElementById('kakuro-grid');
+  grid.innerHTML = '';
+  grid.setAttribute('style', 'display:grid;grid-template-columns:repeat('+cols+',48px);width:'+(cols*48)+'px;gap:0;border:2px solid #2C2C2A;margin-bottom:1.2rem');
+  kakuroInputs = [];
+
+  for(var r=0;r<rows;r++){
+    kakuroInputs.push([]);
+    for(var c=0;c<cols;c++){
+      var spec = layout[r][c];
+      var cell = document.createElement('div');
+
+      if(spec === 'B'){
+        cell.className = 'kk-cell black';
+        kakuroInputs[r].push(null);
+      } else if(spec && spec.t === 'C'){
+        cell.className = 'kk-cell clue';
+        // diagonal line via CSS
+        cell.style.cssText = 'position:relative;overflow:hidden;background:#2C2C2A';
+        // diagonal
+        var line = document.createElement('div');
+        line.style.cssText = 'position:absolute;top:0;left:0;right:0;bottom:0;border-bottom:1px solid rgba(255,255,255,0.25);transform:rotate(-38deg) scale(2);pointer-events:none';
+        cell.appendChild(line);
+        if(spec.d){
+          var dn = document.createElement('span');
+          dn.style.cssText = 'position:absolute;top:3px;left:4px;color:#fff;font-size:0.6rem;font-weight:700;line-height:1;font-family:Jost,sans-serif';
+          dn.textContent = spec.d;
+          cell.appendChild(dn);
+        }
+        if(spec.r){
+          var rt = document.createElement('span');
+          rt.style.cssText = 'position:absolute;bottom:3px;right:4px;color:#fff;font-size:0.6rem;font-weight:700;line-height:1;font-family:Jost,sans-serif';
+          rt.textContent = spec.r;
+          cell.appendChild(rt);
+        }
+        kakuroInputs[r].push(null);
+      } else if(spec === 'W'){
+        cell.className = 'kk-cell';
+        var inp = document.createElement('input');
+        inp.type='text'; inp.maxLength=1;
+        inp.dataset.r=r; inp.dataset.c=c;
+        inp.style.cssText='width:100%;height:100%;border:none;background:transparent;text-align:center;font-family:"Cormorant Garamond",serif;font-size:1.1rem;color:var(--sky);outline:none;cursor:pointer';
+        inp.addEventListener('input',function(e){
+          e.target.value=e.target.value.replace(/[^1-9]/,'').slice(-1);
+        });
+        inp.addEventListener('focus',function(e){e.target.style.background='var(--sky-pale,#EAF3F9)'});
+        inp.addEventListener('blur',function(e){e.target.style.background='transparent'});
+        cell.appendChild(inp);
+        kakuroInputs[r].push(inp);
+      }
+      grid.appendChild(cell);
+    }
+  }
+  document.getElementById('kakuro-msg').className='game-msg';
+}
+
+function checkKakuro(){
+  var puz = KK_PUZZLES[kkCurrentPuzzle];
+  var sol = puz.solution;
+  var allFilled = true, allCorrect = true;
+  for(var r=0;r<kakuroInputs.length;r++){
+    for(var c=0;c<kakuroInputs[r].length;c++){
+      var inp = kakuroInputs[r][c];
+      if(inp){
+        var parent = inp.parentElement;
+        parent.style.background = '#fff';
+        if(!inp.value){ allFilled=false; continue; }
+        if(parseInt(inp.value) === sol[r][c]){
+          parent.style.background = 'var(--sage-pale)';
+        } else {
+          parent.style.background = '#fdf0e8';
+          allCorrect=false;
+        }
+      }
+    }
+  }
+  if(!allFilled) showMsg('kakuro-msg','Fill in all cells first!','info');
+  else if(allCorrect) showMsg('kakuro-msg','🎉 Perfect! All runs add up!','success');
+  else showMsg('kakuro-msg','Some cells are wrong — check your sums.','error');
+}
+
+function solveKakuro(){
+  var puz = KK_PUZZLES[kkCurrentPuzzle];
+  var sol = puz.solution;
+  for(var r=0;r<kakuroInputs.length;r++){
+    for(var c=0;c<kakuroInputs[r].length;c++){
+      var inp = kakuroInputs[r][c];
+      if(inp && sol[r][c]){
+        inp.value = sol[r][c];
+        inp.parentElement.style.background = 'var(--sage-pale)';
+      }
+    }
+  }
+  showMsg('kakuro-msg','Solved! All the sums work out.','info');
+}
+
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+newWordleGame();
+startTrivia();
+buildCrossword();
+newSudoku('easy');
+newKakuro();
+</script>
+</body>
+</html>
