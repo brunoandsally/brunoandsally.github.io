@@ -192,10 +192,10 @@ footer{text-align:center;padding:2rem 1rem;font-size:0.78rem;color:var(--ink-sof
 
     <!-- Toolbar: emoji + GIF -->
     <div style="display:flex;gap:0.5rem;margin-bottom:0.6rem;flex-wrap:wrap">
-      <button onclick="togglePicker('emoji')" id="btn-emoji" style="display:flex;align-items:center;gap:0.35rem;padding:0.35rem 0.8rem;border:1.5px solid var(--line);border-radius:20px;background:#fff;cursor:pointer;font-size:0.78rem;color:var(--ink-soft);font-family:'Jost',sans-serif;transition:all 0.15s">
+      <button id="btn-emoji" style="display:flex;align-items:center;gap:0.35rem;padding:0.35rem 0.8rem;border:1.5px solid var(--line);border-radius:20px;background:#fff;cursor:pointer;font-size:0.78rem;color:var(--ink-soft);font-family:'Jost',sans-serif;transition:all 0.15s">
         <span id="emoji-current">😊</span><span>Emoji</span>
       </button>
-      <button onclick="togglePicker('gif')" id="btn-gif" style="display:flex;align-items:center;gap:0.35rem;padding:0.35rem 0.8rem;border:1.5px solid var(--line);border-radius:20px;background:#fff;cursor:pointer;font-size:0.78rem;color:var(--ink-soft);font-family:'Jost',sans-serif;transition:all 0.15s">
+      <button id="btn-gif" style="display:flex;align-items:center;gap:0.35rem;padding:0.35rem 0.8rem;border:1.5px solid var(--line);border-radius:20px;background:#fff;cursor:pointer;font-size:0.78rem;color:var(--ink-soft);font-family:'Jost',sans-serif;transition:all 0.15s">
         <span>🎞️</span><span>GIF</span>
       </button>
     </div>
@@ -773,6 +773,14 @@ supa.channel('public:posts').on('postgres_changes',
 ).subscribe();
 
 // ── INIT ───────────────────────────────────────────────────
+// Wire up picker buttons via addEventListener (more reliable than inline onclick in iframes)
+document.addEventListener('DOMContentLoaded', function(){
+  var btnEmoji = document.getElementById('btn-emoji');
+  var btnGif   = document.getElementById('btn-gif');
+  if(btnEmoji) btnEmoji.addEventListener('click', function(){ togglePicker('emoji'); });
+  if(btnGif)   btnGif.addEventListener('click',   function(){ togglePicker('gif'); });
+});
+
 loadPolls();
 loadPosts();
 
