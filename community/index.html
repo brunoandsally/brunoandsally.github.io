@@ -116,6 +116,7 @@ body{font-family:"Jost",sans-serif;background:var(--cream);color:var(--ink);line
 
 /* Reactions + reply bar */
 .post-actions{display:flex;align-items:center;gap:0.4rem;margin-top:0.55rem;flex-wrap:wrap}
+.reactions{display:flex;flex-direction:row;gap:0.4rem;flex-wrap:wrap;margin-top:0.5rem;align-items:center}
 .react-btn{border:1px solid var(--line);border-radius:20px;padding:0.18rem 0.5rem;font-size:0.82rem;cursor:pointer;background:#fff;color:var(--ink);transition:all 0.12s;display:flex;align-items:center;gap:0.2rem;-webkit-tap-highlight-color:transparent}
 .react-btn:hover{border-color:var(--warm-light);background:var(--stone)}
 .react-btn.reacted{background:var(--warm-light);border-color:var(--warm);font-weight:600}
@@ -375,7 +376,7 @@ function renderPosts(){
     replyBar.style.cssText = 'margin-top:0.5rem';
     var replyBtn = document.createElement('button');
     replyBtn.textContent = '↩ Reply';
-    replyBtn.style.cssText = 'border:none;background:none;font-size:0.72rem;color:var(--ink-soft);cursor:pointer;padding:0.15rem 0;font-family:"Jost",sans-serif;letter-spacing:0.06em';
+    replyBtn.style.cssText = 'border:1px solid var(--line);background:none;font-size:0.72rem;color:var(--ink-soft);cursor:pointer;padding:0.18rem 0.6rem;border-radius:20px;font-family:"Jost",sans-serif;letter-spacing:0.06em;margin-top:0.2rem';
     (function(pid){ replyBtn.onclick = function(){ toggleReplyBox(pid); }; })(p.id);
     replyBar.appendChild(replyBtn);
     bubble.appendChild(replyBar);
