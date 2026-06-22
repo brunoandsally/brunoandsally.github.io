@@ -190,17 +190,38 @@ footer{text-align:center;padding:2rem 1rem;font-size:0.78rem;color:var(--ink-sof
       <input type="text" class="name-input" id="msg-name" placeholder="Your name" maxlength="40"/>
     </div>
 
-    <div style="margin-bottom:0.7rem">
-      <button class="emoji-panel-btn" onclick="toggleEmojiDrawer()" id="emoji-toggle-btn" style="display:flex;align-items:center;gap:0.4rem;padding:0.35rem 0.75rem;border:1.5px solid var(--line);border-radius:20px;background:#fff;cursor:pointer;font-size:0.78rem;color:var(--ink-soft);font-family:'Jost',sans-serif">
-        <span id="emoji-current">😊</span><span>Emoji</span><span id="emoji-chevron">▾</span>
+    <!-- Toolbar: emoji + GIF -->
+    <div style="display:flex;gap:0.5rem;margin-bottom:0.6rem;flex-wrap:wrap">
+      <button onclick="togglePicker('emoji')" id="btn-emoji" style="display:flex;align-items:center;gap:0.35rem;padding:0.35rem 0.8rem;border:1.5px solid var(--line);border-radius:20px;background:#fff;cursor:pointer;font-size:0.78rem;color:var(--ink-soft);font-family:'Jost',sans-serif;transition:all 0.15s">
+        <span id="emoji-current">😊</span><span>Emoji</span>
+      </button>
+      <button onclick="togglePicker('gif')" id="btn-gif" style="display:flex;align-items:center;gap:0.35rem;padding:0.35rem 0.8rem;border:1.5px solid var(--line);border-radius:20px;background:#fff;cursor:pointer;font-size:0.78rem;color:var(--ink-soft);font-family:'Jost',sans-serif;transition:all 0.15s">
+        <span>🎞️</span><span>GIF</span>
       </button>
     </div>
-    <div id="emoji-drawer" style="display:none;flex-wrap:wrap;gap:0.25rem;padding:0.7rem;background:var(--stone);border-radius:8px;margin-bottom:0.7rem"></div>
+
+    <!-- Emoji picker panel -->
+    <div id="picker-emoji" style="display:none;background:var(--stone);border-radius:10px;padding:0.8rem;margin-bottom:0.7rem">
+      <div style="display:flex;gap:0.3rem;flex-wrap:wrap;margin-bottom:0.5rem;padding-bottom:0.5rem;border-bottom:1px solid var(--line)" id="emoji-cats"></div>
+      <div style="display:flex;flex-wrap:wrap;gap:0.25rem" id="emoji-grid"></div>
+      <p style="font-size:0.68rem;color:var(--ink-soft);margin-top:0.5rem;font-style:italic">Tap to set avatar · Double-tap to insert into message</p>
+    </div>
+
+    <!-- GIF picker panel -->
+    <div id="picker-gif" style="display:none;background:var(--stone);border-radius:10px;padding:0.8rem;margin-bottom:0.7rem">
+      <input id="gif-search" type="text" placeholder="Search GIFs… (e.g. cheers, dance, wedding)" oninput="searchGifs(this.value)"
+        style="width:100%;font-family:'Jost',sans-serif;font-size:0.88rem;border:1.5px solid var(--line);border-radius:6px;padding:0.5rem 0.75rem;background:#fff;color:var(--ink);box-sizing:border-box;margin-bottom:0.6rem"/>
+      <div id="gif-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.4rem;max-height:260px;overflow-y:auto">
+        <p style="grid-column:1/-1;text-align:center;font-size:0.82rem;color:var(--ink-soft);font-style:italic;padding:1rem 0">Search for a GIF above</p>
+      </div>
+      <p style="font-size:0.62rem;color:var(--ink-soft);margin-top:0.4rem;text-align:right">Powered by Tenor</p>
+    </div>
 
     <div class="msg-area-wrap">
       <textarea class="msg-area" id="msg-text" placeholder="Say something lovely (or funny)…" maxlength="300" oninput="updateCharCount()"></textarea>
       <span class="char-count" id="char-count">300</span>
     </div>
+    <div id="gif-confirm" style="display:none;font-size:0.78rem;color:var(--sage);padding:0.3rem 0;font-style:italic"></div>
 
     <button class="post-btn" id="post-btn" onclick="submitPost()">
       <span>Send message</span><span id="post-emoji">😊</span>
@@ -240,44 +261,134 @@ function switchTab(id, btn) {
   if(btn) btn.classList.add('active');
 }
 
-// ── EMOJI ──────────────────────────────────────────────────
+// ── EMOJI + GIF ────────────────────────────────────────────
 var selectedEmoji = '😊';
-var EMOJIS = ['😊','😂','🥂','💒','💐','🌊','🎉','❤️','🦞','🥳','😭','🕺','🎊','🌸','🍊','👏','🤩','😎','💍','🎀','⛵','🦀','🥃','🍾','🥰'];
+var currentEmojiCat = 'Wedding';
+var lastEmojiTap = {e:'', t:0};
+var EMOJI_CATS = {
+  'Wedding': ['💒','💐','💍','🥂','🎊','🎉','💌','🕊️','🌸','🌺','🥳','❤️','💕','💖','✨','🎀','🤍','🫶'],
+  'Devon':   ['🌊','🦞','⚓','🏖️','☀️','🌦️','🐚','⛵','🏄','🌿','🦀','🐠','🌅','🦅','🍃','🪸'],
+  'Drink':   ['🍊','🧡','🍹','🥃','🍾','🍷','🍸','☕','🧃','🍋','🧊','🫗','🥂','🍵','🫧','🌿'],
+  'Faces':   ['😊','😂','🥰','😍','🤩','🥳','😭','😅','🤣','😎','🥹','🤭','😏','🙌','👏','🫶'],
+  'Fun':     ['🕺','💃','🎸','🎵','🎤','🎶','🪩','🎯','🎲','🎪','🎭','🃏','🌈','🦄','🪄','🎠'],
+};
 
-(function(){
-  var drawer = document.getElementById('emoji-drawer');
-  if(!drawer) return;
-  EMOJIS.forEach(function(e){
+function buildEmojiPicker(){
+  var catsEl = document.getElementById('emoji-cats');
+  var gridEl = document.getElementById('emoji-grid');
+  if(!catsEl || !gridEl) return;
+  // Build category tabs
+  catsEl.innerHTML = '';
+  Object.keys(EMOJI_CATS).forEach(function(cat){
     var btn = document.createElement('button');
-    btn.className = 'ep' + (e===selectedEmoji?' avatar-sel':'');
-    btn.textContent = e;
+    btn.textContent = cat;
+    btn.style.cssText = 'padding:0.22rem 0.6rem;border-radius:20px;border:1px solid '+(cat===currentEmojiCat?'var(--sage-light)':'transparent')+';background:'+(cat===currentEmojiCat?'var(--sage-pale)':'none')+';cursor:pointer;font-size:0.7rem;font-weight:600;color:'+(cat===currentEmojiCat?'var(--sage)':'var(--ink-soft)')+';font-family:"Jost",sans-serif;letter-spacing:0.05em;text-transform:uppercase';
     btn.onclick = function(){
-      selectedEmoji = e;
-      var av = document.getElementById('avatar-preview');
-      var pe = document.getElementById('post-emoji');
-      var ec = document.getElementById('emoji-current');
-      if(av) av.textContent = e;
-      if(pe) pe.textContent = e;
-      if(ec) ec.textContent = e;
-      drawer.querySelectorAll('.ep').forEach(function(b){ b.classList.remove('avatar-sel'); });
-      btn.classList.add('avatar-sel');
-      // Insert into textarea too
-      var ta = document.getElementById('msg-text');
-      if(ta){ var s=ta.selectionStart||0; ta.value=ta.value.slice(0,s)+e+ta.value.slice(s); updateCharCount(); }
-      toggleEmojiDrawer(false);
+      currentEmojiCat = cat;
+      buildEmojiPicker();
     };
-    drawer.appendChild(btn);
+    catsEl.appendChild(btn);
   });
-})();
+  // Build emoji grid
+  gridEl.innerHTML = '';
+  (EMOJI_CATS[currentEmojiCat]||[]).forEach(function(e){
+    var btn = document.createElement('button');
+    btn.textContent = e;
+    btn.title = 'Tap: set avatar  ·  Double-tap: insert';
+    btn.style.cssText = 'width:36px;height:36px;border:1.5px solid '+(e===selectedEmoji?'var(--sage)':'transparent')+';border-radius:7px;background:'+(e===selectedEmoji?'var(--sage-pale)':'#fff')+';cursor:pointer;font-size:1.15rem;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;transition:transform 0.1s';
+    btn.onclick = function(){
+      var now = Date.now();
+      if(lastEmojiTap.e===e && now-lastEmojiTap.t<450){
+        // Double tap — insert into textarea
+        var ta = document.getElementById('msg-text');
+        if(ta){ var s=ta.selectionStart||0; ta.value=ta.value.slice(0,s)+e+ta.value.slice(s); ta.selectionStart=ta.selectionEnd=s+e.length; ta.focus(); updateCharCount(); }
+        lastEmojiTap={e:'',t:0};
+      } else {
+        // Single tap — set avatar
+        lastEmojiTap={e:e,t:now};
+        selectedEmoji = e;
+        var av=document.getElementById('avatar-preview'); if(av) av.textContent=e;
+        var pe=document.getElementById('post-emoji');    if(pe) pe.textContent=e;
+        var ec=document.getElementById('emoji-current'); if(ec) ec.textContent=e;
+        buildEmojiPicker(); // re-render to update highlight
+      }
+    };
+    gridEl.appendChild(btn);
+  });
+}
 
-function toggleEmojiDrawer(forceClose){
-  var drawer = document.getElementById('emoji-drawer');
-  var chevron = document.getElementById('emoji-chevron');
-  if(!drawer) return;
-  var isOpen = drawer.classList.contains('open');
-  var shouldOpen = forceClose===false ? false : !isOpen;
-  drawer.classList.toggle('open', shouldOpen);
-  if(chevron) chevron.textContent = shouldOpen ? '▴' : '▾';
+var currentPicker = null;
+function togglePicker(which){
+  var emojiPanel = document.getElementById('picker-emoji');
+  var gifPanel   = document.getElementById('picker-gif');
+  if(!emojiPanel || !gifPanel) return;
+  if(which === currentPicker){
+    // Close
+    emojiPanel.style.display='none'; gifPanel.style.display='none';
+    currentPicker=null;
+  } else {
+    currentPicker = which;
+    emojiPanel.style.display = which==='emoji' ? 'block' : 'none';
+    gifPanel.style.display   = which==='gif'   ? 'block' : 'none';
+    if(which==='emoji') buildEmojiPicker();
+    if(which==='gif'){ var gs=document.getElementById('gif-search'); if(gs&&!gs.value) loadTrendingGifs(); }
+  }
+}
+
+// Kept for backward compat (reply boxes call this)
+function toggleEmojiDrawer(forceClose){ if(forceClose===false) togglePicker(currentPicker||'emoji'); }
+
+// ── GIF PICKER ─────────────────────────────────────────────
+var GIF_KEY = 'AIzaSyAyimkuYQYF_FXVALexPko2zsEGlOGFsMA'; // Tenor public demo key
+var gifTimer = null;
+var pendingGifUrl = null; // GIF chosen but not yet in message
+
+function loadTrendingGifs(){
+  fetchGifs('https://tenor.googleapis.com/v2/featured?key='+GIF_KEY+'&limit=12&media_filter=gif');
+}
+
+function searchGifs(query){
+  clearTimeout(gifTimer);
+  if(!query.trim()){ loadTrendingGifs(); return; }
+  gifTimer = setTimeout(function(){
+    fetchGifs('https://tenor.googleapis.com/v2/search?key='+GIF_KEY+'&q='+encodeURIComponent(query)+'&limit=12&media_filter=gif');
+  }, 400);
+}
+
+function fetchGifs(url){
+  var grid = document.getElementById('gif-grid');
+  if(!grid) return;
+  grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;font-size:0.82rem;color:var(--ink-soft);padding:1rem 0;font-style:italic">Loading…</p>';
+  fetch(url)
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      grid.innerHTML = '';
+      (data.results||[]).forEach(function(gif){
+        var url = gif.media_formats&&gif.media_formats.gif ? gif.media_formats.gif.url : null;
+        var preview = gif.media_formats&&gif.media_formats.tinygif ? gif.media_formats.tinygif.url : url;
+        if(!url) return;
+        var img = document.createElement('img');
+        img.src = preview;
+        img.style.cssText = 'width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:border-color 0.1s';
+        img.title = gif.title||'';
+        img.onclick = function(){
+          // Mark selected
+          grid.querySelectorAll('img').forEach(function(i){ i.style.borderColor='transparent'; });
+          img.style.borderColor = 'var(--sage)';
+          pendingGifUrl = url;
+          // Show in message preview
+          var ta = document.getElementById('msg-text');
+          if(ta) ta.dataset.gifUrl = url;
+          // Show confirmation under grid
+          var conf = document.getElementById('gif-confirm');
+          if(conf){ conf.style.display='block'; conf.textContent='GIF selected ✓ — will send with your message'; }
+          togglePicker('gif'); // close panel
+        };
+        grid.appendChild(img);
+      });
+      if(!grid.children.length) grid.innerHTML='<p style="grid-column:1/-1;text-align:center;font-size:0.82rem;color:var(--ink-soft);padding:1rem 0">No results</p>';
+    })
+    .catch(function(){ grid.innerHTML='<p style="grid-column:1/-1;text-align:center;font-size:0.82rem;color:var(--ink-soft);padding:1rem 0">Could not load GIFs</p>'; });
 }
 
 function updateCharCount(){
@@ -354,6 +465,14 @@ function renderPosts(){
     txt.className = 'post-text';
     txt.textContent = p.message;
     bubble.appendChild(txt);
+    // GIF attachment
+    if(p.gif_url){
+      var gifImg = document.createElement('img');
+      gifImg.src = p.gif_url;
+      gifImg.style.cssText = 'max-width:240px;width:100%;border-radius:8px;margin-top:0.5rem;display:block';
+      gifImg.alt = 'GIF';
+      bubble.appendChild(gifImg);
+    }
 
     // Reactions
     var reactions = p.reactions || {};
@@ -401,15 +520,12 @@ function renderPosts(){
 
     card.appendChild(bubble);
 
-    // Existing replies (thread) — collapsable if >2
+    // Existing replies (thread)
     var replies = repliesCache[p.id]||[];
-    list.appendChild(card);
     if(replies.length){
-      var SHOW_FIRST = 2; // always show this many without expanding
       var thread = document.createElement('div');
-      thread.style.cssText = 'margin-top:0.4rem;margin-left:52px;border-left:2px solid var(--sage-pale);padding-left:0.75rem;display:flex;flex-direction:column;gap:0.4rem';
-
-      function makeReplyCard(r){
+      thread.style.cssText = 'margin-top:0.5rem;margin-left:52px;border-left:2px solid var(--sage-pale);padding-left:0.75rem;display:flex;flex-direction:column;gap:0.4rem';
+      replies.forEach(function(r){
         var rcard = document.createElement('div');
         rcard.style.cssText = 'display:flex;gap:0.5rem;align-items:flex-start';
         var rav = document.createElement('div');
@@ -427,41 +543,12 @@ function renderPosts(){
         rbubble.appendChild(rtxt);
         rcard.appendChild(rav);
         rcard.appendChild(rbubble);
-        return rcard;
-      }
-
-      // Always show first SHOW_FIRST replies
-      replies.slice(0, SHOW_FIRST).forEach(function(r){
-        thread.appendChild(makeReplyCard(r));
+        thread.appendChild(rcard);
       });
-
-      // If more replies, add collapsed section + toggle
-      if(replies.length > SHOW_FIRST){
-        var hidden = replies.slice(SHOW_FIRST);
-        var moreWrap = document.createElement('div');
-        moreWrap.id = 'more-'+p.id;
-        moreWrap.style.cssText = 'display:none;flex-direction:column;gap:0.4rem';
-        hidden.forEach(function(r){ moreWrap.appendChild(makeReplyCard(r)); });
-        thread.appendChild(moreWrap);
-
-        var toggleMore = document.createElement('button');
-        toggleMore.id = 'tm-'+p.id;
-        toggleMore.style.cssText = 'border:none;background:none;font-size:0.72rem;color:var(--sky);cursor:pointer;padding:0.1rem 0;font-family:"Jost",sans-serif;text-align:left;letter-spacing:0.04em';
-        toggleMore.textContent = '▸ Show '+hidden.length+' more repl'+(hidden.length===1?'y':'ies');
-        (function(pid, wrap, btn, total, first){
-          btn.onclick = function(){
-            var open = wrap.style.display === 'flex';
-            wrap.style.display = open ? 'none' : 'flex';
-            btn.textContent = open
-              ? '▸ Show '+(total-first)+' more repl'+((total-first)===1?'y':'ies')
-              : '▾ Hide replies';
-          };
-        })(p.id, moreWrap, toggleMore, replies.length, SHOW_FIRST);
-        thread.appendChild(toggleMore);
-      }
-
+      list.appendChild(card);
       list.appendChild(thread);
     } else {
+      list.appendChild(card);
     }
   });
 }
@@ -474,11 +561,18 @@ function submitPost(){
   if(!name){ showStatus(status,'Enter your name first 👆','err'); return; }
   if(!message){ showStatus(status,'Write something first!','err'); return; }
   btn.disabled = true;
-  supa.from('posts').insert({name:name, message:message, emoji:selectedEmoji, reactions:{}})
+  var ta = document.getElementById('msg-text');
+  var gifUrl = (ta && ta.dataset.gifUrl) || null;
+  var row = {name:name, message:message, emoji:selectedEmoji, reactions:{}};
+  if(gifUrl) row.gif_url = gifUrl;
+  supa.from('posts').insert(row)
     .then(function(res){
       if(res.error){ showStatus(status,'Error: '+res.error.message,'err'); btn.disabled=false; return; }
       document.getElementById('msg-text').value = '';
       document.getElementById('char-count').textContent = '300';
+      if(ta) ta.dataset.gifUrl = '';
+      pendingGifUrl = null;
+      var conf=document.getElementById('gif-confirm'); if(conf) conf.style.display='none';
       showStatus(status,'Posted! 🎉','ok');
       loadPosts();
       btn.disabled = false;
@@ -528,11 +622,6 @@ function submitReply(postId){
       ri.value = '';
       ri.disabled = false;
       document.getElementById('rb-'+postId).style.display = 'none';
-      // Expand collapsed replies so new reply is visible
-      var moreWrap = document.getElementById('more-'+postId);
-      var toggleBtn = document.getElementById('tm-'+postId);
-      if(moreWrap){ moreWrap.style.display = 'flex'; }
-      if(toggleBtn){ toggleBtn.textContent = '▾ Hide replies'; }
       loadPosts();
     }).catch(function(e){
       console.warn('Reply failed:', e);
