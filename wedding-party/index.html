@@ -41,55 +41,79 @@ footer{background:var(--ink);color:rgba(255,255,255,0.4);text-align:center;paddi
   </div>
 </div>
 <div class="section"><div class="si">
+<style>
+.pg5{display:grid;grid-template-columns:repeat(5,1fr);gap:1.2rem;margin-bottom:3.5rem}
+@media(max-width:900px){.pg5{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:580px){.pg5{grid-template-columns:repeat(2,1fr)}}
+.pc{text-align:center;background:#fff;border:1px solid var(--line);border-radius:2px;padding:1.6rem 1rem}
+.pc-avatar{width:72px;height:72px;border-radius:50%;margin:0 auto 0.9rem;display:flex;align-items:center;justify-content:center;font-size:1.8rem}
+.pc-role{font-size:0.62rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--warm);margin-bottom:0.25rem}
+.pc-name{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:400;color:var(--ink-soft);font-style:italic}
+.pc-avatar.sage{background:var(--sage-pale);border:2px solid var(--sage-light)}
+.pc-avatar.sky{background:#EAF3F9;border:2px solid var(--sky-light)}
+.pc-avatar.warm{background:#fdf5ed;border:2px solid var(--warm-light)}
+.parents-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:3.5rem}
+@media(max-width:640px){.parents-grid{grid-template-columns:1fr}}
+.parent-card{background:#fff;border:1px solid var(--line);border-radius:2px;padding:2rem}
+.parent-card h3{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:400;margin-bottom:0.25rem}
+.parent-card .subtitle{font-size:0.68rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--warm);margin-bottom:1rem}
+.parent-card p{font-size:0.88rem;color:var(--ink-soft);line-height:1.6;margin-bottom:0.7rem}
+.topics{display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.8rem}
+.topic{font-size:0.72rem;font-weight:500;padding:0.25rem 0.6rem;border-radius:99px;background:var(--stone);color:var(--ink);border:1px solid var(--line)}
+</style>
+
   <p style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-style:italic;color:var(--ink-soft);text-align:center;max-width:56ch;margin:0 auto 3.5rem;line-height:1.6">"The people who've said yes to an extra-long hug and some questionable dance moves."</p>
+
+  <p class="eyebrow" style="margin-bottom:1rem">The people who made it all happen</p>
+  <h2 style="margin-bottom:0.6rem">Meet the Parents</h2>
+  <p style="color:var(--ink-soft);font-size:0.92rem;margin-bottom:2rem;max-width:52ch">Four wonderful people who are just as excited as we are — and who are absolutely not responsible for any of our questionable habits.</p>
+  <div class="parents-grid">
+    <div class="parent-card">
+      <p class="subtitle">Parents of the Bride</p>
+      <h3>Jon &amp; Janice Stacey</h3>
+      <p>Sally's mum and dad — and two of the warmest people you'll meet. If you find yourself next to them, you're in excellent company.</p>
+      <p style="font-size:0.8rem;font-weight:600;color:var(--ink);margin-bottom:0.4rem">Good conversation starters</p>
+      <div class="topics">
+        <span class="topic">⛵ Sailing (Jon)</span>
+        <span class="topic">🌊 Wild swimming (Janice)</span>
+        <span class="topic">💬 Anything, really</span>
+      </div>
+    </div>
+    <div class="parent-card">
+      <p class="subtitle">Parents of the Groom</p>
+      <h3>Paul &amp; Judy Renucci</h3>
+      <p>Bruno's mum and dad — enthusiastic, welcoming, and very pleased Sally said yes. They'll put you at ease immediately.</p>
+      <p style="font-size:0.8rem;font-weight:600;color:var(--ink);margin-bottom:0.4rem">Good conversation starters</p>
+      <div class="topics">
+        <span class="topic">🏉 Rugby &amp; sport (Paul)</span>
+        <span class="topic">🧘 Yoga (Judy)</span>
+        <span class="topic">💬 Anything, really</span>
+      </div>
+    </div>
+  </div>
 
   <p class="eyebrow" style="margin-bottom:1rem">Sally's side</p>
   <h2 style="margin-bottom:2rem">Bridesmaids</h2>
-  <div class="pg">
-    <div style="text-align:center;background:#fff;border:1px solid var(--line);border-radius:2px;padding:1.8rem 1.2rem">
-  <div style="width:80px;height:80px;border-radius:50%;background:var(--sage-pale);border:2px solid var(--sage-light);margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;font-size:2rem">🌸</div>
-  <p style="font-size:0.67rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--warm);margin-bottom:0.3rem">Bridesmaid</p>
-  <p style="font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:400;color:var(--ink-soft);font-style:italic">To be announced</p>
-</div><div style="text-align:center;background:#fff;border:1px solid var(--line);border-radius:2px;padding:1.8rem 1.2rem">
-  <div style="width:80px;height:80px;border-radius:50%;background:var(--sage-pale);border:2px solid var(--sage-light);margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;font-size:2rem">🌸</div>
-  <p style="font-size:0.67rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--warm);margin-bottom:0.3rem">Bridesmaid</p>
-  <p style="font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:400;color:var(--ink-soft);font-style:italic">To be announced</p>
-</div><div style="text-align:center;background:#fff;border:1px solid var(--line);border-radius:2px;padding:1.8rem 1.2rem">
-  <div style="width:80px;height:80px;border-radius:50%;background:var(--sage-pale);border:2px solid var(--sage-light);margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;font-size:2rem">🌸</div>
-  <p style="font-size:0.67rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--warm);margin-bottom:0.3rem">Bridesmaid</p>
-  <p style="font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:400;color:var(--ink-soft);font-style:italic">To be announced</p>
-</div><div style="text-align:center;background:#fff;border:1px solid var(--line);border-radius:2px;padding:1.8rem 1.2rem">
-  <div style="width:80px;height:80px;border-radius:50%;background:var(--sage-pale);border:2px solid var(--sage-light);margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;font-size:2rem">🌸</div>
-  <p style="font-size:0.67rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--warm);margin-bottom:0.3rem">Bridesmaid</p>
-  <p style="font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:400;color:var(--ink-soft);font-style:italic">To be announced</p>
-</div><div style="text-align:center;background:#fff;border:1px solid var(--line);border-radius:2px;padding:1.8rem 1.2rem">
-  <div style="width:80px;height:80px;border-radius:50%;background:var(--sage-pale);border:2px solid var(--sage-light);margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;font-size:2rem">🌸</div>
-  <p style="font-size:0.67rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--warm);margin-bottom:0.3rem">Bridesmaid</p>
-  <p style="font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:400;color:var(--ink-soft);font-style:italic">To be announced</p>
-</div>
+  <div class="pg5">
+    <div class="pc"><div class="pc-avatar sage">🌸</div><p class="pc-role">Bridesmaid</p><p class="pc-name">To be announced</p></div>
+    <div class="pc"><div class="pc-avatar sage">🌸</div><p class="pc-role">Bridesmaid</p><p class="pc-name">To be announced</p></div>
+    <div class="pc"><div class="pc-avatar sage">🌸</div><p class="pc-role">Bridesmaid</p><p class="pc-name">To be announced</p></div>
+    <div class="pc"><div class="pc-avatar sage">🌸</div><p class="pc-role">Bridesmaid</p><p class="pc-name">To be announced</p></div>
+    <div class="pc"><div class="pc-avatar sage">🌸</div><p class="pc-role">Bridesmaid</p><p class="pc-name">To be announced</p></div>
   </div>
 
   <p class="eyebrow" style="margin-bottom:1rem">Bruno's side</p>
   <h2 style="margin-bottom:2rem">Groomsmen</h2>
-  <div class="pg">
-    <div style="text-align:center;background:#fff;border:1px solid var(--line);border-radius:2px;padding:1.8rem 1.2rem">
-  <div style="width:80px;height:80px;border-radius:50%;background:var(--sky-pale,#EAF3F9);border:2px solid var(--sky-light);margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;font-size:2rem">🌿</div>
-  <p style="font-size:0.67rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--warm);margin-bottom:0.3rem">Groomsman</p>
-  <p style="font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:400;color:var(--ink-soft);font-style:italic">To be announced</p>
-</div><div style="text-align:center;background:#fff;border:1px solid var(--line);border-radius:2px;padding:1.8rem 1.2rem">
-  <div style="width:80px;height:80px;border-radius:50%;background:var(--sky-pale,#EAF3F9);border:2px solid var(--sky-light);margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;font-size:2rem">🌿</div>
-  <p style="font-size:0.67rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--warm);margin-bottom:0.3rem">Groomsman</p>
-  <p style="font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:400;color:var(--ink-soft);font-style:italic">To be announced</p>
-</div><div style="text-align:center;background:#fff;border:1px solid var(--line);border-radius:2px;padding:1.8rem 1.2rem">
-  <div style="width:80px;height:80px;border-radius:50%;background:var(--sky-pale,#EAF3F9);border:2px solid var(--sky-light);margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;font-size:2rem">🌿</div>
-  <p style="font-size:0.67rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--warm);margin-bottom:0.3rem">Groomsman</p>
-  <p style="font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:400;color:var(--ink-soft);font-style:italic">To be announced</p>
-</div><div style="text-align:center;background:#fff;border:1px solid var(--line);border-radius:2px;padding:1.8rem 1.2rem">
-  <div style="width:80px;height:80px;border-radius:50%;background:var(--sky-pale,#EAF3F9);border:2px solid var(--sky-light);margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;font-size:2rem">🌿</div>
-  <p style="font-size:0.67rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--warm);margin-bottom:0.3rem">Groomsman</p>
-  <p style="font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:400;color:var(--ink-soft);font-style:italic">To be announced</p>
-</div>
+  <div class="pg5">
+    <div class="pc"><div class="pc-avatar sky">🌿</div><p class="pc-role">Groomsman</p><p class="pc-name">To be announced</p></div>
+    <div class="pc"><div class="pc-avatar sky">🌿</div><p class="pc-role">Groomsman</p><p class="pc-name">To be announced</p></div>
+    <div class="pc"><div class="pc-avatar sky">🌿</div><p class="pc-role">Groomsman</p><p class="pc-name">To be announced</p></div>
+    <div class="pc"><div class="pc-avatar sky">🌿</div><p class="pc-role">Groomsman</p><p class="pc-name">To be announced</p></div>
+    <div class="pc"><div class="pc-avatar sky">🌿</div><p class="pc-role">Groomsman</p><p class="pc-name">To be announced</p></div>
   </div>
+  
+
+  
 
   <div style="margin-top:2rem;text-align:center;padding:2rem;background:var(--stone);border-radius:2px">
     <p style="color:var(--ink-soft);font-size:0.92rem">Names, photos and bios coming soon &mdash; check back closer to the day.</p>
