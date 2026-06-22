@@ -7,6 +7,14 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script>
+(function(){
+  if(window.self === window.top){
+    var page = window.location.pathname.replace(/^\//, '').split('/')[0];
+    window.location.replace('/' + (page ? '#' + page : ''));
+  }
+})();
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -328,7 +336,9 @@ async function submitPost(){
     showStatus(status,'Posted! 🎉','ok');
     loadPosts();
   } catch(e){
-    showStatus(status,'Could not post — try again.','err');
+    var detail = (e && e.message) ? e.message : 'unknown error';
+    showStatus(status,'Could not post — '+detail,'err');
+    console.error('Post error:', e);
   } finally {
     btn.disabled = false; btn.querySelector('span').textContent = 'Send message';
   }
