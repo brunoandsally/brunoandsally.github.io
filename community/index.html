@@ -253,8 +253,6 @@ function switchTab(id, btn) {
   document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
   document.getElementById('panel-'+id).classList.add('active');
   if(btn) btn.classList.add('active');
-  if(id==='predictions') loadPolls();
-  if(id==='messages') loadPosts();
 }
 
 // ── EMOJI SETUP ───────────────────────────────────────────
@@ -557,7 +555,10 @@ var SEED_POLLS = [
   {question:'Does anyone get lost on the way to Newton Ferrers?', options:['At least 3 cars','Just one — and they know who','Nobody — Google Maps saves the day','Everyone arrives somehow']},
 ];
 
+var pollsLoading = false;
 function loadPolls(){
+  if(pollsLoading) return;
+  pollsLoading = true;
   var grid = document.getElementById('poll-grid');
   grid.innerHTML = '<div class="loading">Loading predictions…</div>';
 
@@ -565,7 +566,8 @@ function loadPolls(){
   var timedOut = false;
   var timer = setTimeout(function(){
     timedOut = true;
-    grid.innerHTML = '<div class="empty"><div class="empty-icon">😬</div><p>Request timed out. Check browser console for details.</p></div>';
+    pollsLoading = false;
+    grid.innerHTML = '<div class="empty"><div class="empty-icon">😬</div><p>Request timed out — Supabase unreachable. Check the browser console (F12) for details.</p></div>';
   }, 8000);
 
   if(!window.supabase){
@@ -595,12 +597,14 @@ function loadPolls(){
         });
       } else {
         pollsCache = data;
+        pollsLoading = false;
         renderPolls();
       }
     })
     .catch(function(e){
       if(timedOut) return;
       clearTimeout(timer);
+      pollsLoading = false;
       grid.innerHTML = '<div class="empty"><div class="empty-icon">😬</div><p>Failed: '+(e&&e.message?e.message:String(e))+'</p></div>';
     });
 }
