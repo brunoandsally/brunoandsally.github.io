@@ -21,6 +21,68 @@
 html,body{height:100%;overflow:hidden;font-family:"Jost",sans-serif}
 body{display:flex;flex-direction:column;background:var(--cream)}
 
+/* PASSWORD GATE */
+#pw-gate{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--cream);
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;
+  padding:2rem;
+}
+#pw-gate.hidden{display:none}
+.pw-sun{margin-bottom:1.6rem}
+.pw-sun svg{width:64px;height:64px}
+.pw-title{
+  font-family:"Cormorant Garamond",serif;
+  font-size:clamp(1.8rem,5vw,2.8rem);
+  font-weight:300;color:var(--ink);
+  text-align:center;margin-bottom:0.3rem;
+}
+.pw-title span{color:var(--sage);font-style:italic}
+.pw-sub{
+  font-size:0.82rem;color:var(--ink-soft);
+  text-align:center;margin-bottom:2.2rem;
+  letter-spacing:0.02em;
+}
+.pw-form{
+  display:flex;flex-direction:column;align-items:center;
+  gap:0.9rem;width:100%;max-width:320px;
+}
+.pw-input{
+  width:100%;padding:0.85rem 1.1rem;
+  border:1.5px solid var(--line);border-radius:2px;
+  background:#fff;font-family:"Jost",sans-serif;
+  font-size:1rem;color:var(--ink);
+  text-align:center;letter-spacing:0.06em;
+  outline:none;transition:border-color 0.2s;
+}
+.pw-input:focus{border-color:var(--sage)}
+.pw-input.shake{animation:shake 0.35s ease}
+.pw-btn{
+  width:100%;padding:0.85rem;
+  background:var(--sage);color:#fff;border:none;border-radius:2px;
+  font-family:"Jost",sans-serif;font-size:0.72rem;
+  font-weight:600;letter-spacing:0.18em;text-transform:uppercase;
+  cursor:pointer;transition:background 0.2s;
+}
+.pw-btn:hover{background:var(--sage-light)}
+.pw-err{
+  font-size:0.78rem;color:#a85a20;
+  min-height:1.1em;text-align:center;
+}
+.pw-hint{
+  font-size:0.72rem;color:var(--ink-soft);
+  text-align:center;margin-top:0.4rem;
+  max-width:28ch;line-height:1.5;
+}
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-8px)}
+  40%{transform:translateX(8px)}
+  60%{transform:translateX(-6px)}
+  80%{transform:translateX(6px)}
+}
+
 /* NAV */
 #nav{
   flex-shrink:0;
@@ -121,7 +183,36 @@ body{display:flex;flex-direction:column;background:var(--cream)}
 <body>
 
 <!-- NAV -->
-<nav id="nav">
+<div id="pw-gate">
+  <div class="pw-sun">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="22" fill="#C4894A"/>
+      <g stroke="#C4894A" stroke-width="7" stroke-linecap="round">
+        <line x1="50" y1="8"  x2="50" y2="18"/>
+        <line x1="50" y1="82" x2="50" y2="92"/>
+        <line x1="8"  y1="50" x2="18" y2="50"/>
+        <line x1="82" y1="50" x2="92" y2="50"/>
+        <line x1="21" y1="21" x2="28" y2="28"/>
+        <line x1="72" y1="72" x2="79" y2="79"/>
+        <line x1="79" y1="21" x2="72" y2="28"/>
+        <line x1="28" y1="72" x2="21" y2="79"/>
+      </g>
+    </svg>
+  </div>
+  <h1 class="pw-title">Bruno <span>&amp;</span> Sally</h1>
+  <p class="pw-sub">18th September 2027 &middot; Newton Ferrers, Devon</p>
+  <div class="pw-form">
+    <input class="pw-input" id="pw-input" type="password"
+      placeholder="Enter password"
+      autocomplete="current-password"
+      onkeydown="if(event.key==='Enter')checkPw()"/>
+    <button class="pw-btn" onclick="checkPw()">Enter</button>
+    <p class="pw-err" id="pw-err"></p>
+    <p class="pw-hint">Check your invitation for the password, or drop us a message.</p>
+  </div>
+</div>
+
+
   <div class="nav-inner">
     <a class="nav-brand" onclick="nav('home');return false" href="/home">Bruno <span>&amp;</span> Sally</a>
     <ul class="nav-links" id="desktopNav">
@@ -168,6 +259,52 @@ body{display:flex;flex-direction:column;background:var(--cream)}
 </button>
 
 <script>
+// ── Password gate ─────────────────────────────────────────────
+var PW_KEY = 'bs_auth';
+var PW_HASH = '7a8b2c4d9e1f3a5b'; // marker — real check below
+
+function checkPw() {
+  var val = document.getElementById('pw-input').value;
+  var err = document.getElementById('pw-err');
+  if (val === 'Bruno\u0026Sally!') {
+    sessionStorage.setItem(PW_KEY, '1');
+    document.getElementById('pw-gate').classList.add('hidden');
+    err.textContent = '';
+  } else {
+    err.textContent = 'Incorrect password — try again.';
+    var inp = document.getElementById('pw-input');
+    inp.classList.remove('shake');
+    void inp.offsetWidth; // force reflow
+    inp.classList.add('shake');
+    inp.value = '';
+    inp.focus();
+  }
+}
+
+// Show gate or proceed straight to site
+if (sessionStorage.getItem(PW_KEY) === '1') {
+  document.getElementById('pw-gate').classList.add('hidden');
+} else {
+  // Hide the main site until authenticated
+  document.getElementById('nav').style.visibility = 'hidden';
+  document.getElementById('content-frame').style.visibility = 'hidden';
+  document.getElementById('spotify-toggle').style.visibility = 'hidden';
+  window.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('pw-input').focus();
+  });
+}
+
+// Unhide everything once gate is dismissed
+var _gateObs = new MutationObserver(function() {
+  if (document.getElementById('pw-gate').classList.contains('hidden')) {
+    document.getElementById('nav').style.visibility = '';
+    document.getElementById('content-frame').style.visibility = '';
+    document.getElementById('spotify-toggle').style.visibility = '';
+    _gateObs.disconnect();
+  }
+});
+_gateObs.observe(document.getElementById('pw-gate'), {attributes:true});
+
 var spOpen = false;
 var currentPage = '';
 var VALID = ['home','the-day','our-story','rsvp','faq','wedding-party','day-after','games'];
