@@ -16,88 +16,130 @@
   --cream:#FAF8F3;--stone:#F0EBE1;
   --ink:#2C2C2A;--ink-soft:#5C5A56;
   --warm:#C4894A;--warm-light:#E8C49A;
-  --white:#fff;--line:rgba(44,44,42,0.1);
+  --white:#fff;--line:rgba(44,44,42,0.12);
 }
 html{scroll-behavior:smooth}
 body{font-family:"Jost",sans-serif;background:var(--cream);color:var(--ink);line-height:1.6;min-height:100vh}
-.hero{background:var(--ink);color:#fff;padding:3.5rem 2rem 2.5rem;text-align:center}
-.hero .eyebrow{font-size:0.7rem;font-weight:600;letter-spacing:0.28em;text-transform:uppercase;color:var(--warm-light);margin-bottom:0.8rem}
-.hero h1{font-family:"Cormorant Garamond",serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:300;line-height:1;margin-bottom:0.5rem}
-.hero p{color:rgba(255,255,255,0.5);font-size:0.9rem;max-width:42ch;margin:0 auto}
-.tabs{display:flex;justify-content:center;background:var(--stone);border-bottom:1px solid var(--line);overflow-x:auto;-webkit-overflow-scrolling:touch}
-.tab-btn{padding:1rem 1.4rem;background:none;border:none;border-bottom:2px solid transparent;font-family:"Jost",sans-serif;font-size:0.72rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-soft);cursor:pointer;white-space:nowrap;transition:all 0.2s}
+
+/* ── HERO ── */
+.hero{background:var(--ink);color:#fff;padding:3rem 2rem 2.5rem;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'💒 🥂 🌊 🦞 ☀️ 💐 🎉 🕺';position:absolute;top:0.5rem;left:0;right:0;font-size:1.4rem;opacity:0.12;letter-spacing:0.5rem;white-space:nowrap;overflow:hidden}
+.hero .eyebrow{font-size:0.68rem;font-weight:600;letter-spacing:0.28em;text-transform:uppercase;color:var(--warm-light);margin-bottom:0.7rem}
+.hero h1{font-family:"Cormorant Garamond",serif;font-size:clamp(2rem,5vw,3rem);font-weight:300;line-height:1;margin-bottom:0.4rem}
+.hero p{color:rgba(255,255,255,0.5);font-size:0.88rem;max-width:40ch;margin:0 auto}
+
+/* ── TABS ── */
+.tabs{display:flex;justify-content:center;background:var(--stone);border-bottom:1px solid var(--line);overflow-x:auto;-webkit-overflow-scrolling:touch;position:sticky;top:0;z-index:10}
+.tab-btn{padding:0.9rem 1.4rem;background:none;border:none;border-bottom:2px solid transparent;font-family:"Jost",sans-serif;font-size:0.72rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-soft);cursor:pointer;white-space:nowrap;transition:all 0.2s}
 .tab-btn:hover{color:var(--ink)}
 .tab-btn.active{color:var(--sage);border-bottom-color:var(--sage)}
-.panel{display:none;padding:2.5rem 1.5rem;max-width:740px;margin:0 auto}
+.panel{display:none;padding:2rem 1.2rem;max-width:680px;margin:0 auto}
 .panel.active{display:block}
 
-/* ── PREDICTIONS ── */
-.poll-grid{display:flex;flex-direction:column;gap:1.5rem}
-.poll-card{background:#fff;border:1px solid var(--line);border-radius:4px;padding:1.5rem;position:relative}
-.poll-card.pinned{border-left:3px solid var(--warm)}
-.poll-pin{font-size:0.65rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--warm);margin-bottom:0.6rem}
-.poll-q{font-family:"Cormorant Garamond",serif;font-size:1.25rem;font-weight:400;margin-bottom:1rem;line-height:1.3}
-.poll-opts{display:flex;flex-direction:column;gap:0.5rem}
-.poll-opt{position:relative;border:1.5px solid var(--line);border-radius:3px;overflow:hidden;cursor:pointer;transition:border-color 0.15s;background:#fff}
-.poll-opt:hover{border-color:var(--sage-light)}
+/* ── POLLS ── */
+.poll-grid{display:flex;flex-direction:column;gap:1.2rem}
+.poll-card{background:#fff;border:1px solid var(--line);border-radius:6px;padding:1.4rem;transition:box-shadow 0.2s}
+.poll-card:hover{box-shadow:0 2px 12px rgba(0,0,0,0.06)}
+.poll-pin{font-size:0.62rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--warm);margin-bottom:0.5rem}
+.poll-q{font-family:"Cormorant Garamond",serif;font-size:1.2rem;font-weight:400;margin-bottom:0.9rem;line-height:1.3}
+.poll-opts{display:flex;flex-direction:column;gap:0.4rem}
+.poll-opt{position:relative;border:1.5px solid var(--line);border-radius:4px;overflow:hidden;cursor:pointer;transition:border-color 0.15s,transform 0.1s;background:#fff;-webkit-tap-highlight-color:transparent}
+.poll-opt:hover:not(.voted){border-color:var(--sage-light);transform:translateX(2px)}
 .poll-opt.voted{border-color:var(--sage);cursor:default}
-.poll-opt .bar{position:absolute;inset:0;background:var(--sage-pale);transform-origin:left;transition:width 0.4s ease}
-.poll-opt .label{position:relative;padding:0.6rem 0.9rem;font-size:0.88rem;display:flex;justify-content:space-between;align-items:center;gap:0.5rem}
-.poll-opt .pct{font-weight:600;font-size:0.8rem;color:var(--sage);min-width:2.5rem;text-align:right}
-.poll-total{font-size:0.75rem;color:var(--ink-soft);margin-top:0.6rem}
+.poll-opt .bar{position:absolute;inset:0;background:var(--sage-pale);transition:width 0.5s cubic-bezier(.4,0,.2,1)}
+.poll-opt .label{position:relative;padding:0.55rem 0.85rem;font-size:0.86rem;display:flex;justify-content:space-between;align-items:center;gap:0.5rem;z-index:1}
+.poll-opt .pct{font-weight:700;font-size:0.78rem;color:var(--sage);min-width:2.5rem;text-align:right}
+.poll-total{font-size:0.72rem;color:var(--ink-soft);margin-top:0.5rem}
+.voted-tick{color:var(--sage);font-weight:700;margin-left:0.3rem}
 
 /* ── MESSAGE BOARD ── */
-.compose{background:#fff;border:1px solid var(--line);border-radius:4px;padding:1.5rem;margin-bottom:2rem}
-.compose h3{font-family:"Cormorant Garamond",serif;font-size:1.2rem;font-weight:400;margin-bottom:1rem}
-.compose-row{display:flex;gap:0.7rem;margin-bottom:0.7rem;flex-wrap:wrap}
-.compose input[type=text],.compose textarea{font-family:"Jost",sans-serif;font-size:0.9rem;border:1.5px solid var(--line);border-radius:2px;padding:0.6rem 0.8rem;background:#fff;color:var(--ink);width:100%;transition:border-color 0.15s;resize:vertical}
-.compose input[type=text]:focus,.compose textarea:focus{outline:none;border-color:var(--sage-light)}
-.compose input.name-field{width:auto;flex:1;min-width:120px}
-.emoji-picker{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.8rem}
-.emoji-btn{width:36px;height:36px;border:1.5px solid var(--line);border-radius:4px;background:#fff;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:all 0.15s}
-.emoji-btn:hover,.emoji-btn.sel{border-color:var(--sage);background:var(--sage-pale)}
-.posts-list{display:flex;flex-direction:column;gap:1rem}
-.post-card{background:#fff;border:1px solid var(--line);border-radius:4px;padding:1.2rem 1.4rem;display:flex;gap:1rem;align-items:flex-start}
-.post-avatar{width:38px;height:38px;border-radius:50%;background:var(--sage-pale);border:1.5px solid var(--sage-light);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
-.post-body{flex:1;min-width:0}
-.post-meta{display:flex;gap:0.6rem;align-items:baseline;margin-bottom:0.3rem;flex-wrap:wrap}
-.post-name{font-weight:600;font-size:0.88rem}
-.post-time{font-size:0.75rem;color:var(--ink-soft)}
-.post-text{font-size:0.92rem;line-height:1.5;word-break:break-word}
-.post-reactions{display:flex;gap:0.5rem;margin-top:0.6rem;flex-wrap:wrap}
-.react-btn{border:1px solid var(--line);border-radius:20px;padding:0.2rem 0.6rem;font-size:0.8rem;cursor:pointer;background:#fff;color:var(--ink);transition:all 0.15s;display:flex;align-items:center;gap:0.25rem}
-.react-btn:hover{border-color:var(--warm-light);background:var(--stone)}
-.react-btn.reacted{background:var(--warm-light);border-color:var(--warm)}
-.loading{text-align:center;padding:2rem;color:var(--ink-soft);font-size:0.9rem;font-style:italic}
-.empty{text-align:center;padding:3rem 1rem;color:var(--ink-soft);font-size:0.9rem}
-.btn{display:inline-flex;align-items:center;gap:0.4rem;padding:0.65rem 1.4rem;border-radius:1px;font-size:0.72rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;cursor:pointer;border:none;font-family:"Jost",sans-serif;transition:all 0.2s}
-.btn-sage{background:var(--sage);color:#fff}.btn-sage:hover{background:var(--sage-light)}
-.btn-outline{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}.btn-outline:hover{background:var(--ink);color:#fff}
-.status-msg{padding:0.7rem 1rem;border-radius:2px;font-size:0.85rem;margin-top:0.8rem;display:none}
+/* Compose box */
+.compose-card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:1.2rem;margin-bottom:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
+.compose-top{display:flex;gap:0.7rem;align-items:center;margin-bottom:0.8rem}
+.avatar-preview{width:40px;height:40px;border-radius:50%;background:var(--sage-pale);border:2px solid var(--sage-light);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;transition:all 0.2s}
+.name-input{flex:1;font-family:"Jost",sans-serif;font-size:0.9rem;border:1.5px solid var(--line);border-radius:4px;padding:0.55rem 0.75rem;background:#fff;color:var(--ink);transition:border-color 0.15s}
+.name-input:focus{outline:none;border-color:var(--sage-light)}
+
+/* Emoji toggle */
+.emoji-toggle{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.7rem}
+.emoji-toggle-btn{display:flex;align-items:center;gap:0.4rem;padding:0.4rem 0.8rem;border:1.5px solid var(--line);border-radius:20px;background:#fff;cursor:pointer;font-size:0.8rem;color:var(--ink-soft);transition:all 0.15s;font-family:"Jost",sans-serif}
+.emoji-toggle-btn:hover{border-color:var(--sage-light);background:var(--sage-pale)}
+.emoji-current{font-size:1.2rem;line-height:1}
+.emoji-drawer{display:none;flex-wrap:wrap;gap:0.3rem;padding:0.7rem;background:var(--stone);border-radius:8px;margin-bottom:0.7rem;animation:fadeUp 0.15s ease}
+.emoji-drawer.open{display:flex}
+.emoji-pill{width:38px;height:38px;border:1.5px solid transparent;border-radius:8px;background:#fff;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;transition:all 0.12s;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+.emoji-pill:hover{border-color:var(--sage-light);transform:scale(1.1)}
+.emoji-pill.sel{border-color:var(--sage);background:var(--sage-pale)}
+
+/* Message textarea */
+.msg-area-wrap{position:relative}
+.msg-area{width:100%;font-family:"Jost",sans-serif;font-size:0.92rem;border:1.5px solid var(--line);border-radius:6px;padding:0.7rem 0.85rem;background:#fff;color:var(--ink);resize:none;transition:border-color 0.15s;line-height:1.5;min-height:72px}
+.msg-area:focus{outline:none;border-color:var(--sage-light)}
+.char-count{position:absolute;bottom:6px;right:8px;font-size:0.68rem;color:var(--ink-soft);opacity:0.6}
+
+.post-btn{width:100%;margin-top:0.7rem;padding:0.75rem;border-radius:4px;border:none;background:var(--sage);color:#fff;font-family:"Jost",sans-serif;font-size:0.78rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;transition:background 0.2s;display:flex;align-items:center;justify-content:center;gap:0.5rem}
+.post-btn:hover{background:var(--sage-light)}
+.post-btn:disabled{background:var(--line);color:var(--ink-soft);cursor:default}
+.status-msg{padding:0.6rem 0.9rem;border-radius:4px;font-size:0.83rem;margin-top:0.6rem;display:none}
 .status-msg.show{display:block}
 .status-msg.ok{background:var(--sage-pale);color:var(--sage);border:1px solid var(--sage-light)}
 .status-msg.err{background:#fdf0e8;color:#a85a20;border:1px solid var(--warm-light)}
-footer{text-align:center;padding:2.5rem 1rem;font-size:0.8rem;color:var(--ink-soft);border-top:1px solid var(--line);margin-top:3rem}
-.fn{font-family:"Cormorant Garamond",serif;font-size:1rem;font-weight:400;margin-bottom:0.2rem;color:var(--ink)}
-@media(max-width:500px){.panel{padding:1.5rem 1rem}.post-card{padding:1rem}}
+
+/* Posts feed */
+.feed-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.feed-header h3{font-family:"Cormorant Garamond",serif;font-size:1.2rem;font-weight:400}
+.feed-count{font-size:0.72rem;color:var(--ink-soft);background:var(--stone);padding:0.2rem 0.6rem;border-radius:20px}
+.posts-list{display:flex;flex-direction:column;gap:0.8rem}
+
+/* Post card — chat bubble style */
+.post-card{display:flex;gap:0.75rem;align-items:flex-start;animation:fadeUp 0.3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.post-avatar{width:42px;height:42px;border-radius:50%;background:var(--sage-pale);border:2px solid var(--sage-light);display:flex;align-items:center;justify-content:center;font-size:1.35rem;flex-shrink:0;cursor:default}
+.post-bubble{background:#fff;border:1px solid var(--line);border-radius:0 10px 10px 10px;padding:0.8rem 1rem;flex:1;min-width:0;position:relative}
+.post-bubble::before{content:'';position:absolute;left:-8px;top:12px;width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-right:8px solid var(--line)}
+.post-bubble::after{content:'';position:absolute;left:-6px;top:13px;width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-right:7px solid #fff}
+.post-meta{display:flex;gap:0.5rem;align-items:baseline;margin-bottom:0.25rem;flex-wrap:wrap}
+.post-name{font-weight:600;font-size:0.84rem;color:var(--ink)}
+.post-time{font-size:0.7rem;color:var(--ink-soft)}
+.post-text{font-size:0.9rem;line-height:1.5;word-break:break-word;color:var(--ink)}
+
+/* Reaction buttons */
+.reactions{display:flex;gap:0.4rem;margin-top:0.6rem;flex-wrap:wrap}
+.react-btn{border:1px solid var(--line);border-radius:20px;padding:0.2rem 0.55rem;font-size:0.82rem;cursor:pointer;background:#fff;color:var(--ink);transition:all 0.15s;display:flex;align-items:center;gap:0.2rem;-webkit-tap-highlight-color:transparent}
+.react-btn:hover{border-color:var(--warm-light);background:var(--stone);transform:scale(1.05)}
+.react-btn.reacted{background:var(--warm-light);border-color:var(--warm);font-weight:600}
+.react-count{font-size:0.75rem;font-weight:600}
+
+.loading{text-align:center;padding:2.5rem;color:var(--ink-soft);font-size:0.88rem;font-style:italic}
+.empty{text-align:center;padding:3rem 1rem;color:var(--ink-soft)}
+.empty .empty-icon{font-size:2.5rem;margin-bottom:0.5rem}
+.empty p{font-size:0.9rem}
+
+/* ── FOOTER ── */
+footer{text-align:center;padding:2rem 1rem;font-size:0.78rem;color:var(--ink-soft);border-top:1px solid var(--line);margin-top:2rem}
+.fn{font-family:"Cormorant Garamond",serif;font-size:0.95rem;color:var(--ink);margin-bottom:0.2rem}
+@media(max-width:480px){
+  .panel{padding:1.2rem 0.8rem}
+  .post-bubble{border-radius:0 8px 8px 8px}
+}
 </style>
 </head>
 <body>
 
 <div class="hero">
   <p class="eyebrow">Bruno &amp; Sally · 20 September 2027</p>
-  <h1>The Board</h1>
-  <p>Predictions, messages, and general chaos from the wedding guests.</p>
+  <h1>The Board 💬</h1>
+  <p>Cast your predictions. Leave a message. Join the chaos.</p>
 </div>
 
 <div class="tabs">
-  <button class="tab-btn active" onclick="switchTab('predictions',this)">Predictions</button>
-  <button class="tab-btn" onclick="switchTab('messages',this)">Messages</button>
+  <button class="tab-btn active" onclick="switchTab('predictions',this)">🔮 Predictions</button>
+  <button class="tab-btn" onclick="switchTab('messages',this)">💌 Messages</button>
 </div>
 
 <!-- ══ PREDICTIONS ══ -->
 <div class="panel active" id="panel-predictions">
-  <p style="color:var(--ink-soft);font-size:0.88rem;margin-bottom:1.5rem">Vote on what will happen. Results are live.</p>
+  <p style="color:var(--ink-soft);font-size:0.85rem;margin-bottom:1.2rem">Tap to vote. Results update live.</p>
   <div class="poll-grid" id="poll-grid">
     <div class="loading">Loading predictions…</div>
   </div>
@@ -106,19 +148,37 @@ footer{text-align:center;padding:2.5rem 1rem;font-size:0.8rem;color:var(--ink-so
 <!-- ══ MESSAGES ══ -->
 <div class="panel" id="panel-messages">
 
-  <div class="compose">
-    <h3>Leave a message</h3>
-    <div class="compose-row">
-      <input type="text" class="name-field" id="msg-name" placeholder="Your name" maxlength="40"/>
+  <div class="compose-card">
+    <div class="compose-top">
+      <div class="avatar-preview" id="avatar-preview">😊</div>
+      <input type="text" class="name-input" id="msg-name" placeholder="Your name" maxlength="40" oninput="updateAvatar()"/>
     </div>
-    <div class="emoji-picker" id="emoji-picker"></div>
-    <textarea id="msg-text" rows="3" placeholder="Say something lovely (or funny)…" maxlength="500"></textarea>
-    <div style="margin-top:0.8rem;display:flex;align-items:center;gap:0.8rem;flex-wrap:wrap">
-      <button class="btn btn-sage" onclick="submitPost()">Post message</button>
-      <span id="msg-status" class="status-msg"></span>
+
+    <!-- Collapsed emoji picker -->
+    <div class="emoji-toggle">
+      <button class="emoji-toggle-btn" onclick="toggleEmojiDrawer()" id="emoji-toggle-btn">
+        <span class="emoji-current" id="emoji-current">😊</span>
+        <span>Avatar</span>
+        <span id="emoji-chevron">▾</span>
+      </button>
     </div>
+    <div class="emoji-drawer" id="emoji-drawer"></div>
+
+    <div class="msg-area-wrap">
+      <textarea class="msg-area" id="msg-text" placeholder="Say something lovely (or funny)…" maxlength="300" oninput="updateCharCount()"></textarea>
+      <span class="char-count" id="char-count">300</span>
+    </div>
+
+    <button class="post-btn" id="post-btn" onclick="submitPost()">
+      <span>Send message</span><span id="post-emoji">😊</span>
+    </button>
+    <div class="status-msg" id="msg-status"></div>
   </div>
 
+  <div class="feed-header">
+    <h3>Messages</h3>
+    <span class="feed-count" id="feed-count">loading…</span>
+  </div>
   <div class="posts-list" id="posts-list">
     <div class="loading">Loading messages…</div>
   </div>
@@ -134,13 +194,12 @@ var SUPA_URL = 'https://zjynlhguilaoxrioysxn.supabase.co';
 var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqeW5saGd1aWxhb3hyaW95c3huIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxNTMxMTksImV4cCI6MjA5NzcyOTExOX0.jwjX0wyaGnsns8Gy8q1XF-B7QIIAVKFtrMfl4SAZ1L0';
 var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
 
-// Voter ID — random per device, stored in localStorage
 var VOTER_ID = localStorage.getItem('voter_id') || (function(){
   var id = Math.random().toString(36).slice(2)+Date.now().toString(36);
   localStorage.setItem('voter_id', id); return id;
 })();
 
-// ── TAB SWITCHING ──────────────────────────────────────────
+// ── TAB SWITCHING ─────────────────────────────────────────
 function switchTab(id, btn) {
   document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
   document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
@@ -148,28 +207,54 @@ function switchTab(id, btn) {
   if(btn) btn.classList.add('active');
 }
 
-// ── EMOJI PICKER ───────────────────────────────────────────
-var EMOJIS = ['😊','😂','🥂','💒','💐','🌊','🎉','❤️','🦞','🥳','😭','🕺'];
+// ── EMOJI SETUP ───────────────────────────────────────────
+var EMOJIS = ['😊','😂','🥂','💒','💐','🌊','🎉','❤️','🦞','🥳','😭','🕺','🎊','🌸','🍊','👏','🤩','😎'];
 var selectedEmoji = '😊';
+
 (function(){
-  var picker = document.getElementById('emoji-picker');
+  var drawer = document.getElementById('emoji-drawer');
   EMOJIS.forEach(function(e){
     var btn = document.createElement('button');
-    btn.className = 'emoji-btn' + (e===selectedEmoji?' sel':'');
+    btn.className = 'emoji-pill' + (e===selectedEmoji?' sel':'');
     btn.textContent = e;
     btn.onclick = function(){
       selectedEmoji = e;
-      picker.querySelectorAll('.emoji-btn').forEach(function(b){ b.classList.remove('sel'); });
+      drawer.querySelectorAll('.emoji-pill').forEach(function(b){ b.classList.remove('sel'); });
       btn.classList.add('sel');
+      document.getElementById('avatar-preview').textContent = e;
+      document.getElementById('post-emoji').textContent = e;
+      document.getElementById('emoji-current').textContent = e;
+      toggleEmojiDrawer(false); // close after picking
     };
-    picker.appendChild(btn);
+    drawer.appendChild(btn);
   });
 })();
+
+function toggleEmojiDrawer(forceClose){
+  var drawer = document.getElementById('emoji-drawer');
+  var chevron = document.getElementById('emoji-chevron');
+  var open = drawer.classList.contains('open');
+  if(forceClose === false || open){
+    drawer.classList.remove('open');
+    chevron.textContent = '▾';
+  } else {
+    drawer.classList.add('open');
+    chevron.textContent = '▴';
+  }
+}
+
+function updateCharCount(){
+  var v = document.getElementById('msg-text').value;
+  var rem = 300 - v.length;
+  var el = document.getElementById('char-count');
+  el.textContent = rem;
+  el.style.color = rem < 30 ? '#b83232' : '';
+}
 
 // ── POSTS ─────────────────────────────────────────────────
 var postsCache = [];
 
-function timeAgo(iso) {
+function timeAgo(iso){
   var diff = (Date.now() - new Date(iso)) / 1000;
   if(diff < 60) return 'just now';
   if(diff < 3600) return Math.floor(diff/60)+'m ago';
@@ -177,176 +262,227 @@ function timeAgo(iso) {
   return Math.floor(diff/86400)+'d ago';
 }
 
-async function loadPosts() {
-  var list = document.getElementById('posts-list');
+async function loadPosts(){
   try {
     var {data, error} = await supa.from('posts')
-      .select('*')
-      .order('created_at', {ascending:false})
-      .limit(100);
+      .select('*').order('created_at',{ascending:false}).limit(100);
     if(error) throw error;
     postsCache = data || [];
     renderPosts();
-  } catch(e) {
-    list.innerHTML = '<div class="empty">Could not load messages.</div>';
+  } catch(e){
+    var msg = (e && e.message && e.message.includes('relation')) 
+      ? 'Tables not set up yet — run the SQL in Supabase first.'
+      : 'Could not load messages.';
+    document.getElementById('posts-list').innerHTML =
+      '<div class="empty"><div class="empty-icon">😬</div><p>'+msg+'</p></div>';
   }
 }
 
-function renderPosts() {
+function renderPosts(){
   var list = document.getElementById('posts-list');
+  var count = document.getElementById('feed-count');
+  if(count) count.textContent = postsCache.length + (postsCache.length===1?' message':' messages');
   if(!postsCache.length){
-    list.innerHTML = '<div class="empty">No messages yet — be the first!</div>';
+    list.innerHTML = '<div class="empty"><div class="empty-icon">💌</div><p>No messages yet — be the first!</p></div>';
     return;
   }
   list.innerHTML = postsCache.map(function(p){
     var reactions = p.reactions || {};
     var reacted = JSON.parse(localStorage.getItem('reacted_'+p.id)||'{}');
-    var reactionBtns = ['❤️','😂','🥂'].map(function(r){
-      var count = reactions[r] || 0;
+    var reactionEmojis = ['❤️','😂','🥂','👏'];
+    var reactionHtml = reactionEmojis.map(function(r){
+      var cnt = reactions[r] || 0;
       var cls = reacted[r] ? ' reacted' : '';
-      return '<button class="react-btn'+cls+'" onclick="reactToPost(\''+p.id+'\',\''+r+'\')">'+r+(count?' '+count:'')+'</button>';
+      return '<button class="react-btn'+cls+'" onclick="reactPost(\''+p.id+'\',\''+r+'\')">'+
+        r+(cnt>0?'<span class="react-count">'+cnt+'</span>':'')+
+        '</button>';
     }).join('');
-    return '<div class="post-card" id="post-'+p.id+'">' +
-      '<div class="post-avatar">'+p.emoji+'</div>' +
-      '<div class="post-body">' +
-        '<div class="post-meta"><span class="post-name">'+escHtml(p.name)+'</span><span class="post-time">'+timeAgo(p.created_at)+'</span></div>' +
-        '<div class="post-text">'+escHtml(p.message)+'</div>' +
-        '<div class="post-reactions">'+reactionBtns+'</div>' +
+    return '<div class="post-card" id="post-'+p.id+'">'+
+      '<div class="post-avatar">'+escHtml(p.emoji||'😊')+'</div>'+
+      '<div class="post-bubble">'+
+        '<div class="post-meta">'+
+          '<span class="post-name">'+escHtml(p.name)+'</span>'+
+          '<span class="post-time">'+timeAgo(p.created_at)+'</span>'+
+        '</div>'+
+        '<div class="post-text">'+escHtml(p.message)+'</div>'+
+        '<div class="reactions">'+reactionHtml+'</div>'+
       '</div></div>';
   }).join('');
 }
 
-async function submitPost() {
+async function submitPost(){
   var name = document.getElementById('msg-name').value.trim();
   var message = document.getElementById('msg-text').value.trim();
   var status = document.getElementById('msg-status');
-  if(!name){ showStatus(status,'Please enter your name.','err'); return; }
-  if(!message){ showStatus(status,'Please write something!','err'); return; }
-  if(message.length > 500){ showStatus(status,'Too long — 500 chars max.','err'); return; }
+  var btn = document.getElementById('post-btn');
+  if(!name){ showStatus(status,'Enter your name first 👆','err'); return; }
+  if(!message){ showStatus(status,'Write something first!','err'); return; }
+  btn.disabled = true; btn.querySelector('span').textContent = 'Sending…';
   try {
-    var {error} = await supa.from('posts').insert({name, message, emoji:selectedEmoji, reactions:{}});
+    var {error} = await supa.from('posts').insert({
+      name: name, message: message, emoji: selectedEmoji, reactions: {}
+    });
     if(error) throw error;
     document.getElementById('msg-text').value = '';
+    document.getElementById('char-count').textContent = '300';
     showStatus(status,'Posted! 🎉','ok');
     loadPosts();
-  } catch(e) {
+  } catch(e){
     showStatus(status,'Could not post — try again.','err');
+  } finally {
+    btn.disabled = false; btn.querySelector('span').textContent = 'Send message';
   }
 }
 
-async function reactToPost(postId, reaction) {
+async function reactPost(postId, reaction){
   var reacted = JSON.parse(localStorage.getItem('reacted_'+postId)||'{}');
-  if(reacted[reaction]) return; // already reacted
+  if(reacted[reaction]) return;
   try {
-    // Fetch current reactions
     var {data} = await supa.from('posts').select('reactions').eq('id',postId).single();
     var reactions = (data && data.reactions) || {};
     reactions[reaction] = (reactions[reaction]||0) + 1;
-    await supa.from('posts').update({reactions}).eq('id',postId);
+    var {error} = await supa.from('posts').update({reactions}).eq('id',postId);
+    if(error) throw error;
     reacted[reaction] = true;
     localStorage.setItem('reacted_'+postId, JSON.stringify(reacted));
     loadPosts();
-  } catch(e) {}
+  } catch(e){}
 }
 
 // ── POLLS ─────────────────────────────────────────────────
 var pollsCache = [];
 var myVotes = JSON.parse(localStorage.getItem('my_votes')||'{}');
 
-// Pinned default predictions (seeded once if polls table is empty)
 var SEED_POLLS = [
   {question:'Who cries first?', options:['Bruno','Sally','Father of the bride','An unexpected guest']},
   {question:'What time does Bruno fall asleep at the after-party?', options:['Before midnight','12–1am','1–2am','Still going at 3am']},
   {question:'Weather on the day?', options:['Full Devon sunshine ☀️','Light drizzle 🌦️','Full monsoon 🌧️','All three in one day']},
   {question:'How many Aperol Spritzes get consumed?', options:['Under 50','50–100','100–200','Lost count after 100']},
   {question:'Will the hog roast run out?', options:['Yes — chaos ensues','No — plenty for all','There are leftovers','What hog roast?']},
-  {question:'Who gives the most chaotic speech?', options:['Best man Jamie','Father of the bride','Bruno','Sally']},
+  {question:'Who gives the most chaotic speech?', options:['Groomsman Jamie','Father of the bride','Bruno','Sally']},
   {question:"What is Bruno's first dance move?", options:['Dignified and smooth','Enthusiastic but risky','Full dad-dance energy','Refuses to move at all']},
   {question:'Does anyone get lost on the way to Newton Ferrers?', options:['At least 3 cars','Just one — and they know who','Nobody — Google Maps saves the day','Everyone arrives somehow']},
 ];
 
-async function loadPolls() {
+async function loadPolls(){
   var grid = document.getElementById('poll-grid');
   try {
-    var {data, error} = await supa.from('polls').select('*').order('created_at', {ascending:true});
+    var {data, error} = await supa.from('polls').select('*').order('created_at',{ascending:true});
     if(error) throw error;
-    // Seed if empty
-    if(!data || data.length === 0) {
+    if(!data || data.length === 0){
       await seedPolls();
-      var {data:fresh} = await supa.from('polls').select('*').order('created_at',{ascending:true});
-      data = fresh || [];
+      var res = await supa.from('polls').select('*').order('created_at',{ascending:true});
+      data = res.data || [];
+    } else {
+      // Patch any existing poll that still has 'Best man Jamie'
+      for(var i=0; i<data.length; i++){
+        var p = data[i];
+        var needsPatch = p.options && p.options.some(function(o){ return o.text === 'Best man Jamie'; });
+        if(needsPatch){
+          var fixed = p.options.map(function(o){
+            return o.text === 'Best man Jamie' ? {text:'Groomsman Jamie', votes:o.votes||0} : o;
+          });
+          await supa.from('polls').update({options: fixed}).eq('id', p.id);
+          data[i].options = fixed;
+        }
+      }
     }
     pollsCache = data;
     renderPolls();
-  } catch(e) {
-    grid.innerHTML = '<div class="empty">Could not load predictions.</div>';
+  } catch(e){
+    var msg = (e && e.message && e.message.includes('relation'))
+      ? 'Tables not set up yet — run the SQL in your Supabase dashboard first.'
+      : 'Could not load predictions.';
+    grid.innerHTML = '<div class="empty"><div class="empty-icon">😬</div><p>'+msg+'</p></div>';
   }
 }
 
-async function seedPolls() {
+async function seedPolls(){
   var rows = SEED_POLLS.map(function(p){
-    return { question:p.question, options: p.options.map(function(o){ return {text:o, votes:0}; }) };
+    return {
+      question: p.question,
+      options: p.options.map(function(o){ return {text:o, votes:0}; })
+    };
   });
   await supa.from('polls').insert(rows);
 }
 
-function renderPolls() {
+function renderPolls(){
   var grid = document.getElementById('poll-grid');
-  if(!pollsCache.length){ grid.innerHTML='<div class="empty">No predictions yet.</div>'; return; }
+  if(!pollsCache.length){ grid.innerHTML='<div class="empty"><p>No predictions yet.</p></div>'; return; }
   grid.innerHTML = pollsCache.map(function(poll, pi){
     var opts = poll.options || [];
-    var total = opts.reduce(function(a,o){ return a+(o.votes||0); }, 0);
+    var total = opts.reduce(function(s,o){ return s+(o.votes||0); }, 0);
     var voted = myVotes[poll.id];
     var optHtml = opts.map(function(opt, oi){
-      var pct = total ? Math.round((opt.votes||0)/total*100) : 0;
-      var isSel = voted===oi;
-      return '<div class="poll-opt'+(isSel?' voted':'')+'" onclick="vote(\''+poll.id+'\','+oi+')">' +
-        '<div class="bar" style="width:'+(voted!==undefined?pct:0)+'%"></div>' +
-        '<div class="label"><span>'+escHtml(opt.text)+(isSel?' ✓':'')+'</span>' +
-        (voted!==undefined?'<span class="pct">'+pct+'%</span>':'')+
+      var pct = total > 0 ? Math.round((opt.votes||0)/total*100) : 0;
+      var isSel = voted === oi;
+      var showResults = voted !== undefined;
+      return '<div class="poll-opt'+(isSel?' voted':'')+'" onclick="castVote(\''+poll.id+'\','+oi+')">'+
+        '<div class="bar" style="width:'+(showResults?pct:0)+'%"></div>'+
+        '<div class="label">'+
+          '<span>'+escHtml(opt.text)+(isSel?'<span class="voted-tick"> ✓</span>':'')+'</span>'+
+          (showResults?'<span class="pct">'+pct+'%</span>':'')+
         '</div></div>';
     }).join('');
-    return '<div class="poll-card'+(pi<3?' pinned':'')+'" id="poll-'+poll.id+'">' +
-      (pi<3?'<div class="poll-pin">📌 Featured</div>':'')+
-      '<div class="poll-q">'+escHtml(poll.question)+'</div>' +
-      '<div class="poll-opts">'+optHtml+'</div>' +
-      (voted!==undefined?'<div class="poll-total">'+total+' vote'+(total!==1?'s':'')+'</div>':'')+
-      '</div>';
+    return '<div class="poll-card" id="poll-'+poll.id+'">'+
+      (pi<3?'<div class="poll-pin">📌 Featured prediction</div>':'')+
+      '<div class="poll-q">'+escHtml(poll.question)+'</div>'+
+      '<div class="poll-opts">'+optHtml+'</div>'+
+      (voted!==undefined?'<div class="poll-total">'+total+' vote'+(total!==1?'s':'')+'</div>':
+        '<div class="poll-total" style="font-style:italic">Tap to vote</div>')+
+    '</div>';
   }).join('');
 }
 
-async function vote(pollId, optionIdx) {
-  if(myVotes[pollId] !== undefined) return; // already voted
-  try {
-    var {data} = await supa.from('polls').select('options').eq('id',pollId).single();
-    var opts = data.options;
-    opts[optionIdx].votes = (opts[optionIdx].votes||0) + 1;
-    var {error} = await supa.from('polls').update({options:opts}).eq('id',pollId);
-    if(error) throw error;
-    myVotes[pollId] = optionIdx;
-    localStorage.setItem('my_votes', JSON.stringify(myVotes));
-    // Update cache
-    var p = pollsCache.find(function(p){ return p.id===pollId; });
-    if(p) p.options = opts;
+async function castVote(pollId, optionIdx){
+  if(myVotes[pollId] !== undefined) return;
+  // Optimistic update
+  myVotes[pollId] = optionIdx;
+  localStorage.setItem('my_votes', JSON.stringify(myVotes));
+  var cached = pollsCache.find(function(p){ return p.id === pollId; });
+  if(cached){
+    cached.options[optionIdx].votes = (cached.options[optionIdx].votes||0) + 1;
     renderPolls();
-  } catch(e) { console.warn('vote failed',e); }
+  }
+  // Persist to Supabase — fetch fresh, increment, update
+  try {
+    var {data, error} = await supa.from('polls').select('options').eq('id', pollId).single();
+    if(error) throw error;
+    var opts = JSON.parse(JSON.stringify(data.options)); // deep copy
+    opts[optionIdx].votes = (opts[optionIdx].votes||0) + 1;
+    var {error: updateError} = await supa.from('polls')
+      .update({options: opts})
+      .eq('id', pollId);
+    if(updateError) throw updateError;
+    // Sync cache with server truth
+    if(cached) cached.options = opts;
+    renderPolls();
+  } catch(e){
+    console.warn('Vote save failed:', e);
+    // Revert optimistic update
+    delete myVotes[pollId];
+    localStorage.setItem('my_votes', JSON.stringify(myVotes));
+    if(cached) cached.options[optionIdx].votes = Math.max(0,(cached.options[optionIdx].votes||1)-1);
+    renderPolls();
+  }
 }
 
 // ── UTILS ─────────────────────────────────────────────────
-function escHtml(s) {
+function escHtml(s){
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-function showStatus(el, msg, type) {
+function showStatus(el, msg, type){
   el.textContent = msg;
-  el.className = 'status-msg show '+type;
-  setTimeout(function(){ el.className='status-msg'; }, 3500);
+  el.className = 'status-msg show ' + type;
+  setTimeout(function(){ el.className = 'status-msg'; }, 3500);
 }
 
 // ── REALTIME ──────────────────────────────────────────────
-// Subscribe to new posts
-supa.channel('posts').on('postgres_changes',
+supa.channel('public:posts').on('postgres_changes',
   {event:'INSERT', schema:'public', table:'posts'},
   function(payload){
+    if(postsCache.find(function(p){ return p.id===payload.new.id; })) return;
     postsCache.unshift(payload.new);
     if(document.getElementById('panel-messages').classList.contains('active')) renderPosts();
   }
@@ -358,27 +494,21 @@ loadPosts();
 </script>
 
 <script>
-// Shell redirect
-(function() {
-  var VALID = ['home','the-day','our-story','rsvp','faq','wedding-party','day-after','games','community'];
-  function shellNav(page) {
-    if (window.parent !== window) {
-      window.parent.postMessage({nav: page}, '*');
-    } else { window.location.href = '/'+page; }
+(function(){
+  var VALID=['home','the-day','our-story','rsvp','faq','wedding-party','day-after','games','community'];
+  function shellNav(page){
+    if(window.parent!==window){ window.parent.postMessage({nav:page},'*'); }
+    else { window.location.href='/'+page; }
   }
-  window.shellNav = shellNav;
-  document.addEventListener('click', function(e) {
-    var a = e.target.closest('a[href]');
-    if (!a) return;
-    var href = a.getAttribute('href') || '';
-    if (!href.startsWith('/') || href.startsWith('//')) return;
-    var page = href.replace(/^\//, '').split('/')[0];
-    if (VALID.indexOf(page) >= 0) {
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      shellNav(page);
-    }
-  }, true);
+  window.shellNav=shellNav;
+  document.addEventListener('click',function(e){
+    var a=e.target.closest('a[href]');
+    if(!a) return;
+    var href=a.getAttribute('href')||'';
+    if(!href.startsWith('/')||href.startsWith('//')) return;
+    var page=href.replace(/^\//,'').split('/')[0];
+    if(VALID.indexOf(page)>=0){ e.preventDefault(); e.stopImmediatePropagation(); shellNav(page); }
+  },true);
 })();
 </script>
 </body>
