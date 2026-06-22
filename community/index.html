@@ -198,19 +198,12 @@ footer{text-align:center;padding:2rem 1rem;font-size:0.78rem;color:var(--ink-sof
       <input type="text" class="name-input" id="msg-name" placeholder="Your name" maxlength="40"/>
     </div>
 
-    <!-- Emoji panel: avatar picker + insert-to-text -->
-    <div class="emoji-panel-toggle">
-      <button class="emoji-panel-btn" onclick="toggleEmojiPanel()" id="emoji-panel-btn">
-        <span id="emoji-current">😊</span>
-        <span>Emojis</span>
-        <span id="emoji-chevron">▾</span>
+    <div style="margin-bottom:0.7rem">
+      <button class="emoji-panel-btn" onclick="toggleEmojiDrawer()" id="emoji-toggle-btn" style="display:flex;align-items:center;gap:0.4rem;padding:0.35rem 0.75rem;border:1.5px solid var(--line);border-radius:20px;background:#fff;cursor:pointer;font-size:0.78rem;color:var(--ink-soft);font-family:'Jost',sans-serif">
+        <span id="emoji-current">😊</span><span>Emoji</span><span id="emoji-chevron">▾</span>
       </button>
     </div>
-    <div class="emoji-panel" id="emoji-panel">
-      <div class="emoji-panel-cats" id="emoji-cats"></div>
-      <div class="emoji-grid" id="emoji-grid"></div>
-      <p class="emoji-panel-hint">Tap once to set avatar · Tap twice to insert into message</p>
-    </div>
+    <div id="emoji-drawer" style="display:none;flex-wrap:wrap;gap:0.25rem;padding:0.7rem;background:var(--stone);border-radius:8px;margin-bottom:0.7rem"></div>
 
     <div class="msg-area-wrap">
       <textarea class="msg-area" id="msg-text" placeholder="Say something lovely (or funny)…" maxlength="300" oninput="updateCharCount()"></textarea>
@@ -247,7 +240,7 @@ var VOTER_ID = localStorage.getItem('voter_id') || (function(){
   localStorage.setItem('voter_id', id); return id;
 })();
 
-// ── TAB SWITCHING ─────────────────────────────────────────
+// ── TAB SWITCHING ──────────────────────────────────────────
 function switchTab(id, btn) {
   document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
   document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
@@ -255,97 +248,57 @@ function switchTab(id, btn) {
   if(btn) btn.classList.add('active');
 }
 
-// ── EMOJI SETUP ───────────────────────────────────────────
-// ── EMOJI PANEL ───────────────────────────────────────────
-var EMOJI_CATS = {
-  'Wedding': ['💒','💐','💍','🥂','🎊','🎉','💌','🕊️','🌸','🌺','🥳','❤️','💕','💖','✨','🎀'],
-  'Devon': ['🌊','🦞','⚓','🏖️','☀️','🌦️','🐚','⛵','🏄','🌿','🍃','🦀','🐠','🌅','🏔️','🦅'],
-  'Drink': ['🍊','🧡','🍹','🥃','🍾','🍷','🍸','🫗','☕','🧃','🫧','🍋','🧊','🫖','🍵','🌿'],
-  'Faces': ['😊','😂','🥰','😍','🤩','🥳','😭','😅','🤣','😎','🥹','🤭','😏','🙌','👏','🫶'],
-  'Fun': ['🕺','💃','🎸','🎵','🎤','🎶','🪩','🎯','🎲','🎪','🎭','🃏','🎠','🌈','🦄','🪄'],
-};
+// ── EMOJI ──────────────────────────────────────────────────
 var selectedEmoji = '😊';
-var currentEmojiCat = 'Wedding';
-var lastEmojiTap = {e:'', t:0}; // for double-tap to insert
+var EMOJIS = ['😊','😂','🥂','💒','💐','🌊','🎉','❤️','🦞','🥳','😭','🕺','🎊','🌸','🍊','👏','🤩','😎','💍','🎀','⛵','🦀','🥃','🍾','🥰'];
 
-function buildEmojiPanel(){
-  var catsEl = document.getElementById('emoji-cats');
-  var gridEl = document.getElementById('emoji-grid');
-  catsEl.innerHTML = '';
-  Object.keys(EMOJI_CATS).forEach(function(cat){
-    var btn = document.createElement('button');
-    btn.className = 'emoji-cat-btn' + (cat===currentEmojiCat?' active':'');
-    btn.textContent = cat;
-    btn.onclick = function(){
-      currentEmojiCat = cat;
-      catsEl.querySelectorAll('.emoji-cat-btn').forEach(function(b){ b.classList.remove('active'); });
-      btn.classList.add('active');
-      renderEmojiGrid();
-    };
-    catsEl.appendChild(btn);
-  });
-  renderEmojiGrid();
-}
-
-function renderEmojiGrid(){
-  var gridEl = document.getElementById('emoji-grid');
-  gridEl.innerHTML = '';
-  var emojis = EMOJI_CATS[currentEmojiCat] || [];
-  emojis.forEach(function(e){
+(function(){
+  var drawer = document.getElementById('emoji-drawer');
+  if(!drawer) return;
+  EMOJIS.forEach(function(e){
     var btn = document.createElement('button');
     btn.className = 'ep' + (e===selectedEmoji?' avatar-sel':'');
     btn.textContent = e;
     btn.onclick = function(){
-      var now = Date.now();
-      if(lastEmojiTap.e===e && now-lastEmojiTap.t < 500){
-        // Double tap — insert into textarea
-        insertEmojiIntoText(e);
-        lastEmojiTap = {e:'', t:0};
-      } else {
-        // Single tap — set as avatar
-        lastEmojiTap = {e:e, t:now};
-        selectedEmoji = e;
-        document.getElementById('avatar-preview').textContent = e;
-        document.getElementById('post-emoji').textContent = e;
-        document.getElementById('emoji-current').textContent = e;
-        gridEl.querySelectorAll('.ep').forEach(function(b){ b.classList.remove('avatar-sel'); });
-        btn.classList.add('avatar-sel');
-      }
+      selectedEmoji = e;
+      var av = document.getElementById('avatar-preview');
+      var pe = document.getElementById('post-emoji');
+      var ec = document.getElementById('emoji-current');
+      if(av) av.textContent = e;
+      if(pe) pe.textContent = e;
+      if(ec) ec.textContent = e;
+      drawer.querySelectorAll('.ep').forEach(function(b){ b.classList.remove('avatar-sel'); });
+      btn.classList.add('avatar-sel');
+      // Insert into textarea too
+      var ta = document.getElementById('msg-text');
+      if(ta){ var s=ta.selectionStart||0; ta.value=ta.value.slice(0,s)+e+ta.value.slice(s); updateCharCount(); }
+      toggleEmojiDrawer(false);
     };
-    gridEl.appendChild(btn);
+    drawer.appendChild(btn);
   });
-}
+})();
 
-function insertEmojiIntoText(e){
-  var ta = document.getElementById('msg-text');
-  var start = ta.selectionStart, end = ta.selectionEnd;
-  var val = ta.value;
-  ta.value = val.slice(0,start) + e + val.slice(end);
-  ta.selectionStart = ta.selectionEnd = start + e.length;
-  ta.focus();
-  updateCharCount();
-}
-
-function toggleEmojiPanel(){
-  var panel = document.getElementById('emoji-panel');
+function toggleEmojiDrawer(forceClose){
+  var drawer = document.getElementById('emoji-drawer');
   var chevron = document.getElementById('emoji-chevron');
-  var open = panel.classList.contains('open');
-  panel.classList.toggle('open', !open);
-  chevron.textContent = open ? '▾' : '▴';
-  if(!open) buildEmojiPanel();
+  if(!drawer) return;
+  var isOpen = drawer.classList.contains('open');
+  var shouldOpen = forceClose===false ? false : !isOpen;
+  drawer.classList.toggle('open', shouldOpen);
+  if(chevron) chevron.textContent = shouldOpen ? '▴' : '▾';
 }
 
 function updateCharCount(){
-  var v = document.getElementById('msg-text').value;
-  var rem = 300 - v.length;
+  var v = document.getElementById('msg-text');
   var el = document.getElementById('char-count');
+  if(!v||!el) return;
+  var rem = 300 - v.value.length;
   el.textContent = rem;
   el.style.color = rem < 30 ? '#b83232' : '';
 }
 
-// ── POSTS ─────────────────────────────────────────────────
+// ── POSTS ──────────────────────────────────────────────────
 var postsCache = [];
-var repliesCache = {}; // postId -> array of replies
 
 function timeAgo(iso){
   var diff = (Date.now() - new Date(iso)) / 1000;
@@ -355,27 +308,18 @@ function timeAgo(iso){
   return Math.floor(diff/86400)+'d ago';
 }
 
-async function loadPosts(){
-  try {
-    var {data, error} = await supa.from('posts')
-      .select('*').order('created_at',{ascending:false}).limit(100);
-    if(error) throw error;
-    // Separate top-level posts from replies
-    var all = data || [];
-    postsCache = all.filter(function(p){ return !p.reply_to; });
-    repliesCache = {};
-    all.filter(function(p){ return p.reply_to; }).forEach(function(r){
-      if(!repliesCache[r.reply_to]) repliesCache[r.reply_to] = [];
-      repliesCache[r.reply_to].push(r);
-    });
-    renderPosts();
-  } catch(e){
-    var msg = (e && e.message && e.message.includes('relation'))
-      ? 'Tables not set up yet — run the SQL in Supabase first.'
-      : 'Could not load messages.';
-    document.getElementById('posts-list').innerHTML =
-      '<div class="empty"><div class="empty-icon">😬</div><p>'+msg+'</p></div>';
-  }
+function loadPosts(){
+  supa.from('posts').select('*').order('created_at',{ascending:false}).limit(100)
+    .then(function(res){
+      if(res.error){ showPostsError(res.error.message); return; }
+      postsCache = (res.data||[]).filter(function(p){ return !p.reply_to; });
+      renderPosts();
+    }).catch(function(e){ showPostsError(e&&e.message?e.message:'Network error'); });
+}
+
+function showPostsError(msg){
+  var el = document.getElementById('posts-list');
+  if(el) el.innerHTML = '<div class="empty"><div class="empty-icon">😬</div><p>'+escHtml(msg)+'</p></div>';
 }
 
 function renderPosts(){
@@ -386,161 +330,88 @@ function renderPosts(){
     list.innerHTML = '<div class="empty"><div class="empty-icon">💌</div><p>No messages yet — be the first!</p></div>';
     return;
   }
-  list.innerHTML = postsCache.map(function(p){ return renderPostCard(p, false); }).join('');
-}
+  list.innerHTML = '';
+  postsCache.forEach(function(p){
+    var card = document.createElement('div');
+    card.className = 'post-card';
+    card.id = 'post-'+p.id;
 
-function renderPostCard(p, isReply){
-  var reactions = p.reactions || {};
-  var reacted = JSON.parse(localStorage.getItem('reacted_'+p.id)||'{}');
-  // Existing reaction buttons
-  var reactionHtml = Object.keys(reactions).filter(function(r){ return reactions[r]>0; }).map(function(r){
-    var cnt = reactions[r];
-    var cls = reacted[r] ? ' reacted' : '';
-    return '<button class="react-btn'+cls+'" onclick="reactPost(''+p.id+'',''+r+'')">'+
-      r+'<span class="react-count">'+cnt+'</span></button>';
-  }).join('');
+    var av = document.createElement('div');
+    av.className = 'post-avatar';
+    av.textContent = p.emoji || '😊';
+    card.appendChild(av);
 
-  // Thread replies
-  var replies = repliesCache[p.id] || [];
-  var threadHtml = '';
-  if(!isReply){
-    var repliesHtml = replies.map(function(r){ return renderPostCard(r, true); }).join('');
-    threadHtml = '<div class="thread" id="thread-'+p.id+'">' + repliesHtml + '</div>'+
-      '<div class="reply-compose" id="rc-'+p.id+'">'+
-        '<textarea class="reply-input" id="ri-'+p.id+'" placeholder="Write a reply…" maxlength="200" rows="2"></textarea>'+
-        '<button class="reply-send" onclick="submitReply(''+p.id+'')">Send</button>'+
-      '</div>';
-  }
+    var bubble = document.createElement('div');
+    bubble.className = 'post-bubble';
 
-  var avatarClass = isReply ? 'reply-avatar' : 'post-avatar';
-  var bubbleClass = isReply ? 'reply-bubble' : 'post-bubble';
-  var cardClass   = isReply ? 'reply-card' : 'post-card';
-  var nameClass   = isReply ? 'reply-name' : 'post-name';
-  var timeClass   = isReply ? 'reply-time' : 'post-time';
-  var textClass   = isReply ? 'reply-text' : 'post-text';
+    var meta = document.createElement('div');
+    meta.className = 'post-meta';
+    meta.innerHTML = '<span class="post-name">'+escHtml(p.name)+'</span><span class="post-time">'+timeAgo(p.created_at)+'</span>';
+    bubble.appendChild(meta);
 
-  var actionsHtml = !isReply ? (
-    '<div class="post-actions">'+
-      reactionHtml+
-      '<button class="add-react-btn" onclick="toggleReactPicker(''+p.id+'')" title="Add reaction">+😊</button>'+
-      '<button class="reply-btn" onclick="toggleReplyCompose(''+p.id+'')">↩ Reply</button>'+
-    '</div>'+
-    '<div class="react-picker" id="rp-'+p.id+'"></div>'
-  ) : (
-    '<div class="post-actions">'+reactionHtml+'</div>'
-  );
+    var txt = document.createElement('div');
+    txt.className = 'post-text';
+    txt.textContent = p.message;
+    bubble.appendChild(txt);
 
-  return '<div class="'+cardClass+'" id="post-'+p.id+'">'+
-    '<div class="'+avatarClass+'">'+escHtml(p.emoji||'😊')+'</div>'+
-    '<div class="'+bubbleClass+'">'+
-      '<div class="post-meta">'+
-        '<span class="'+nameClass+'">'+escHtml(p.name)+'</span>'+
-        '<span class="'+timeClass+'">'+timeAgo(p.created_at)+'</span>'+
-      '</div>'+
-      '<div class="'+textClass+'">'+escHtml(p.message)+'</div>'+
-      actionsHtml+
-      threadHtml+
-    '</div></div>';
-}
-
-function toggleReplyCompose(postId){
-  var rc = document.getElementById('rc-'+postId);
-  if(!rc) return;
-  var open = rc.classList.contains('open');
-  rc.classList.toggle('open', !open);
-  if(!open){ var ri=document.getElementById('ri-'+postId); if(ri) ri.focus(); }
-}
-
-function toggleReactPicker(postId){
-  // Close all other pickers first
-  document.querySelectorAll('.react-picker.open').forEach(function(el){
-    if(el.id !== 'rp-'+postId) el.classList.remove('open');
+    // Reactions
+    var reactions = p.reactions || {};
+    var reacted = JSON.parse(localStorage.getItem('reacted_'+p.id)||'{}');
+    var reactDiv = document.createElement('div');
+    reactDiv.className = 'reactions';
+    var REACT_EMOJIS = ['❤️','😂','🥂','👏'];
+    REACT_EMOJIS.forEach(function(r){
+      var cnt = reactions[r]||0;
+      var btn = document.createElement('button');
+      btn.className = 'react-btn' + (reacted[r]?' reacted':'');
+      btn.innerHTML = r + (cnt>0?'<span class="react-count">'+cnt+'</span>':'');
+      (function(postId,reaction){ btn.onclick = function(){ reactPost(postId,reaction); }; })(p.id, r);
+      reactDiv.appendChild(btn);
+    });
+    bubble.appendChild(reactDiv);
+    card.appendChild(bubble);
+    list.appendChild(card);
   });
-  var picker = document.getElementById('rp-'+postId);
-  if(!picker) return;
-  var open = picker.classList.contains('open');
-  if(open){ picker.classList.remove('open'); return; }
-  // Build picker content
-  var allEmojis = [];
-  Object.values(EMOJI_CATS).forEach(function(arr){ allEmojis = allEmojis.concat(arr); });
-  picker.innerHTML = allEmojis.map(function(e){
-    return '<button class="ep" onclick="reactPost(''+postId+'',''+e+'');toggleReactPicker(''+postId+'')">'+e+'</button>';
-  }).join('');
-  picker.classList.add('open');
 }
 
-// Close pickers on outside click
-document.addEventListener('click', function(e){
-  if(!e.target.closest('.add-react-btn') && !e.target.closest('.react-picker')){
-    document.querySelectorAll('.react-picker.open').forEach(function(el){ el.classList.remove('open'); });
-  }
-});
-
-async function submitPost(){
+function submitPost(){
   var name = document.getElementById('msg-name').value.trim();
   var message = document.getElementById('msg-text').value.trim();
   var status = document.getElementById('msg-status');
   var btn = document.getElementById('post-btn');
   if(!name){ showStatus(status,'Enter your name first 👆','err'); return; }
   if(!message){ showStatus(status,'Write something first!','err'); return; }
-  btn.disabled = true; btn.querySelector('span').textContent = 'Sending…';
-  try {
-    var {error} = await supa.from('posts').insert({
-      name: name, message: message, emoji: selectedEmoji, reactions: {}
+  btn.disabled = true;
+  supa.from('posts').insert({name:name, message:message, emoji:selectedEmoji, reactions:{}})
+    .then(function(res){
+      if(res.error){ showStatus(status,'Error: '+res.error.message,'err'); btn.disabled=false; return; }
+      document.getElementById('msg-text').value = '';
+      document.getElementById('char-count').textContent = '300';
+      showStatus(status,'Posted! 🎉','ok');
+      loadPosts();
+      btn.disabled = false;
+    }).catch(function(e){
+      showStatus(status,'Failed: '+(e&&e.message?e.message:e),'err');
+      btn.disabled = false;
     });
-    if(error) throw error;
-    document.getElementById('msg-text').value = '';
-    document.getElementById('char-count').textContent = '300';
-    showStatus(status,'Posted! 🎉','ok');
-    loadPosts();
-  } catch(e){
-    var detail = (e && e.message) ? e.message : 'unknown error';
-    showStatus(status,'Could not post — '+detail,'err');
-    console.error('Post error:', e);
-  } finally {
-    btn.disabled = false; btn.querySelector('span').textContent = 'Send message';
-  }
 }
 
-async function submitReply(parentId){
-  var ri = document.getElementById('ri-'+parentId);
-  var name = document.getElementById('msg-name').value.trim();
-  if(!ri || !name) return;
-  var message = ri.value.trim();
-  if(!message) return;
-  ri.disabled = true;
-  try {
-    var {error} = await supa.from('posts').insert({
-      name: name, message: message, emoji: selectedEmoji, reactions: {}, reply_to: parentId
-    });
-    if(error) throw error;
-    ri.value = '';
-    document.getElementById('rc-'+parentId).classList.remove('open');
-    loadPosts();
-  } catch(e){
-    console.error('Reply error:', e);
-  } finally {
-    if(ri) ri.disabled = false;
-  }
-}
-
-async function reactPost(postId, reaction){
+function reactPost(postId, reaction){
   var reacted = JSON.parse(localStorage.getItem('reacted_'+postId)||'{}');
   if(reacted[reaction]) return;
-  try {
-    var {data} = await supa.from('posts').select('reactions').eq('id',postId).single();
-    var reactions = (data && data.reactions) || {};
-    reactions[reaction] = (reactions[reaction]||0) + 1;
-    var {error} = await supa.from('posts').update({reactions}).eq('id',postId);
-    if(error) throw error;
-    reacted[reaction] = true;
-    localStorage.setItem('reacted_'+postId, JSON.stringify(reacted));
-    loadPosts();
-  } catch(e){}
+  supa.from('posts').select('reactions').eq('id',postId).single()
+    .then(function(res){
+      var reactions = (res.data&&res.data.reactions)||{};
+      reactions[reaction] = (reactions[reaction]||0)+1;
+      return supa.from('posts').update({reactions:reactions}).eq('id',postId);
+    }).then(function(){
+      reacted[reaction]=true;
+      localStorage.setItem('reacted_'+postId, JSON.stringify(reacted));
+      loadPosts();
+    }).catch(function(e){ console.warn('react failed',e); });
 }
 
-
-// ── POLLS ─────────────────────────────────────────────────
+// ── POLLS ──────────────────────────────────────────────────
 var pollsCache = [];
 var myVotes = JSON.parse(localStorage.getItem('my_votes')||'{}');
 
@@ -555,156 +426,138 @@ var SEED_POLLS = [
   {question:'Does anyone get lost on the way to Newton Ferrers?', options:['At least 3 cars','Just one — and they know who','Nobody — Google Maps saves the day','Everyone arrives somehow']},
 ];
 
-var pollsLoading = false;
 function loadPolls(){
-  if(pollsLoading) return;
-  pollsLoading = true;
   var grid = document.getElementById('poll-grid');
   grid.innerHTML = '<div class="loading">Loading predictions…</div>';
-
-  // Hard timeout — if nothing happens in 8s, show error
-  var timedOut = false;
-  var timer = setTimeout(function(){
-    timedOut = true;
-    pollsLoading = false;
-    grid.innerHTML = '<div class="empty"><div class="empty-icon">😬</div><p>Request timed out — Supabase unreachable. Check the browser console (F12) for details.</p></div>';
-  }, 8000);
-
-  if(!window.supabase){
-    clearTimeout(timer);
-    grid.innerHTML = '<div class="empty"><div class="empty-icon">😬</div><p>Supabase library not loaded. Check your internet connection.</p></div>';
-    return;
-  }
-
   supa.from('polls').select('*').order('created_at',{ascending:true})
     .then(function(res){
-      if(timedOut) return;
-      clearTimeout(timer);
-      var data = res.data;
-      var error = res.error;
-      if(error){
-        grid.innerHTML = '<div class="empty"><div class="empty-icon">😬</div><p>Error: '+error.message+'</p></div>';
-        return;
+      if(res.error){ grid.innerHTML='<div class="empty"><p>Error: '+escHtml(res.error.message)+'</p></div>'; return; }
+      var data = res.data||[];
+      if(data.length===0){
+        return supa.from('polls').insert(SEED_POLLS.map(function(p){
+          return {question:p.question, options:p.options.map(function(o){ return {text:o,votes:0}; })};
+        })).then(function(){ return supa.from('polls').select('*').order('created_at',{ascending:true}); })
+          .then(function(res2){ pollsCache=res2.data||[]; renderPolls(); });
       }
-      if(!data || data.length === 0){
-        seedPolls().then(function(){
-          return supa.from('polls').select('*').order('created_at',{ascending:true});
-        }).then(function(res2){
-          pollsCache = res2.data || [];
-          renderPolls();
-        }).catch(function(e){
-          grid.innerHTML = '<div class="empty"><div class="empty-icon">😬</div><p>Seed failed: '+(e&&e.message?e.message:e)+'</p></div>';
-        });
-      } else {
-        pollsCache = data;
-        pollsLoading = false;
-        renderPolls();
-      }
-    })
-    .catch(function(e){
-      if(timedOut) return;
-      clearTimeout(timer);
-      pollsLoading = false;
-      grid.innerHTML = '<div class="empty"><div class="empty-icon">😬</div><p>Failed: '+(e&&e.message?e.message:String(e))+'</p></div>';
+      pollsCache = data;
+      renderPolls();
+    }).catch(function(e){
+      grid.innerHTML='<div class="empty"><p>Failed to load: '+escHtml(e&&e.message?e.message:String(e))+'</p></div>';
     });
-}
-
-function seedPolls(){
-  var rows = SEED_POLLS.map(function(p){
-    return {
-      question: p.question,
-      options: p.options.map(function(o){ return {text:o, votes:0}; })
-    };
-  });
-  return supa.from('polls').insert(rows).then(function(res){
-    if(res.error) console.warn('seedPolls error:', res.error.message);
-  }).catch(function(e){ console.warn('seedPolls failed:', e); });
 }
 
 function renderPolls(){
   var grid = document.getElementById('poll-grid');
   if(!pollsCache.length){ grid.innerHTML='<div class="empty"><p>No predictions yet.</p></div>'; return; }
-  grid.innerHTML = pollsCache.map(function(poll, pi){
-    var opts = poll.options || [];
-    var total = opts.reduce(function(s,o){ return s+(o.votes||0); }, 0);
+  grid.innerHTML = '';
+  pollsCache.forEach(function(poll, pi){
+    var opts = poll.options||[];
+    var total = opts.reduce(function(s,o){ return s+(o.votes||0); },0);
     var voted = myVotes[poll.id];
-    var optHtml = opts.map(function(opt, oi){
-      var pct = total > 0 ? Math.round((opt.votes||0)/total*100) : 0;
-      var isSel = voted === oi;
-      var showResults = voted !== undefined;
-      return '<div class="poll-opt'+(isSel?' voted':'')+'" onclick="castVote(\''+poll.id+'\','+oi+')">'+
-        '<div class="bar" style="width:'+(showResults?pct:0)+'%"></div>'+
-        '<div class="label">'+
-          '<span>'+escHtml(opt.text)+(isSel?'<span class="voted-tick"> ✓</span>':'')+'</span>'+
-          (showResults?'<span class="pct">'+pct+'%</span>':'')+
-        '</div></div>';
-    }).join('');
-    return '<div class="poll-card" id="poll-'+poll.id+'">'+
-      (pi<3?'<div class="poll-pin">📌 Featured prediction</div>':'')+
-      '<div class="poll-q">'+escHtml(poll.question)+'</div>'+
-      '<div class="poll-opts">'+optHtml+'</div>'+
-      (voted!==undefined?'<div class="poll-total">'+total+' vote'+(total!==1?'s':'')+'</div>':
-        '<div class="poll-total" style="font-style:italic">Tap to vote</div>')+
-    '</div>';
-  }).join('');
+
+    var card = document.createElement('div');
+    card.className = 'poll-card';
+
+    if(pi<3){
+      var pin = document.createElement('div');
+      pin.className = 'poll-pin';
+      pin.textContent = '📌 Featured prediction';
+      card.appendChild(pin);
+    }
+
+    var q = document.createElement('div');
+    q.className = 'poll-q';
+    q.textContent = poll.question;
+    card.appendChild(q);
+
+    var optsDiv = document.createElement('div');
+    optsDiv.className = 'poll-opts';
+
+    opts.forEach(function(opt, oi){
+      var pct = total>0 ? Math.round((opt.votes||0)/total*100) : 0;
+      var isSel = voted===oi;
+
+      var optEl = document.createElement('div');
+      optEl.className = 'poll-opt' + (isSel?' voted':'');
+
+      var bar = document.createElement('div');
+      bar.className = 'bar';
+      bar.style.width = (voted!==undefined?pct:0)+'%';
+      optEl.appendChild(bar);
+
+      var label = document.createElement('div');
+      label.className = 'label';
+      label.innerHTML = '<span>'+escHtml(opt.text)+(isSel?' ✓':'')+'</span>'+(voted!==undefined?'<span class="pct">'+pct+'%</span>':'');
+      optEl.appendChild(label);
+
+      if(voted===undefined){
+        (function(pollId, optIdx){ optEl.onclick = function(){ castVote(pollId, optIdx); }; })(poll.id, oi);
+      }
+      optsDiv.appendChild(optEl);
+    });
+    card.appendChild(optsDiv);
+
+    if(voted!==undefined){
+      var tot = document.createElement('div');
+      tot.className = 'poll-total';
+      tot.textContent = total+' vote'+(total!==1?'s':'');
+      card.appendChild(tot);
+    } else {
+      var tap = document.createElement('div');
+      tap.className = 'poll-total';
+      tap.style.fontStyle = 'italic';
+      tap.textContent = 'Tap to vote';
+      card.appendChild(tap);
+    }
+    grid.appendChild(card);
+  });
 }
 
-async function castVote(pollId, optionIdx){
-  if(myVotes[pollId] !== undefined) return;
-  // Optimistic update
+function castVote(pollId, optionIdx){
+  if(myVotes[pollId]!==undefined) return;
   myVotes[pollId] = optionIdx;
   localStorage.setItem('my_votes', JSON.stringify(myVotes));
-  var cached = pollsCache.find(function(p){ return p.id === pollId; });
-  if(cached){
-    cached.options[optionIdx].votes = (cached.options[optionIdx].votes||0) + 1;
-    renderPolls();
-  }
-  // Persist to Supabase — fetch fresh, increment, update
-  try {
-    var {data, error} = await supa.from('polls').select('options').eq('id', pollId).single();
-    if(error) throw error;
-    var opts = JSON.parse(JSON.stringify(data.options)); // deep copy
-    opts[optionIdx].votes = (opts[optionIdx].votes||0) + 1;
-    var {error: updateError} = await supa.from('polls')
-      .update({options: opts})
-      .eq('id', pollId);
-    if(updateError) throw updateError;
-    // Sync cache with server truth
-    if(cached) cached.options = opts;
-    renderPolls();
-  } catch(e){
-    console.warn('Vote save failed:', e);
-    // Revert optimistic update
-    delete myVotes[pollId];
-    localStorage.setItem('my_votes', JSON.stringify(myVotes));
-    if(cached) cached.options[optionIdx].votes = Math.max(0,(cached.options[optionIdx].votes||1)-1);
-    renderPolls();
-  }
+  var cached = pollsCache.find(function(p){ return p.id===pollId; });
+  if(cached){ cached.options[optionIdx].votes=(cached.options[optionIdx].votes||0)+1; renderPolls(); }
+  supa.from('polls').select('options').eq('id',pollId).single()
+    .then(function(res){
+      var opts = JSON.parse(JSON.stringify(res.data.options));
+      opts[optionIdx].votes=(opts[optionIdx].votes||0)+1;
+      return supa.from('polls').update({options:opts}).eq('id',pollId);
+    }).then(function(){
+      if(cached) renderPolls();
+    }).catch(function(e){
+      delete myVotes[pollId];
+      localStorage.setItem('my_votes',JSON.stringify(myVotes));
+      if(cached){ cached.options[optionIdx].votes=Math.max(0,(cached.options[optionIdx].votes||1)-1); renderPolls(); }
+    });
 }
 
-// ── UTILS ─────────────────────────────────────────────────
+// ── UTILS ──────────────────────────────────────────────────
 function escHtml(s){
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 function showStatus(el, msg, type){
+  if(!el) return;
   el.textContent = msg;
-  el.className = 'status-msg show ' + type;
-  setTimeout(function(){ el.className = 'status-msg'; }, 3500);
+  el.className = 'status-msg show '+type;
+  setTimeout(function(){ el.className='status-msg'; }, 4000);
 }
 
-// ── REALTIME ──────────────────────────────────────────────
+// ── REALTIME ───────────────────────────────────────────────
 supa.channel('public:posts').on('postgres_changes',
   {event:'INSERT', schema:'public', table:'posts'},
   function(payload){
     if(postsCache.find(function(p){ return p.id===payload.new.id; })) return;
-    postsCache.unshift(payload.new);
+    if(!payload.new.reply_to) postsCache.unshift(payload.new);
     if(document.getElementById('panel-messages').classList.contains('active')) renderPosts();
   }
 ).subscribe();
 
-// ── INIT ──────────────────────────────────────────────────
+// ── INIT ───────────────────────────────────────────────────
 loadPolls();
 loadPosts();
+
 </script>
 
 <script>
