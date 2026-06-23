@@ -1,402 +1,604 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Bruno & Sally — 18th September 2027</title>
-<meta name="description" content="Bruno & Sally are getting married in Devon, 18th September 2027."/>
-<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --sage:#5C7A5C;--sage-light:#8FA882;
-  --cream:#FAF8F3;--stone:#F0EBE1;
-  --ink:#2C2C2A;--ink-soft:#5C5A56;
-  --warm:#C4894A;--warm-light:#E8C49A;
-  --line:rgba(44,44,42,0.1);
-}
-html,body{height:100%;overflow:hidden;font-family:"Jost",sans-serif}
-body{display:flex;flex-direction:column;background:var(--cream)}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RSVP – Bruno & Sally</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* redirect guard */
+    body { visibility: hidden; }
 
-/* PASSWORD GATE */
-#pw-gate{
-  position:fixed;inset:0;z-index:9999;
-  background:var(--cream);
-  display:flex;align-items:center;justify-content:center;
-  flex-direction:column;
-  padding:2rem;
-}
-#pw-gate.hidden{display:none}
-.pw-sun{margin-bottom:1.6rem}
-.pw-sun svg{width:64px;height:64px}
-.pw-title{
-  font-family:"Cormorant Garamond",serif;
-  font-size:clamp(1.8rem,5vw,2.8rem);
-  font-weight:300;color:var(--ink);
-  text-align:center;margin-bottom:0.3rem;
-}
-.pw-title span{color:var(--sage);font-style:italic}
-.pw-sub{
-  font-size:0.82rem;color:var(--ink-soft);
-  text-align:center;margin-bottom:2.2rem;
-  letter-spacing:0.02em;
-}
-.pw-form{
-  display:flex;flex-direction:column;align-items:center;
-  gap:0.9rem;width:100%;max-width:320px;
-}
-.pw-input{
-  width:100%;padding:0.85rem 1.1rem;
-  border:1.5px solid var(--line);border-radius:2px;
-  background:#fff;font-family:"Jost",sans-serif;
-  font-size:1rem;color:var(--ink);
-  text-align:center;letter-spacing:0.06em;
-  outline:none;transition:border-color 0.2s;
-}
-.pw-input:focus{border-color:var(--sage)}
-.pw-input.shake{animation:shake 0.35s ease}
-.pw-btn{
-  width:100%;padding:0.85rem;
-  background:var(--sage);color:#fff;border:none;border-radius:2px;
-  font-family:"Jost",sans-serif;font-size:0.72rem;
-  font-weight:600;letter-spacing:0.18em;text-transform:uppercase;
-  cursor:pointer;transition:background 0.2s;
-}
-.pw-btn:hover{background:var(--sage-light)}
-.pw-err{
-  font-size:0.78rem;color:#a85a20;
-  min-height:1.1em;text-align:center;
-}
-.pw-hint{
-  font-size:0.72rem;color:var(--ink-soft);
-  text-align:center;margin-top:0.4rem;
-  max-width:28ch;line-height:1.5;
-}
-@keyframes shake{
-  0%,100%{transform:translateX(0)}
-  20%{transform:translateX(-8px)}
-  40%{transform:translateX(8px)}
-  60%{transform:translateX(-6px)}
-  80%{transform:translateX(6px)}
-}
+    :root {
+      --sage:        #5C7A5C;
+      --sky:         #4A7FA8;
+      --warm:        #C4894A;
+      --cream:       #FAF8F3;
+      --ink:         #2C2C2A;
+      --sage-light:  #EBF0EB;
+      --sky-light:   #EBF3F9;
+      --warm-light:  #FDF3E9;
+      --border:      #DDD9D1;
+    }
 
-/* NAV */
-#nav{
-  flex-shrink:0;
-  background:rgba(250,248,243,0.97);
-  backdrop-filter:blur(12px);
-  border-bottom:1px solid var(--line);
-  box-shadow:0 1px 0 var(--line);
-  z-index:100;
-}
-.nav-inner{
-  max-width:1200px;margin:0 auto;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 1.8rem;height:64px;
-}
-.nav-brand{
-  font-family:"Cormorant Garamond",serif;font-size:1.35rem;font-weight:400;
-  color:var(--ink);text-decoration:none;letter-spacing:0.04em;flex-shrink:0;
-}
-.nav-brand span{color:var(--sage);font-style:italic}
-.nav-links{display:flex;gap:0;list-style:none;align-items:center}
-.nav-links a{
-  display:block;padding:0 0.85rem;
-  font-size:0.68rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;
-  color:var(--ink-soft);text-decoration:none;
-  transition:color 0.2s;position:relative;white-space:nowrap;cursor:pointer;
-}
-.nav-links a::after{
-  content:"";position:absolute;bottom:-1px;left:0.85rem;right:0.85rem;
-  height:2px;background:var(--sage);transform:scaleX(0);transition:transform 0.25s;
-}
-.nav-links a:hover{color:var(--ink)}
-.nav-links a:hover::after,.nav-links a.active::after{transform:scaleX(1)}
-.nav-links a.active{color:var(--ink)}
-.nav-links a.games-link{color:var(--warm)}
-.nav-burger{
-  display:none;background:none;border:none;cursor:pointer;
-  padding:0.5rem;color:var(--ink);font-size:1.3rem;
-}
-.nav-drawer{
-  display:none;position:fixed;inset:0 0 0 25%;
-  background:var(--ink);flex-direction:column;
-  padding:5rem 2rem;gap:0;z-index:200;
-  transform:translateX(100%);transition:transform 0.3s;
-}
-.nav-drawer.open{transform:translateX(0)}
-.nav-drawer a{
-  display:block;padding:1rem 0;
-  font-size:0.82rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;
-  color:rgba(255,255,255,0.8);text-decoration:none;
-  border-bottom:1px solid rgba(255,255,255,0.1);cursor:pointer;
-}
-.nav-drawer a:hover{color:#fff}
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* IFRAME */
-#content-frame{
-  flex:1;border:none;width:100%;
-  transition:opacity 0.2s;
-}
-#content-frame.loading{opacity:0.5}
+    body {
+      font-family: 'Jost', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      min-height: 100vh;
+    }
 
-/* SPOTIFY */
-#spotify-bar{
-  position:fixed;bottom:0;left:0;right:0;z-index:300;
-  background:#0a0a0a;
-  transform:translateY(100%);
-  transition:transform 0.4s cubic-bezier(0.4,0,0.2,1);
-}
-#spotify-bar.open{transform:translateY(0)}
-#spotify-bar iframe{width:100%;height:80px;border:none;display:block}
-#spotify-toggle{
-  position:fixed;bottom:1.2rem;right:1.2rem;z-index:301;
-  width:50px;height:50px;border-radius:50%;
-  background:#1DB954;border:none;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 4px 18px rgba(29,185,84,0.45);
-  transition:transform 0.2s,box-shadow 0.2s,bottom 0.4s cubic-bezier(0.4,0,0.2,1);
-}
-#spotify-toggle:hover{transform:scale(1.08)}
-#spotify-toggle.bar-open{bottom:92px}
-#spotify-toggle svg{width:24px;height:24px;fill:white}
+    .page {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
 
-/* LOADING INDICATOR */
-#page-loader{
-  position:fixed;top:64px;left:0;right:0;height:2px;
-  background:var(--sage);transform:scaleX(0);transform-origin:left;
-  transition:transform 0.3s,opacity 0.3s;z-index:200;
-}
-#page-loader.loading{transform:scaleX(0.7)}
-#page-loader.done{transform:scaleX(1);opacity:0}
+    /* Hero */
+    .hero { text-align: center; margin-bottom: 48px; }
+    .hero .eyebrow {
+      font-weight: 300;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--sage);
+      margin-bottom: 12px;
+    }
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 5vw, 2.8rem);
+      font-weight: 500;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .hero p {
+      font-size: 15px;
+      line-height: 1.7;
+      color: #5a5a58;
+      max-width: 520px;
+      margin: 0 auto;
+    }
 
-@media(max-width:900px){
-  .nav-links{display:none}
-  .nav-drawer{display:flex}
-  .nav-burger{display:block}
-}
-</style>
+    /* Divider */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 32px 0;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .divider span {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      color: var(--warm);
+      line-height: 1;
+    }
+
+    /* Card */
+    .card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+    .card h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    .card .card-desc {
+      font-size: 14px;
+      color: #6b6b69;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    /* Search */
+    .search-row { display: flex; gap: 10px; }
+    .search-row input {
+      flex: 1;
+      font-family: 'Jost', sans-serif;
+      font-size: 15px;
+      padding: 12px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      background: var(--cream);
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-row input:focus { border-color: var(--sage); }
+    .search-row input::placeholder { color: #aaa; }
+
+    .btn {
+      font-family: 'Jost', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      padding: 12px 22px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn:hover { opacity: 0.85; }
+    .btn-sage { background: var(--sage); color: #fff; }
+
+    /* Result */
+    #lookup-result { margin-top: 20px; display: none; }
+
+    .result-found {
+      border-radius: 10px;
+      padding: 20px 22px;
+      border: 1.5px solid;
+    }
+    .result-found.ceremony { background: var(--sage-light); border-color: var(--sage); }
+    .result-found.reception { background: var(--sky-light);  border-color: var(--sky); }
+
+    .result-found .result-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .result-found.ceremony .result-label { color: var(--sage); }
+    .result-found.reception .result-label { color: var(--sky); }
+
+    .result-found .result-icon { font-size: 22px; margin-bottom: 8px; }
+    .result-found .result-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.35rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .result-found .result-detail { font-size: 13.5px; line-height: 1.6; color: #4a4a48; }
+
+    .result-not-found {
+      border-radius: 10px;
+      padding: 20px 22px;
+      background: var(--warm-light);
+      border: 1.5px solid var(--warm);
+    }
+    .result-not-found .result-label {
+      font-size: 11px; font-weight: 500; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--warm); margin-bottom: 6px;
+    }
+    .result-not-found .result-icon { font-size: 22px; margin-bottom: 8px; }
+    .result-not-found .result-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.35rem; font-weight: 600; margin-bottom: 8px;
+    }
+    .result-not-found .result-detail { font-size: 13.5px; line-height: 1.6; color: #5a4a38; }
+    .contact-link {
+      display: inline-block; margin-top: 10px; font-size: 13px;
+      font-weight: 500; color: var(--warm); text-decoration: underline;
+    }
+
+    /* RSVP section */
+    #rsvp-section { display: none; }
+    #rsvp-section.visible { display: block; }
+
+    .note-box {
+      background: var(--warm-light);
+      border: 1px solid #e8c89a;
+      border-radius: 8px;
+      padding: 14px 18px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #5a4a38;
+      margin-bottom: 20px;
+    }
+    .note-box strong { color: var(--warm); }
+
+    .btn-full {
+      width: 100%;
+      padding: 16px;
+      font-size: 15px;
+      text-align: center;
+    }
+
+    /* Success */
+    #rsvp-success { display: none; }
+    #rsvp-success.visible { display: block; }
+    .success-box {
+      border-radius: 10px;
+      padding: 24px;
+      background: var(--sage-light);
+      border: 1.5px solid var(--sage);
+      text-align: center;
+    }
+    .success-box .s-icon { font-size: 32px; margin-bottom: 10px; }
+    .success-box h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem; font-weight: 500; margin-bottom: 8px;
+    }
+    .success-box p { font-size: 14px; color: #4a4a48; line-height: 1.6; }
+
+    @media (max-width: 500px) {
+      .card { padding: 22px 18px; }
+      .search-row { flex-direction: column; }
+    }
+  </style>
 </head>
 <body>
 
-<!-- NAV -->
-<div id="pw-gate">
-  <div class="pw-sun">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-      <circle cx="50" cy="50" r="22" fill="#C4894A"/>
-      <g stroke="#C4894A" stroke-width="7" stroke-linecap="round">
-        <line x1="50" y1="8"  x2="50" y2="18"/>
-        <line x1="50" y1="82" x2="50" y2="92"/>
-        <line x1="8"  y1="50" x2="18" y2="50"/>
-        <line x1="82" y1="50" x2="92" y2="50"/>
-        <line x1="21" y1="21" x2="28" y2="28"/>
-        <line x1="72" y1="72" x2="79" y2="79"/>
-        <line x1="79" y1="21" x2="72" y2="28"/>
-        <line x1="28" y1="72" x2="21" y2="79"/>
-      </g>
-    </svg>
+<script>
+  if (window.self === window.top) {
+    window.location.replace('/?page=rsvp');
+  } else {
+    document.body.style.visibility = 'visible';
+  }
+</script>
+
+<div class="page">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="eyebrow">20 September 2027</div>
+    <h1>Save the Date &amp; <em>Pre-RSVP</em></h1>
+    <p>
+      We're getting married! Before we send formal invitations, we'd love to get an
+      early sense of who can make it — this <strong>pre-RSVP</strong> is just a
+      heads-up for us, not a binding commitment. A proper RSVP will follow closer
+      to the date.
+    </p>
   </div>
-  <h1 class="pw-title">Bruno <span>&amp;</span> Sally</h1>
-  <p class="pw-sub">18th September 2027 &middot; Newton Ferrers, Devon</p>
-  <div class="pw-form">
-    <input class="pw-input" id="pw-input" type="password"
-      placeholder="Enter password"
-      autocomplete="current-password"
-      onkeydown="if(event.key==='Enter')checkPw()"/>
-    <button class="pw-btn" onclick="checkPw()">Enter</button>
-    <p class="pw-err" id="pw-err"></p>
-    <p class="pw-hint">Check your invitation for the password, or drop us a message.</p>
+
+  <div class="divider"><span>&#10022;</span></div>
+
+  <!-- Step 1: Guest lookup -->
+  <div class="card">
+    <h2>Are you on the guest list?</h2>
+    <p class="card-desc">
+      Type your name below exactly as you'd expect us to have it, to check your
+      invite and see whether you're joining us for the ceremony, reception, or both.
+    </p>
+
+    <div class="search-row">
+      <input
+        type="text"
+        id="name-input"
+        placeholder="e.g. Jane Smith"
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <button class="btn btn-sage" onclick="lookupGuest()">Check</button>
+    </div>
+
+    <div id="lookup-result"></div>
   </div>
-</div>
 
+  <!-- Step 2: Pre-RSVP (shown after found) -->
+  <div id="rsvp-section">
+    <div class="card">
+      <h2>Pre-RSVP</h2>
+      <p class="card-desc">
+        Let us know if you're planning to come — no pressure, no commitment. We'll
+        send a proper invitation and formal RSVP request nearer the time.
+      </p>
 
-<nav id="nav">
-  <div class="nav-inner">
-    <a class="nav-brand" onclick="nav('home');return false" href="/home">Bruno <span>&amp;</span> Sally</a>
-    <ul class="nav-links" id="desktopNav">
-      <li></li>
-      <li><a onclick="nav('the-day');return false" href="/the-day" data-page="the-day">The Day</a></li>
-      <li><a onclick="nav('our-story');return false" href="/our-story" data-page="our-story">Our Story</a></li>
-      <li><a onclick="nav('rsvp');return false" href="/rsvp" data-page="rsvp">RSVP</a></li>
-      <li><a onclick="nav('faq');return false" href="/faq" data-page="faq">FAQ</a></li>
-      <li><a onclick="nav('wedding-party');return false" href="/wedding-party" data-page="wedding-party">Wedding Party</a></li>
-      <li><a onclick="nav('day-after');return false" href="/day-after" data-page="day-after">Sunday 19th</a></li>
-      <li><a onclick="nav('games');return false" href="/games" data-page="games" class="games-link">Games 🎮</a></li>
-      <li><a onclick="nav('community');return false" href="/community" data-page="community" class="games-link">The Board 💬</a></li>
-    </ul>
-    <button class="nav-burger" onclick="toggleDrawer()" aria-label="Menu">&#9776;</button>
+      <div class="note-box">
+        <strong>Just a heads-up:</strong> This is an early indication only — we'll
+        send formal invitations and a full RSVP form closer to the wedding. No need
+        to book anything yet!
+      </div>
+
+      <button class="btn btn-sage btn-full" id="rsvp-btn" onclick="openRSVP()">
+        Fill in pre-RSVP &#8594;
+      </button>
+    </div>
   </div>
-</nav>
 
-<!-- MOBILE DRAWER -->
-<nav class="nav-drawer" id="drawer">
-  <a onclick="nav('the-day');closeDrawer();return false" href="/the-day">The Day</a>
-  <a onclick="nav('our-story');closeDrawer();return false" href="/our-story">Our Story</a>
-  <a onclick="nav('rsvp');closeDrawer();return false" href="/rsvp">RSVP</a>
-  <a onclick="nav('faq');closeDrawer();return false" href="/faq">FAQ</a>
-  <a onclick="nav('wedding-party');closeDrawer();return false" href="/wedding-party">Wedding Party</a>
-  <a onclick="nav('day-after');closeDrawer();return false" href="/day-after">Sunday 19th</a>
-  <a onclick="nav('games');closeDrawer();return false" href="/games" style="color:var(--warm-light)">Games 🎮</a>
-  <a onclick="nav('community');closeDrawer();return false" href="/community" style="color:var(--warm-light)">The Board 💬</a>
-</nav>
+  <!-- Success (shown after Google Form opened) -->
+  <div id="rsvp-success">
+    <div class="success-box">
+      <div class="s-icon">&#127807;</div>
+      <h3>Thanks — almost done!</h3>
+      <p>The pre-RSVP form has opened in a new tab. Once you've submitted it we're all set — we can't wait to celebrate with you!</p>
+    </div>
+  </div>
 
-<!-- PAGE LOADER BAR -->
-<div id="page-loader"></div>
+  <div class="divider" style="margin-top:40px;"><span>&#10022;</span></div>
 
-<!-- CONTENT IFRAME -->
-<iframe id="content-frame" src="/home" title="Content"></iframe>
+  <div style="text-align:center; padding-bottom: 12px;">
+    <p style="font-size:14px; color:#6b6b69; line-height:1.7;">
+      Not finding your name, or have questions?<br/>
+      Reach out directly to Sally &amp; Bruno at
+      <a href="mailto:brunoandsally@gmail.com" style="color:var(--sage);font-weight:500;">brunoandsally@gmail.com</a>
+    </p>
+  </div>
 
-<!-- SPOTIFY -->
-<div id="spotify-bar">
-  <iframe src="https://open.spotify.com/embed/playlist/4tHQlLOP1GLsuQMilIUehP?utm_source=generator&theme=0"
-    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-    loading="lazy"></iframe>
-</div>
-<button id="spotify-toggle" onclick="toggleSpotify()" aria-label="Toggle music" title="WeddingJamz playlist">
-  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
-  </svg>
-</button>
+</div><!-- /page -->
 
 <script>
-// ── Password gate ─────────────────────────────────────────────
-var PW_KEY = 'bs_auth';
-var PW_HASH = '7a8b2c4d9e1f3a5b'; // marker — real check below
+  // ── Google Form URL ──
+  // To enable name pre-fill: open your form, click the three-dot menu → "Get pre-filled link",
+  // fill in a dummy name, copy the URL — it will contain ?entry.XXXXXXX=dummy.
+  // Replace ENTRY_ID_HERE with that number and uncomment the pre-fill line below.
+  const FORM_BASE_URL = 'https://docs.google.com/forms/d/e/FAIpQLScoSFQtFHedJcSKe9RtJZTQf8iXfOKdTP-ZTZJGZorPxl32gA/viewform';
+  // const NAME_ENTRY_ID = 'entry.XXXXXXX'; // ← uncomment and fill in once you have it
 
-function checkPw() {
-  var val = document.getElementById('pw-input').value;
-  var err = document.getElementById('pw-err');
-  if (val === 'Bruno\u0026Sally!') {
-    sessionStorage.setItem(PW_KEY, '1');
-    document.getElementById('pw-gate').classList.add('hidden');
-    err.textContent = '';
-  } else {
-    err.textContent = 'Incorrect password — try again.';
-    var inp = document.getElementById('pw-input');
-    inp.classList.remove('shake');
-    void inp.offsetWidth; // force reflow
-    inp.classList.add('shake');
-    inp.value = '';
-    inp.focus();
+  let foundGuest = null;
+
+  // ── Guest list: loaded from guests.csv in the same folder ──
+  let guestList = [];
+
+  async function loadGuestList() {
+    try {
+      const res = await fetch('guests.csv');
+      if (!res.ok) throw new Error('CSV not found');
+      const text = await res.text();
+      const lines = text.trim().split('\n').slice(1);
+      guestList = lines.map(line => {
+        const lastComma = line.lastIndexOf(',');
+        const name = line.slice(0, lastComma).trim().replace(/^"|"$/g, '');
+        const invite_type = line.slice(lastComma + 1).trim();
+        return { name, invite_type };
+      }).filter(g => g.name);
+    } catch (e) {
+      console.warn('Could not load guests.csv, using inline fallback');
+      guestList = INLINE_GUESTS;
+    }
   }
-}
 
-// Show gate or proceed straight to site
-if (sessionStorage.getItem(PW_KEY) === '1') {
-  document.getElementById('pw-gate').classList.add('hidden');
-} else {
-  // Hide the main site until authenticated
-  document.getElementById('nav').style.visibility = 'hidden';
-  document.getElementById('content-frame').style.visibility = 'hidden';
-  document.getElementById('spotify-toggle').style.visibility = 'hidden';
-  window.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('pw-input').focus();
+  // ── Exact match (case-insensitive, whitespace-normalised) ──
+  function normalise(str) {
+    return str.toLowerCase().replace(/\s+/g, ' ').trim();
+  }
+
+  function findGuest(query) {
+    const q = normalise(query);
+    if (!q) return null;
+    return guestList.find(g => normalise(g.name) === q) || null;
+  }
+
+  function lookupGuest() {
+    const query = document.getElementById('name-input').value.trim();
+    if (!query) return;
+
+    const guest = findGuest(query);
+    const resultEl = document.getElementById('lookup-result');
+    resultEl.style.display = 'block';
+
+    if (guest) {
+      foundGuest = guest;
+      const isCeremony = guest.invite_type === 'ceremony_reception';
+      const colClass = isCeremony ? 'ceremony' : 'reception';
+      const label    = isCeremony ? 'Ceremony &amp; Reception' : 'Reception only';
+      const icon     = isCeremony ? '&#127807;' : '&#10024;';
+      const detail   = isCeremony
+        ? "You're invited to the ceremony at Holy Cross Church, Newton Ferrers, and the reception at Carswell — both on 20 September 2027."
+        : "You're invited to the reception at Carswell on 20 September 2027. We can't wait to celebrate with you!";
+
+      resultEl.innerHTML = `
+        <div class="result-found ${colClass}">
+          <div class="result-icon">${icon}</div>
+          <div class="result-label">${label}</div>
+          <div class="result-name">${guest.name}</div>
+          <div class="result-detail">${detail}</div>
+        </div>`;
+
+      document.getElementById('rsvp-section').classList.add('visible');
+      setTimeout(() => {
+        document.getElementById('rsvp-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+
+    } else {
+      foundGuest = null;
+      document.getElementById('rsvp-section').classList.remove('visible');
+
+      resultEl.innerHTML = `
+        <div class="result-not-found">
+          <div class="result-icon">&#129300;</div>
+          <div class="result-label">Not found</div>
+          <div class="result-name">"${query}"</div>
+          <div class="result-detail">
+            We couldn't find that name on the guest list. Please try entering your
+            name exactly as you'd expect us to have it — including any middle names
+            or nicknames if relevant. If you're a plus-one, try searching for the
+            name we'd have you listed under (e.g. "Bel + 1").<br/><br/>
+            Still not finding it? Get in touch and we'll sort it out.
+            <br/>
+            <a class="contact-link" href="mailto:brunoandsally@gmail.com">
+              Contact Sally &amp; Bruno &#8594;
+            </a>
+          </div>
+        </div>`;
+    }
+  }
+
+  function openRSVP() {
+    // Build URL — add pre-fill param once you have the entry ID
+    let url = FORM_BASE_URL;
+    // Uncomment the line below once NAME_ENTRY_ID is set:
+    // if (foundGuest) url += '?usp=pp_url&' + NAME_ENTRY_ID + '=' + encodeURIComponent(foundGuest.name);
+    window.open(url, '_blank');
+
+    // Show success nudge
+    document.getElementById('rsvp-section').classList.remove('visible');
+    const successEl = document.getElementById('rsvp-success');
+    successEl.classList.add('visible');
+    successEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('name-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter') lookupGuest();
+    });
+    loadGuestList();
   });
-}
 
-// Unhide everything once gate is dismissed
-var _gateObs = new MutationObserver(function() {
-  if (document.getElementById('pw-gate').classList.contains('hidden')) {
-    document.getElementById('nav').style.visibility = '';
-    document.getElementById('content-frame').style.visibility = '';
-    document.getElementById('spotify-toggle').style.visibility = '';
-    _gateObs.disconnect();
-  }
-});
-_gateObs.observe(document.getElementById('pw-gate'), {attributes:true});
-
-var spOpen = false;
-var currentPage = '';
-var VALID = ['home','the-day','our-story','rsvp','faq','wedding-party','day-after','games','community'];
-var frame = document.getElementById('content-frame');
-
-// ── Navigation ──────────────────────────────────────────────
-function nav(page, pushState) {
-  if (!page || VALID.indexOf(page) < 0) page = 'home';
-  currentPage = page;
-
-  // Update URL bar
-  if (pushState !== false) {
-    history.pushState({page: page}, '', '/' + page);
-  }
-
-  // Update active highlights
-  setActive(page);
-
-  // Progress bar
-  var loader = document.getElementById('page-loader');
-  loader.className = 'loading';
-
-  // Load page into iframe — onload replaces itself each time (no stacking)
-  frame.classList.add('loading');
-  frame.onload = function() {
-    frame.classList.remove('loading');
-    loader.className = 'done';
-    setTimeout(function() { loader.className = ''; }, 400);
-    try { frame.contentWindow.scrollTo(0, 0); } catch(e) {}
-  };
-  frame.src = '/' + page;
-}
-
-function setActive(page) {
-  document.querySelectorAll('[data-page]').forEach(function(a) {
-    a.classList.toggle('active', a.dataset.page === page);
-  });
-}
-
-// ── Messages from inside the iframe ─────────────────────────
-// Content pages post: window.parent.postMessage({nav:'page-name'}, '*')
-window.addEventListener('message', function(e) {
-  if (e.data && e.data.nav && VALID.indexOf(e.data.nav) >= 0) {
-    nav(e.data.nav);
-  }
-});
-
-// ── Browser back / forward ──────────────────────────────────
-window.addEventListener('popstate', function(e) {
-  var page = (e.state && e.state.page) ? e.state.page : 'home';
-  nav(page, false);
-});
-
-// ── Detect initial page from URL or hash (set by redirect) ──
-function getInitialPage() {
-  // Check hash first — set by content pages when loaded directly
-  var hash = window.location.hash.replace(/^#/, '');
-  if (hash && VALID.indexOf(hash) >= 0) {
-    // Clean the hash from the URL
-    history.replaceState({page: hash}, '', '/' + hash);
-    return hash;
-  }
-  var path = window.location.pathname.replace(/^\//, '').split('/')[0];
-  return VALID.indexOf(path) >= 0 ? path : 'home';
-}
-
-// ── Spotify ──────────────────────────────────────────────────
-function toggleSpotify() {
-  spOpen = !spOpen;
-  document.getElementById('spotify-bar').classList.toggle('open', spOpen);
-  document.getElementById('spotify-toggle').classList.toggle('bar-open', spOpen);
-}
-
-// ── Mobile drawer ─────────────────────────────────────────────
-function toggleDrawer() { document.getElementById('drawer').classList.toggle('open'); }
-function closeDrawer()  { document.getElementById('drawer').classList.remove('open'); }
-
-// ── Handle redirect from 404.html (page refresh on deep link) ─
-var _redirect = sessionStorage.getItem('redirect-page');
-if (_redirect) { sessionStorage.removeItem('redirect-page'); }
-
-// ── Init ─────────────────────────────────────────────────────
-var initPage = _redirect || getInitialPage();
-currentPage = initPage;
-document.querySelectorAll('[data-page]').forEach(function(a) {
-  a.classList.toggle('active', a.dataset.page === initPage);
-});
-history.replaceState({page:initPage}, '', '/' + initPage);
-document.getElementById('content-frame').src = '/' + initPage;
+  // ── Inline fallback (mirrors guests.csv) ──
+  const INLINE_GUESTS = [
+    {name:"Sally Stacey",invite_type:"ceremony_reception"},
+    {name:"Bruno Renucci",invite_type:"ceremony_reception"},
+    {name:"Jon Stacey",invite_type:"ceremony_reception"},
+    {name:"Janice Stacey",invite_type:"ceremony_reception"},
+    {name:"Sophie Howard",invite_type:"ceremony_reception"},
+    {name:"Max Stacey",invite_type:"ceremony_reception"},
+    {name:"Judy Renucci",invite_type:"ceremony_reception"},
+    {name:"Paul Renucci",invite_type:"ceremony_reception"},
+    {name:"Sophia Staab",invite_type:"ceremony_reception"},
+    {name:"Callum Aughterson",invite_type:"ceremony_reception"},
+    {name:"Finlay Auticci",invite_type:"ceremony_reception"},
+    {name:"Adriana Renucci",invite_type:"ceremony_reception"},
+    {name:"Hugo Renucci",invite_type:"ceremony_reception"},
+    {name:"Tim Stacey",invite_type:"ceremony_reception"},
+    {name:"Sarah Stacey",invite_type:"ceremony_reception"},
+    {name:"Kay Phillips",invite_type:"ceremony_reception"},
+    {name:"Dave Phillips",invite_type:"ceremony_reception"},
+    {name:"Kate Stacey",invite_type:"ceremony_reception"},
+    {name:"Tom Stacey",invite_type:"ceremony_reception"},
+    {name:"Lara Phillips",invite_type:"ceremony_reception"},
+    {name:"Matthew Phillips",invite_type:"ceremony_reception"},
+    {name:"Emma Phillips",invite_type:"ceremony_reception"},
+    {name:"Freddie Phillips",invite_type:"ceremony_reception"},
+    {name:"Chris Phillips",invite_type:"ceremony_reception"},
+    {name:"Nain",invite_type:"ceremony_reception"},
+    {name:"Mike Dewey",invite_type:"ceremony_reception"},
+    {name:"Grandma Jan",invite_type:"ceremony_reception"},
+    {name:"Kennie Chelsom",invite_type:"ceremony_reception"},
+    {name:"Paul Chelsom",invite_type:"ceremony_reception"},
+    {name:"Biddie Davies",invite_type:"ceremony_reception"},
+    {name:"Jono Davies",invite_type:"ceremony_reception"},
+    {name:"Maddie Thompson",invite_type:"ceremony_reception"},
+    {name:"Hugh Thompson",invite_type:"ceremony_reception"},
+    {name:"Bel Chelsom",invite_type:"ceremony_reception"},
+    {name:"Harry Davies",invite_type:"ceremony_reception"},
+    {name:"Hari Davies 2",invite_type:"ceremony_reception"},
+    {name:"Dominic Chelsom",invite_type:"ceremony_reception"},
+    {name:"Meghan Davies",invite_type:"ceremony_reception"},
+    {name:"Dr Dan (Meg +1)",invite_type:"ceremony_reception"},
+    {name:"Mark Renucci",invite_type:"ceremony_reception"},
+    {name:"Auntie Roisin",invite_type:"ceremony_reception"},
+    {name:"Marisa Renucci",invite_type:"ceremony_reception"},
+    {name:"Joe Renucci",invite_type:"ceremony_reception"},
+    {name:"Paul Renucci (cousin)",invite_type:"ceremony_reception"},
+    {name:"Michael Renucci",invite_type:"ceremony_reception"},
+    {name:"Jess Renucci (Joe +1)",invite_type:"ceremony_reception"},
+    {name:"Demi Renucci",invite_type:"ceremony_reception"},
+    {name:"Christina Renucci",invite_type:"ceremony_reception"},
+    {name:"Marisa+1",invite_type:"ceremony_reception"},
+    {name:"Peter Renucci",invite_type:"ceremony_reception"},
+    {name:"Mark Renucci (cousin)",invite_type:"ceremony_reception"},
+    {name:"Pauline Renucci",invite_type:"ceremony_reception"},
+    {name:"Marianne Renucci (cousin)",invite_type:"ceremony_reception"},
+    {name:"Jamie (Michaels son)",invite_type:"ceremony_reception"},
+    {name:"Luca Gia & Other babies",invite_type:"ceremony_reception"},
+    {name:"Willow (Dom +1)",invite_type:"ceremony_reception"},
+    {name:"Wendy Veale",invite_type:"ceremony_reception"},
+    {name:"Emily Colmer",invite_type:"ceremony_reception"},
+    {name:"Bex Howell",invite_type:"ceremony_reception"},
+    {name:"Kayleigh Baker",invite_type:"ceremony_reception"},
+    {name:"Fliss James",invite_type:"ceremony_reception"},
+    {name:"Ben Hetzel",invite_type:"ceremony_reception"},
+    {name:"Josh Wong",invite_type:"ceremony_reception"},
+    {name:"Jamie Gray",invite_type:"ceremony_reception"},
+    {name:"Kirsty Dinsmore",invite_type:"ceremony_reception"},
+    {name:"Ted Morgan",invite_type:"ceremony_reception"},
+    {name:"Ali Ahmad",invite_type:"ceremony_reception"},
+    {name:"Luke Jagger",invite_type:"ceremony_reception"},
+    {name:"James Parsons",invite_type:"ceremony_reception"},
+    {name:"Nick Pilato",invite_type:"ceremony_reception"},
+    {name:"Archie Roberts",invite_type:"ceremony_reception"},
+    {name:"Merc Stringer-Martin",invite_type:"ceremony_reception"},
+    {name:"Janusz Drogomirecki",invite_type:"ceremony_reception"},
+    {name:"Ella Beardsley",invite_type:"ceremony_reception"},
+    {name:"George Kolarov",invite_type:"ceremony_reception"},
+    {name:"Cecily Edwards",invite_type:"ceremony_reception"},
+    {name:"Benjamin Bowen-Jones",invite_type:"ceremony_reception"},
+    {name:"Hamish Woodham",invite_type:"ceremony_reception"},
+    {name:"Laura Clarke",invite_type:"ceremony_reception"},
+    {name:"Christie Charnock",invite_type:"ceremony_reception"},
+    {name:"Bradley Charnock",invite_type:"ceremony_reception"},
+    {name:"Vanessa Morro",invite_type:"ceremony_reception"},
+    {name:"Sarah Blampied",invite_type:"ceremony_reception"},
+    {name:"Brad Blampied",invite_type:"ceremony_reception"},
+    {name:"George Mattimoe",invite_type:"ceremony_reception"},
+    {name:"Joseph Weston",invite_type:"ceremony_reception"},
+    {name:"Christopher-James Dewilde",invite_type:"ceremony_reception"},
+    {name:"Erica Dewilde",invite_type:"ceremony_reception"},
+    {name:"Cecilia Derrick",invite_type:"ceremony_reception"},
+    {name:"Emma Hetzel",invite_type:"ceremony_reception"},
+    {name:"Faye Rota",invite_type:"ceremony_reception"},
+    {name:"Sean Rota",invite_type:"ceremony_reception"},
+    {name:"Bao Wang",invite_type:"ceremony_reception"},
+    {name:"Jack Wadsworth",invite_type:"ceremony_reception"},
+    {name:"Ella Walker-Hunt",invite_type:"ceremony_reception"},
+    {name:"Tracey Wilson",invite_type:"ceremony_reception"},
+    {name:"James Wilson",invite_type:"ceremony_reception"},
+    {name:"Eilish (Perth)",invite_type:"ceremony_reception"},
+    {name:"Toni (Perth)",invite_type:"ceremony_reception"},
+    {name:"Brian James",invite_type:"ceremony_reception"},
+    {name:"Jules James",invite_type:"ceremony_reception"},
+    {name:"Helen Colmer",invite_type:"ceremony_reception"},
+    {name:"Mark Colmer",invite_type:"ceremony_reception"},
+    {name:"Charles James",invite_type:"ceremony_reception"},
+    {name:"Ollie",invite_type:"ceremony_reception"},
+    {name:"Giselle Thong",invite_type:"reception_only"},
+    {name:"Ben Nouhan",invite_type:"reception_only"},
+    {name:"Gabi Watkins",invite_type:"reception_only"},
+    {name:"Natalie Pound",invite_type:"reception_only"},
+    {name:"Jenny Wark",invite_type:"reception_only"},
+    {name:"Bokun Wei",invite_type:"reception_only"},
+    {name:"Leia Findlay",invite_type:"reception_only"},
+    {name:"Nick Boreham",invite_type:"reception_only"},
+    {name:"Ben Mcdonald",invite_type:"reception_only"},
+    {name:"Abhitaj Banga",invite_type:"reception_only"},
+    {name:"Gurinder Jagpal",invite_type:"reception_only"},
+    {name:"Sian Harvey",invite_type:"reception_only"},
+    {name:"Jenny Whitten",invite_type:"reception_only"},
+    {name:"Andy Govier",invite_type:"reception_only"},
+    {name:"Sophie Lloyd",invite_type:"reception_only"},
+    {name:"Lucy Baston",invite_type:"reception_only"},
+    {name:"Felix Woodroffe",invite_type:"reception_only"},
+    {name:"Holly Clibben",invite_type:"reception_only"},
+    {name:"Sam Green",invite_type:"reception_only"},
+    {name:"Roseanna McMahon",invite_type:"reception_only"},
+    {name:"Ryan Palmer",invite_type:"reception_only"},
+    {name:"Bea Pengally",invite_type:"reception_only"},
+    {name:"Tegan",invite_type:"reception_only"},
+    {name:"Amber",invite_type:"reception_only"},
+    {name:"Chris Cawthorn",invite_type:"reception_only"},
+    {name:"Xinyi Liu",invite_type:"reception_only"},
+    {name:"Adam Driver",invite_type:"reception_only"},
+    {name:"Erald Ceni",invite_type:"reception_only"},
+    {name:"Angie Rodrigues",invite_type:"reception_only"},
+    {name:"George Davies",invite_type:"reception_only"},
+    {name:"Sophie Stevens",invite_type:"reception_only"},
+    {name:"Rachel Sfier",invite_type:"reception_only"},
+    {name:"Nitai (Nat +1)",invite_type:"reception_only"},
+    {name:"Max Findlay",invite_type:"reception_only"},
+    {name:"Aylish Boreham",invite_type:"reception_only"},
+    {name:"Ish Mcdonald (Ben +1)",invite_type:"reception_only"},
+    {name:"Chris (Sian +1)",invite_type:"reception_only"},
+    {name:"Dani (Andy +1)",invite_type:"reception_only"},
+    {name:"Kieron (Sophie +1)",invite_type:"reception_only"},
+    {name:"Ben (Lucy +1)",invite_type:"reception_only"},
+    {name:"Ali (Felix +1)",invite_type:"reception_only"},
+    {name:"Gittis (Holly +1)",invite_type:"reception_only"},
+    {name:"Plus one (Tegan +1)",invite_type:"reception_only"},
+    {name:"Anica (Chris Cawthorn +1)",invite_type:"reception_only"},
+    {name:"Je (Xinyi Liu +1)",invite_type:"reception_only"},
+    {name:"Josh (Angie Rodrigues +1)",invite_type:"reception_only"},
+    {name:"Emily (George Davies +1)",invite_type:"reception_only"},
+    {name:"Bel + 1",invite_type:"reception_only"},
+    {name:"Tom +1",invite_type:"reception_only"},
+    {name:"Kate +1",invite_type:"reception_only"}
+  ];
 </script>
+
 </body>
 </html>
