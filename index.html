@@ -404,6 +404,18 @@ function findGuest(input) {
 }
 
 // ── Name gate logic ───────────────────────────────────────
+function trackNameAttempt(name, result) {
+  try {
+    var ts = new Date().toISOString();
+    var url = 'https://docs.google.com/forms/d/e/1FAIpQLSfDRjl4uRizyqtIKoHLZnXIx_7Jpi7CT9KnKE_rtYQHSoPKFA/formResponse'
+      + '?entry.202771314=' + encodeURIComponent(name)
+      + '&entry.200099905=' + encodeURIComponent(result)
+      + '&entry.564109827=' + encodeURIComponent(ts)
+      + '&submit=Submit';
+    fetch(url, { method: 'GET', mode: 'no-cors' }).catch(function(){});
+  } catch(e) {}
+}
+
 function checkName() {
   var input = document.getElementById('name-input');
   var err   = document.getElementById('name-err');
@@ -420,8 +432,10 @@ function checkName() {
   loadGuests(function() {
     var guest = findGuest(val);
     if (guest) {
+      trackNameAttempt(val, 'found');
       showResult(guest);
     } else {
+      trackNameAttempt(val, 'not found');
       err.textContent = 'Name not found \u2014 try your full name as it appears on your invitation.';
       input.classList.remove('shake');
       void input.offsetWidth;
