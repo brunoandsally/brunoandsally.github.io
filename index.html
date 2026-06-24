@@ -407,12 +407,16 @@ function findGuest(input) {
 function trackNameAttempt(name, result) {
   try {
     var ts = new Date().toISOString();
-    var url = 'https://docs.google.com/forms/d/e/1FAIpQLSfDRjl4uRizyqtIKoHLZnXIx_7Jpi7CT9KnKE_rtYQHSoPKFA/formResponse'
-      + '?entry.202771314=' + encodeURIComponent(name)
-      + '&entry.200099905=' + encodeURIComponent(result)
-      + '&entry.564109827=' + encodeURIComponent(ts)
-      + '&submit=Submit';
-    fetch(url, { method: 'GET', mode: 'no-cors' }).catch(function(){});
+    var body = 'entry.202771314=' + encodeURIComponent(name)
+             + '&entry.200099905=' + encodeURIComponent(result)
+             + '&entry.564109827=' + encodeURIComponent(ts)
+             + '&submit=Submit';
+    fetch('https://docs.google.com/forms/d/e/1FAIpQLSfDRjl4uRizyqtIKoHLZnXIx_7Jpi7CT9KnKE_rtYQHSoPKFA/formResponse', {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: body
+    }).catch(function(){});
   } catch(e) {}
 }
 
@@ -496,7 +500,14 @@ document.addEventListener('DOMContentLoaded', function() {
 (function() {
   var stored = localStorage.getItem(AUTH_KEY);
   if (stored) {
-    // Already verified — go straight in
+    // Already verified — go straight in, apply invite type restrictions
+    try {
+      var g = JSON.parse(stored);
+      if (g.invite_type === 'reception') {
+        var cr = document.getElementById('result-ceremony-row');
+        if (cr) cr.style.display = 'none';
+      }
+    } catch(e) {}
     document.getElementById('name-gate').classList.add('hidden');
   } else {
     // Hide site until authenticated
