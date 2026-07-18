@@ -130,6 +130,29 @@ html,body{
 .deco-dots span:nth-child(2){background:var(--warm-light)}
 .deco-dots span:nth-child(3){background:var(--sage-light)}
 
+/* ── ROUGH TIMINGS ── */
+.timings-card{
+  width:100%;max-width:440px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:4px;
+  padding:1.7rem 1.9rem;
+  margin:2.6rem auto 0;
+  text-align:left;
+  box-shadow:0 2px 12px rgba(44,44,42,0.06);
+}
+.timings-title{
+  font-size:0.65rem;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--warm);margin-bottom:1.2rem;text-align:center;
+}
+.timings-list{display:flex;flex-direction:column;gap:0}
+.timings-row{display:flex;align-items:baseline;gap:1rem;padding:0.65rem 0;border-bottom:1px solid var(--line)}
+.timings-row:last-child{border-bottom:none;padding-bottom:0}
+.t-time{flex-shrink:0;width:112px;font-family:"Cormorant Garamond",serif;font-size:1.05rem;color:var(--ink);font-weight:500}
+.t-desc{font-size:0.83rem;color:var(--ink-soft);line-height:1.4}
+.timings-note{font-size:0.78rem;color:var(--ink-soft);font-style:italic;text-align:center;margin-top:1.3rem}
+@media(max-width:480px){.timings-card{padding:1.4rem 1.3rem}.t-time{width:90px;font-size:0.95rem}}
+
 footer{
   background:var(--ink);color:rgba(255,255,255,0.4);
   text-align:center;padding:2.5rem 1.5rem;
@@ -197,6 +220,19 @@ footer{
     <span class="dot"></span>
     To be announced soon
     <span class="dot"></span>
+  </div>
+
+  <div class="timings-card">
+    <p class="timings-title">Rough timings</p>
+    <div class="timings-list">
+      <div class="timings-row"><span class="t-time">12:15pm</span><span class="t-desc">Arrive at Holy Cross Church, Newton Ferrers</span></div>
+      <div class="timings-row"><span class="t-time">12:30pm</span><span class="t-desc">Ceremony begins</span></div>
+      <div class="timings-row"><span class="t-time">Afternoon</span><span class="t-desc">Wedding breakfast &amp; drinks at Carswell</span></div>
+      <div class="timings-row"><span class="t-time">7:00pm</span><span class="t-desc">Evening guests arrive at Carswell</span></div>
+      <div class="timings-row"><span class="t-time">Evening</span><span class="t-desc">Dancing &amp; celebrations</span></div>
+      <div class="timings-row"><span class="t-time">11pm &amp; 12:30am</span><span class="t-desc">Shuttle buses depart for Plymouth</span></div>
+    </div>
+    <p class="timings-note">These are rough timings for now &mdash; more detail to follow closer to the day.</p>
   </div>
 
   <div class="deco-dots">

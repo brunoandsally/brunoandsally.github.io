@@ -341,7 +341,7 @@ body{display:flex;flex-direction:column;background:var(--cream)}
       <div class="result-card-body">
         <div class="invite-row"><span class="invite-lbl">Invited to</span><span class="invite-val" id="result-invite"></span></div>
         <div class="invite-row" id="result-ceremony-row"><span class="invite-lbl">Ceremony</span><span class="invite-val">Holy Cross Church, Newton Ferrers · 12:30 PM</span></div>
-        <div class="invite-row"><span class="invite-lbl">Reception</span><span class="invite-val">Carswell, Devon · from 19:00</span></div>
+        <div class="invite-row"><span class="invite-lbl" id="result-venue-label">Reception</span><span class="invite-val">Carswell, Devon · from 19:00</span></div>
       </div>
     </div>
     <div class="result-actions">
@@ -631,7 +631,7 @@ function checkName() {
 
 function inviteLabel(type) {
   if (type === 'ceremony_reception') return 'Ceremony &amp; Reception';
-  if (type === 'reception_only' || type === 'reception') return 'Reception';
+  if (type === 'reception_only' || type === 'reception') return 'Evening';
   return type;
 }
 
@@ -640,12 +640,15 @@ function showResult(guest) {
   document.getElementById('result-name').textContent = guest.name;
   document.getElementById('result-invite').innerHTML = inviteLabel(guest.invite_type);
 
-  // Hide ceremony row for reception-only guests
+  // Hide ceremony row for evening-only guests, and relabel the venue row
   var ceremRow = document.getElementById('result-ceremony-row');
+  var venueLbl = document.getElementById('result-venue-label');
   if (guest.invite_type === 'reception_only' || guest.invite_type === 'reception') {
     ceremRow.style.display = 'none';
+    venueLbl.textContent = 'Evening';
   } else {
     ceremRow.style.display = '';
+    venueLbl.textContent = 'Reception';
   }
 
   // Append name to RSVP form URL as a prefill hint (entry.name field not mapped, just friendly)
@@ -686,6 +689,8 @@ document.addEventListener('DOMContentLoaded', function() {
       if (g.invite_type === 'reception_only' || g.invite_type === 'reception') {
         var cr = document.getElementById('result-ceremony-row');
         if (cr) cr.style.display = 'none';
+        var vl = document.getElementById('result-venue-label');
+        if (vl) vl.textContent = 'Evening';
       }
     } catch(e) {}
     document.getElementById('name-gate').classList.add('hidden');

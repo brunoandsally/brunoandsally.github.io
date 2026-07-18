@@ -413,7 +413,7 @@
       foundGuest = guest;
       const isCeremony = guest.invite_type === 'ceremony_reception';
       const colClass = isCeremony ? 'ceremony' : 'reception';
-      const label    = isCeremony ? 'Ceremony &amp; Reception' : 'Reception';
+      const label    = isCeremony ? 'Ceremony &amp; Reception' : 'Evening';
       const icon     = isCeremony ? '&#127807;' : '&#10024;';
 
       const firstName = guest.name.split(' ')[0];
@@ -445,14 +445,14 @@
       } else {
         detailHTML = `
           <div class="result-intro">
-            We would love to invite you to celebrate with us at our
-            <strong>wedding reception</strong> on <strong>Saturday, 18 September 2027</strong>.
+            We would love to invite you to celebrate with us in the
+            <strong>evening</strong> on <strong>Saturday, 18 September 2027</strong>.
           </div>
           <div class="result-events">
             <div class="result-event">
               <div class="ev-icon">&#127870;</div>
               <div class="ev-body">
-                <div class="ev-title">Drinks &amp; Reception</div>
+                <div class="ev-title">Evening Reception</div>
                 <div class="ev-detail">Carswell, Devon<br/>Time: TBC</div>
               </div>
             </div>
