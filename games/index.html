@@ -213,6 +213,37 @@ footer .fn{font-family:"Cormorant Garamond",serif;font-size:1.2rem;color:rgba(25
   .cw-cell{width:30px;height:30px}
   .cw-cell input{font-size:0.9rem}
 }
+
+/* BLACKJACK */
+.bj-wrap{display:flex;flex-direction:column;gap:1.2rem;max-width:600px}
+.bj-felt{background:var(--ink);border-radius:12px;padding:1.8rem 1.5rem;display:flex;flex-direction:column;gap:1.5rem}
+.bj-section-label{font-size:0.62rem;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:0.5rem}
+.bj-hand{display:flex;flex-wrap:wrap;gap:8px;min-height:90px;align-items:flex-start}
+.bj-card{width:58px;height:84px;border-radius:6px;background:#fff;display:flex;flex-direction:column;justify-content:space-between;padding:5px 6px;font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,0.35);flex-shrink:0;position:relative}
+.bj-card .top{font-size:0.9rem;line-height:1}
+.bj-card .suit{font-size:1.4rem;line-height:1;text-align:center;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
+.bj-card .bot{font-size:0.9rem;line-height:1;align-self:flex-end;transform:rotate(180deg)}
+.bj-card.red{color:#b83232}
+.bj-card.black{color:var(--ink)}
+.bj-card.back{background:repeating-linear-gradient(135deg,var(--sage) 0px,var(--sage) 5px,var(--sage-light) 5px,var(--sage-light) 10px);box-shadow:0 2px 8px rgba(0,0,0,0.35)}
+.bj-card.back::after{content:'B\26S';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:0.75rem;font-style:italic;color:rgba(255,255,255,0.75);letter-spacing:0.05em}
+.bj-value{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;color:rgba(255,255,255,0.7);min-width:2ch;text-align:right}
+.bj-row{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.bj-chip-row{display:flex;gap:8px;flex-wrap:wrap}
+.bj-chip{width:52px;height:52px;border-radius:50%;border:3px dashed rgba(255,255,255,0.5);background:transparent;color:#fff;font-family:'Jost',sans-serif;font-size:0.78rem;font-weight:700;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center}
+.bj-chip:hover{background:rgba(255,255,255,0.12);transform:scale(1.08)}
+.bj-chip.c5{border-color:#e8c49a;color:#e8c49a}
+.bj-chip.c10{border-color:#8FA882;color:#8FA882}
+.bj-chip.c25{border-color:#7BAFD4;color:#7BAFD4}
+.bj-chip.c50{border-color:#C4894A;color:#C4894A}
+.bj-chip.c100{border-color:#d4a;color:#d4a}
+.bj-bet-display{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:#fff;min-width:4ch;text-align:center}
+.bj-bank{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:300;color:rgba(255,255,255,0.65)}
+.bj-actions{display:flex;gap:0.6rem;flex-wrap:wrap}
+.bj-result{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;color:#fff;text-align:center;min-height:2.4rem}
+.bj-result.win{color:var(--warm-light)}
+.bj-result.lose{color:rgba(255,255,255,0.5)}
+.bj-result.push{color:#8FA882}
 </style>
 </head>
 <body>
@@ -240,6 +271,7 @@ footer .fn{font-family:"Cormorant Garamond",serif;font-size:1.2rem;color:rgba(25
   <button class="tab-btn" onclick="switchTab('twentyfourtyeight',this)">2048</button>
   <button class="tab-btn" onclick="switchTab('minesweeper',this)">Minesweeper</button>
   <button class="tab-btn" onclick="switchTab('snake',this)">Snake</button>
+  <button class="tab-btn" onclick="switchTab('blackjack',this)">Blackjack</button>
 </div>
 
 <!-- ══ WEDDLE ══ -->
@@ -433,6 +465,75 @@ footer .fn{font-family:"Cormorant Garamond",serif;font-size:1.2rem;color:rgba(25
   </div>
 </div>
 
+<!-- ══ BLACKJACK ══ -->
+<div class="game-panel" id="panel-blackjack">
+  <h2 class="game-title">Blackjack</h2>
+  <p class="game-desc">Beat the dealer to 21. You start with £500 — try not to blow it all before the speeches.</p>
+  <div class="bj-wrap">
+    <div class="bj-felt">
+      <!-- Dealer -->
+      <div>
+        <div class="bj-row">
+          <div class="bj-section-label">Dealer</div>
+          <div class="bj-value" id="bj-dealer-val"></div>
+        </div>
+        <div class="bj-hand" id="bj-dealer-hand"></div>
+      </div>
+      <!-- Player -->
+      <div>
+        <div class="bj-row">
+          <div class="bj-section-label">You</div>
+          <div class="bj-value" id="bj-player-val"></div>
+        </div>
+        <div class="bj-hand" id="bj-player-hand"></div>
+      </div>
+      <!-- Result -->
+      <div class="bj-result" id="bj-result"></div>
+    </div>
+
+    <!-- Betting area -->
+    <div id="bj-betting-area">
+      <div class="bj-row" style="margin-bottom:0.8rem">
+        <div>
+          <div style="font-size:0.65rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:0.25rem">Bank</div>
+          <div class="bj-bank" style="font-size:1.4rem;color:var(--ink)" id="bj-bank">£500</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:0.65rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:0.25rem">Bet</div>
+          <div class="bj-bet-display" style="color:var(--ink)" id="bj-bet-display">£0</div>
+        </div>
+        <button class="btn btn-outline" style="font-size:0.68rem" onclick="bjClearBet()">Clear</button>
+      </div>
+      <div class="bj-chip-row" id="bj-chips">
+        <button class="bj-chip c5" onclick="bjAddBet(5)">£5</button>
+        <button class="bj-chip c10" onclick="bjAddBet(10)">£10</button>
+        <button class="bj-chip c25" onclick="bjAddBet(25)">£25</button>
+        <button class="bj-chip c50" onclick="bjAddBet(50)">£50</button>
+        <button class="bj-chip c100" onclick="bjAddBet(100)">£100</button>
+      </div>
+      <div style="margin-top:1rem">
+        <button class="btn btn-sage" onclick="bjDeal()">Deal</button>
+      </div>
+    </div>
+
+    <!-- Action buttons (shown during play) -->
+    <div class="bj-actions" id="bj-actions" style="display:none">
+      <button class="btn btn-sage" onclick="bjHit()">Hit</button>
+      <button class="btn btn-outline" onclick="bjStand()">Stand</button>
+      <button class="btn btn-warm" id="bj-double-btn" onclick="bjDouble()">Double</button>
+    </div>
+
+    <div class="game-msg" id="bj-msg"></div>
+  </div>
+
+  <!-- Leaderboard -->
+  <div style="margin-top:2.5rem;max-width:500px">
+    <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:400;margin-bottom:1rem">Leaderboard — Biggest Banks</h3>
+    <div id="bj-scores-list"></div>
+    <p style="font-size:0.78rem;color:var(--ink-soft);margin-top:0.8rem;font-style:italic">Scores synced live — compete with everyone!</p>
+  </div>
+</div>
+
 <footer>
   <p class="fn">Bruno &amp; Sally · 20 Sept 2027</p>
   <p>Made with love, Aperol Spritz, and a lot of games &#x1F9E9;</p>
@@ -449,6 +550,7 @@ function switchTab(id, btn) {
   if(id==='twentyfourtyeight'&&!T48.initted){t48New();t48RenderLeaderboard();}
   if(id==='minesweeper'&&!MS.initted){msNew('easy');msRenderLeaderboard();}
   if(id==='snake'&&!SN.initted){snInit();snRenderLeaderboard();}
+  if(id==='blackjack'&&!BJ.initted){bjInit();}
 }
 function showMsg(id, text, type) {
   var el = document.getElementById(id);
@@ -2089,6 +2191,286 @@ document.addEventListener('dblclick',function(e){
   // We'll handle this via the click system — just trigger auto
   solAutoToFoundation();
 });
+</script>
+<script>
+// ── BLACKJACK ─────────────────────────────────────────────
+var BJ = {
+  initted: false,
+  deck: [],
+  playerHand: [],
+  dealerHand: [],
+  bank: 500,
+  bet: 0,
+  phase: 'bet', // 'bet' | 'play' | 'over'
+  doubled: false
+};
+
+var BJ_SUITS = ['♠','♥','♦','♣'];
+var BJ_RANKS = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+
+function bjInit() {
+  BJ.initted = true;
+  BJ.bank = 500;
+  BJ.bet = 0;
+  bjBuildDeck();
+  bjRender();
+  bjRenderLeaderboard();
+}
+
+function bjBuildDeck() {
+  BJ.deck = [];
+  for (var s = 0; s < 4; s++) {
+    for (var r = 0; r < 13; r++) {
+      BJ.deck.push({suit: BJ_SUITS[s], rank: BJ_RANKS[r]});
+    }
+  }
+  // 6-deck shoe
+  var single = BJ.deck.slice();
+  BJ.deck = [];
+  for (var d = 0; d < 6; d++) BJ.deck = BJ.deck.concat(single.slice());
+  bjShuffle(BJ.deck);
+}
+
+function bjShuffle(arr) {
+  for (var i = arr.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+  }
+}
+
+function bjCardValue(card) {
+  if (card.rank === 'A') return 11;
+  if (['K','Q','J'].indexOf(card.rank) >= 0) return 10;
+  return parseInt(card.rank);
+}
+
+function bjHandValue(hand) {
+  var total = 0, aces = 0;
+  for (var i = 0; i < hand.length; i++) {
+    total += bjCardValue(hand[i]);
+    if (hand[i].rank === 'A') aces++;
+  }
+  while (total > 21 && aces > 0) { total -= 10; aces--; }
+  return total;
+}
+
+function bjDraw() {
+  if (BJ.deck.length < 60) bjBuildDeck();
+  return BJ.deck.pop();
+}
+
+function bjAddBet(amount) {
+  if (BJ.phase !== 'bet') return;
+  if (BJ.bet + amount > BJ.bank) amount = BJ.bank - BJ.bet;
+  if (amount <= 0) return;
+  BJ.bet += amount;
+  bjRender();
+}
+
+function bjClearBet() {
+  if (BJ.phase !== 'bet') return;
+  BJ.bet = 0;
+  bjRender();
+}
+
+function bjDeal() {
+  if (BJ.phase !== 'bet') { bjReset(); return; }
+  if (BJ.bet === 0) { showMsg('bj-msg','Place a bet first.','info'); return; }
+  document.getElementById('bj-msg').className = 'game-msg';
+  BJ.playerHand = [bjDraw(), bjDraw()];
+  BJ.dealerHand = [bjDraw(), bjDraw()];
+  BJ.phase = 'play';
+  BJ.doubled = false;
+
+  // Check for natural blackjack
+  var pv = bjHandValue(BJ.playerHand);
+  var dv = bjHandValue(BJ.dealerHand);
+  bjRender();
+
+  if (pv === 21 && dv === 21) { bjEndRound('push'); return; }
+  if (pv === 21) { bjEndRound('blackjack'); return; }
+  if (dv === 21) { bjEndRound('lose'); return; }
+}
+
+function bjHit() {
+  if (BJ.phase !== 'play') return;
+  BJ.playerHand.push(bjDraw());
+  var pv = bjHandValue(BJ.playerHand);
+  bjRender();
+  if (pv > 21) bjEndRound('lose');
+  else if (pv === 21) bjStand();
+}
+
+function bjStand() {
+  if (BJ.phase !== 'play') return;
+  BJ.phase = 'over';
+  // Dealer draws to 17
+  while (bjHandValue(BJ.dealerHand) < 17) BJ.dealerHand.push(bjDraw());
+  var pv = bjHandValue(BJ.playerHand);
+  var dv = bjHandValue(BJ.dealerHand);
+  bjRender();
+  if (dv > 21 || pv > dv) bjEndRound('win');
+  else if (pv === dv) bjEndRound('push');
+  else bjEndRound('lose');
+}
+
+function bjDouble() {
+  if (BJ.phase !== 'play') return;
+  if (BJ.playerHand.length !== 2) return;
+  var extra = Math.min(BJ.bet, BJ.bank - BJ.bet);
+  BJ.bet += extra;
+  BJ.doubled = true;
+  BJ.playerHand.push(bjDraw());
+  bjRender();
+  var pv = bjHandValue(BJ.playerHand);
+  if (pv > 21) bjEndRound('lose');
+  else bjStand();
+}
+
+function bjEndRound(outcome) {
+  BJ.phase = 'over';
+  var resultEl = document.getElementById('bj-result');
+  resultEl.className = 'bj-result';
+
+  if (outcome === 'blackjack') {
+    BJ.bank += Math.round(BJ.bet * 1.5);
+    resultEl.textContent = 'Blackjack! +£' + Math.round(BJ.bet * 1.5);
+    resultEl.classList.add('win');
+  } else if (outcome === 'win') {
+    BJ.bank += BJ.bet;
+    resultEl.textContent = 'You win! +£' + BJ.bet;
+    resultEl.classList.add('win');
+  } else if (outcome === 'push') {
+    resultEl.textContent = 'Push — bet returned.';
+    resultEl.classList.add('push');
+  } else {
+    BJ.bank -= BJ.bet;
+    resultEl.textContent = 'Dealer wins. −£' + BJ.bet;
+    resultEl.classList.add('lose');
+  }
+
+  bjRender();
+
+  // Save score when bank goes very high or player goes bust
+  if (BJ.bank <= 0) {
+    BJ.bank = 0;
+    setTimeout(function() { bjPromptSave(); }, 400);
+  } else if (BJ.bank >= 1000) {
+    bjPromptSave();
+  }
+}
+
+function bjReset() {
+  BJ.bet = 0;
+  BJ.phase = 'bet';
+  BJ.doubled = false;
+  BJ.playerHand = [];
+  BJ.dealerHand = [];
+  document.getElementById('bj-result').textContent = '';
+  document.getElementById('bj-result').className = 'bj-result';
+  document.getElementById('bj-msg').className = 'game-msg';
+  if (BJ.bank <= 0) { BJ.bank = 500; }
+  bjRender();
+}
+
+function bjPromptSave() {
+  var name = prompt('Nice playing! Save your bank of £' + BJ.bank + ' to the leaderboard?\nEnter your name:');
+  if (name && name.trim()) {
+    sbSaveScore('blackjack', name.trim(), BJ.bank, {});
+    setTimeout(bjRenderLeaderboard, 800);
+  }
+}
+
+function bjMakeCardEl(card, faceDown) {
+  var el = document.createElement('div');
+  if (faceDown) { el.className = 'bj-card back'; return el; }
+  var red = (card.suit === '♥' || card.suit === '♦');
+  el.className = 'bj-card ' + (red ? 'red' : 'black');
+  el.innerHTML = '<span class="top">' + card.rank + '<br>' + card.suit + '</span>' +
+    '<span class="suit">' + card.suit + '</span>' +
+    '<span class="bot">' + card.rank + '</span>';
+  return el;
+}
+
+function bjRender() {
+  var dealerEl = document.getElementById('bj-dealer-hand');
+  var playerEl = document.getElementById('bj-player-hand');
+  dealerEl.innerHTML = '';
+  playerEl.innerHTML = '';
+
+  var inPlay = (BJ.phase === 'play' || BJ.phase === 'over');
+
+  // Dealer hand
+  for (var i = 0; i < BJ.dealerHand.length; i++) {
+    var faceDown = (i === 1 && BJ.phase === 'play');
+    dealerEl.appendChild(bjMakeCardEl(BJ.dealerHand[i], faceDown));
+  }
+
+  // Dealer value — show only first card value during play, full total otherwise
+  var dvEl = document.getElementById('bj-dealer-val');
+  if (!BJ.dealerHand.length) {
+    dvEl.textContent = '';
+  } else if (BJ.phase === 'play') {
+    dvEl.textContent = bjCardValue(BJ.dealerHand[0]);
+  } else {
+    dvEl.textContent = bjHandValue(BJ.dealerHand);
+  }
+
+  // Player hand
+  for (var j = 0; j < BJ.playerHand.length; j++) {
+    playerEl.appendChild(bjMakeCardEl(BJ.playerHand[j], false));
+  }
+
+  // Player value
+  var pvEl = document.getElementById('bj-player-val');
+  pvEl.textContent = BJ.playerHand.length ? bjHandValue(BJ.playerHand) : '';
+
+  // Bank & bet
+  document.getElementById('bj-bank').textContent = '£' + BJ.bank;
+  document.getElementById('bj-bet-display').textContent = '£' + BJ.bet;
+
+  // Show/hide areas
+  var bettingArea = document.getElementById('bj-betting-area');
+  var actionsArea = document.getElementById('bj-actions');
+  if (BJ.phase === 'bet') {
+    bettingArea.style.display = '';
+    actionsArea.style.display = 'none';
+  } else if (BJ.phase === 'play') {
+    bettingArea.style.display = 'none';
+    actionsArea.style.display = 'flex';
+    var doubleBtn = document.getElementById('bj-double-btn');
+    doubleBtn.disabled = BJ.playerHand.length !== 2 || BJ.bank < BJ.bet;
+    doubleBtn.style.opacity = doubleBtn.disabled ? '0.4' : '';
+  } else {
+    // over — show betting area with "Deal again" feel
+    bettingArea.style.display = '';
+    actionsArea.style.display = 'none';
+    document.querySelector('#bj-betting-area .btn-sage').textContent = BJ.bank <= 0 ? 'Restart (£500)' : 'Deal again';
+  }
+
+  // Disable chips if bank exhausted
+  document.querySelectorAll('.bj-chip').forEach(function(chip) {
+    chip.disabled = (BJ.phase !== 'bet');
+    chip.style.opacity = chip.disabled ? '0.4' : '';
+  });
+}
+
+async function bjRenderLeaderboard() {
+  var rows = await sbGetScores('blackjack', 10);
+  var el = document.getElementById('bj-scores-list');
+  if (!rows || !rows.length) { el.innerHTML = '<p style="font-size:0.85rem;color:var(--ink-soft);font-style:italic">No scores yet — be the first!</p>'; return; }
+  // Sort descending by score (bank size)
+  rows.sort(function(a,b){ return b.score - a.score; });
+  var html = '';
+  rows.forEach(function(row, idx) {
+    html += '<div class="sol-score-row">' +
+      '<span class="sol-score-rank">' + (idx+1) + '</span>' +
+      '<span>' + row.name + '</span>' +
+      '<span style="font-family:\'Cormorant Garamond\',serif;font-size:1.1rem;color:var(--warm)">£' + row.score + '</span>' +
+      '</div>';
+  });
+  el.innerHTML = html;
+}
 </script>
 <script>
 (function() {
