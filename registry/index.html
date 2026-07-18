@@ -196,7 +196,7 @@ h1 em{color:var(--sage);font-style:italic}
 (function(){
   if(window.self === window.top){
     var page = window.location.pathname.replace(/^\//, '').split('/')[0];
-    window.location.replace('/' + (page || ''));
+    window.location.replace('/' + (page ? '#' + page : ''));
   }
 })();
 </script>

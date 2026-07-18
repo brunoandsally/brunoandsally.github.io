@@ -148,7 +148,7 @@ body{font-family:"Jost",sans-serif;background:var(--cream);color:var(--ink);line
 .t48-score-box{background:var(--ink);color:#fff;border-radius:4px;padding:0.4rem 1rem;text-align:center;min-width:70px}
 .t48-score-label{font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;opacity:0.6}
 .t48-score-val{font-family:"Cormorant Garamond",serif;font-size:1.5rem;font-weight:300;line-height:1.1}
-.t48-board{background:#b5a89a;border-radius:8px;padding:8px;display:inline-grid;grid-template-columns:repeat(4,1fr);gap:8px;position:relative}
+.t48-board{background:#b5a89a;border-radius:8px;padding:8px;display:inline-grid;grid-template-columns:repeat(4,1fr);gap:8px;position:relative;touch-action:none;-webkit-user-select:none;user-select:none}
 .t48-cell{width:90px;height:90px;border-radius:4px;background:rgba(238,228,218,0.35);display:flex;align-items:center;justify-content:center}
 .t48-tile{width:90px;height:90px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:"Cormorant Garamond",serif;font-weight:500;font-size:2rem;line-height:1;transition:transform 0.1s;position:absolute}
 .t48-tile.pop{animation:t48pop 0.15s ease}
@@ -237,6 +237,14 @@ footer .fn{font-family:"Cormorant Garamond",serif;font-size:1.2rem;color:rgba(25
 .bj-chip.c25{border-color:#7BAFD4;color:#7BAFD4}
 .bj-chip.c50{border-color:#C4894A;color:#C4894A}
 .bj-chip.c100{border-color:#d4a;color:#d4a}
+.bj-custom-row{display:flex;gap:8px;align-items:center;margin-top:0.7rem}
+.bj-custom-input{width:120px;padding:0.6rem 0.8rem;border-radius:4px;border:1.5px solid rgba(44,44,42,0.25);background:#fff;color:var(--ink);font-family:'Jost',sans-serif;font-size:0.85rem;outline:none;transition:border-color 0.2s}
+.bj-custom-input::placeholder{color:var(--ink-soft)}
+.bj-custom-input:focus{border-color:var(--sage)}
+.bj-custom-input:disabled{opacity:0.4}
+.bj-custom-btn{padding:0.6rem 1.1rem;border-radius:4px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);font-family:'Jost',sans-serif;font-size:0.65rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;transition:all 0.15s}
+.bj-custom-btn:hover:not(:disabled){background:var(--ink);color:#fff}
+.bj-custom-btn:disabled{opacity:0.4;cursor:not-allowed}
 .bj-bet-display{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:#fff;min-width:4ch;text-align:center}
 .bj-bank{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:300;color:rgba(255,255,255,0.65)}
 .bj-actions{display:flex;gap:0.6rem;flex-wrap:wrap}
@@ -511,8 +519,13 @@ footer .fn{font-family:"Cormorant Garamond",serif;font-size:1.2rem;color:rgba(25
         <button class="bj-chip c50" onclick="bjAddBet(50)">£50</button>
         <button class="bj-chip c100" onclick="bjAddBet(100)">£100</button>
       </div>
-      <div style="margin-top:1rem">
+      <div class="bj-custom-row">
+        <input class="bj-custom-input" id="bj-custom-amount" type="number" inputmode="numeric" min="1" step="1" placeholder="Other amount" onkeydown="if(event.key==='Enter'){bjAddCustomBet();}"/>
+        <button class="bj-custom-btn" id="bj-custom-btn" onclick="bjAddCustomBet()">Add</button>
+      </div>
+      <div style="margin-top:1rem;display:flex;gap:0.6rem;flex-wrap:wrap">
         <button class="btn btn-sage" onclick="bjDeal()">Deal</button>
+        <button class="btn btn-outline" id="bj-walkaway-btn" onclick="bjWalkAway()">Walk Away</button>
       </div>
     </div>
 
@@ -1230,17 +1243,23 @@ document.addEventListener('keydown',function(e){
   var board=document.getElementById('t48-board');
   if(!board) return;
   board.addEventListener('touchstart',function(e){
+    if(e.touches.length!==1) return;
     sx=e.touches[0].clientX; sy=e.touches[0].clientY;
-  },{passive:true});
+  },{passive:false});
+  board.addEventListener('touchmove',function(e){
+    // Stop the page from scrolling/bouncing while swiping on the board
+    if(sx!==undefined) e.preventDefault();
+  },{passive:false});
   board.addEventListener('touchend',function(e){
     if(sx===undefined) return;
     var dx=e.changedTouches[0].clientX-sx;
     var dy=e.changedTouches[0].clientY-sy;
+    sx=sy=undefined;
     if(Math.abs(dx)<20&&Math.abs(dy)<20) return;
     if(Math.abs(dx)>Math.abs(dy)) t48Move(dx>0?'right':'left');
     else t48Move(dy>0?'down':'up');
-    sx=sy=undefined;
-  },{passive:true});
+  },{passive:false});
+  board.addEventListener('touchcancel',function(){ sx=sy=undefined; },{passive:true});
 })();
 
 
@@ -2273,6 +2292,27 @@ function bjClearBet() {
   bjRender();
 }
 
+function bjAddCustomBet() {
+  if (BJ.phase !== 'bet') return;
+  var input = document.getElementById('bj-custom-amount');
+  var amount = parseInt(input.value, 10);
+  if (!amount || amount <= 0) { input.focus(); return; }
+  bjAddBet(amount);
+  input.value = '';
+}
+
+function bjWalkAway() {
+  if (BJ.phase !== 'bet') return;
+  if (BJ.bank <= 0) { showMsg('bj-msg', 'Nothing to walk away with!', 'info'); return; }
+  var name = prompt('Walking away with £' + BJ.bank + '! Save your score to the leaderboard?\nEnter your name:');
+  if (name && name.trim()) {
+    sbSaveScore('blackjack', name.trim(), BJ.bank, {});
+    setTimeout(bjRenderLeaderboard, 800);
+  }
+  BJ.bank = 500;
+  bjReset();
+}
+
 function bjDeal() {
   if (BJ.phase !== 'bet') { bjReset(); return; }
   if (BJ.bet === 0) { showMsg('bj-msg','Place a bet first.','info'); return; }
@@ -2453,6 +2493,17 @@ function bjRender() {
     chip.disabled = (BJ.phase !== 'bet');
     chip.style.opacity = chip.disabled ? '0.4' : '';
   });
+
+  // Custom bet input / add button
+  var customInput = document.getElementById('bj-custom-amount');
+  var customBtn = document.getElementById('bj-custom-btn');
+  customInput.disabled = (BJ.phase !== 'bet');
+  customBtn.disabled = (BJ.phase !== 'bet');
+
+  // Walk away — only available between hands, and only if there's a bank to save
+  var walkBtn = document.getElementById('bj-walkaway-btn');
+  walkBtn.disabled = (BJ.phase !== 'bet') || BJ.bank <= 0;
+  walkBtn.style.opacity = walkBtn.disabled ? '0.4' : '';
 }
 
 async function bjRenderLeaderboard() {
