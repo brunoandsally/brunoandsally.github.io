@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -411,6 +412,24 @@ body{display:flex;flex-direction:column;background:var(--cream)}
 var AUTH_KEY = 'bs_guest_auth';
 var FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScoSFQtFHedJcSKe9RtJZTQf8iXfOKdTP-ZTZJGZorPxl32gA/viewform';
 
+// ── Activity logging (Supabase) ───────────────────────────
+var SUPA_URL = 'https://zjynlhguilaoxrioysxn.supabase.co';
+var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqeW5saGd1aWxhb3hyaW95c3huIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxNTMxMTksImV4cCI6MjA5NzcyOTExOX0.jwjX0wyaGnsns8Gy8q1XF-B7QIIAVKFtrMfl4SAZ1L0';
+var supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+function logActivity(page) {
+  try {
+    var stored = localStorage.getItem(AUTH_KEY);
+    if (!stored) return;
+    var g = JSON.parse(stored);
+    supa.from('site_activity').insert({
+      guest_name: g.name,
+      invite_type: g.invite_type,
+      page: page
+    }).then(function(){}, function(){});
+  } catch(e) {}
+}
+
 var GUESTS = [
   {name:"Sally Stacey",invite_type:"ceremony_reception"},
   {name:"Bruno Renucci",invite_type:"ceremony_reception"},
@@ -654,6 +673,7 @@ function showResult(guest) {
 }
 
 function unlockSite() {
+  logActivity(currentPage);
   document.getElementById('name-gate').classList.add('hidden');
   document.getElementById('nav').style.visibility = '';
   document.getElementById('content-frame').style.visibility = '';
@@ -703,6 +723,7 @@ var frame = document.getElementById('content-frame');
 function nav(page, pushState) {
   if (!page || VALID.indexOf(page) < 0) page = 'home';
   currentPage = page;
+  logActivity(page);
   if (pushState !== false) {
     history.pushState({page: page}, '', '/' + page);
   }
@@ -770,6 +791,7 @@ document.querySelectorAll('[data-page]').forEach(function(a) {
 });
 history.replaceState({page:initPage}, '', '/' + initPage);
 document.getElementById('content-frame').src = '/' + initPage;
+logActivity(initPage);
 </script>
 
 <!-- ── REGISTRY MODAL ── -->
