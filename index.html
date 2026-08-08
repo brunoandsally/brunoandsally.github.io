@@ -963,11 +963,12 @@ function regSubmit() {
   .bs-sprite {
     position:absolute; bottom:8px; width:64px; height:104px;
     image-rendering:pixelated; transform-origin:bottom center;
-    pointer-events:auto; cursor:pointer; will-change:transform;
-    -webkit-tap-highlight-color:transparent;
+    pointer-events:auto; cursor:grab; will-change:transform;
+    -webkit-tap-highlight-color:transparent; touch-action:none;
   }
   .bs-sprite svg { width:100%; height:100%; display:block; }
   .bs-paused * { animation-play-state:paused !important; }
+  .bs-dragging { cursor:grabbing; z-index:1; filter:drop-shadow(0 6px 8px rgba(0,0,0,.25)); }
 
   @keyframes bs-bob { 0%{transform:translateY(0);} 25%{transform:translateY(-2px);} 50%{transform:translateY(-3.5px);} 75%{transform:translateY(-2px);} 100%{transform:translateY(0);} }
   @keyframes bs-walkbob { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-1.5px);} }
@@ -1158,11 +1159,67 @@ function regSubmit() {
     body.innerHTML = builder();
     wrap.appendChild(body);
     layer.appendChild(wrap);
-    const S = { name, wrap, body, x: rand(20, W()-90), facing:1, busy:false };
-    wrap.style.transform = `translateX(${S.x}px)`;
-    wrap.addEventListener('click', (e)=>{ e.stopPropagation(); onTap(S); });
-    setTimeout(()=>ambientLoop(S), offset);
+    const S = { name, wrap, body, x: rand(20, W()-90), y:0, facing:1, busy:false, dragging:false, loopId:0 };
+    setXY(S);
+    initDrag(S);
+    setTimeout(()=>ambientLoop(S, S.loopId), offset);
     return S;
+  }
+
+  function setXY(S){
+    S.wrap.style.transform = `translate(${S.x}px, ${S.y}px)`;
+  }
+
+  /* ---- drag & drop ---- */
+  function initDrag(S){
+    let startX=0, startY=0, baseX=0, baseY=0, moved=false;
+    const DRAG_THRESHOLD = 6;
+
+    function onPointerDown(e){
+      if (paused) return;
+      S.wrap.setPointerCapture && S.wrap.setPointerCapture(e.pointerId);
+      startX = e.clientX; startY = e.clientY;
+      baseX = S.x; baseY = S.y; moved = false;
+      if (S._moveTimer) clearTimeout(S._moveTimer);
+      S.wrap.style.transition = 'none';
+      window.addEventListener('pointermove', onPointerMove);
+      window.addEventListener('pointerup', onPointerUp);
+    }
+
+    function onPointerMove(e){
+      const dx = e.clientX - startX, dy = e.clientY - startY;
+      if (!moved && Math.hypot(dx,dy) < DRAG_THRESHOLD) return;
+      if (!moved){
+        moved = true;
+        S.dragging = true; S.busy = true; clearStates(S);
+        S.wrap.classList.add('bs-dragging');
+        S.loopId++;
+      }
+      const rect = layer.getBoundingClientRect();
+      let nx = baseX + dx, ny = baseY + dy;
+      nx = Math.max(0, Math.min(rect.width - S.wrap.offsetWidth, nx));
+      ny = Math.max(-(rect.height - S.wrap.offsetHeight), Math.min(0, ny));
+      S.x = nx; S.y = ny;
+      setXY(S);
+    }
+
+    function onPointerUp(e){
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('pointerup', onPointerUp);
+      if (!moved){ onTap(S); return; }
+      S.wrap.classList.remove('bs-dragging');
+      S.wrap.style.transition = 'transform .35s cubic-bezier(.34,1.56,.64,1)';
+      S.y = 0;
+      setXY(S);
+      setTimeout(()=>{
+        S.wrap.style.transition = 'none';
+        S.dragging = false; S.busy = false;
+        clearStates(S); S.body.classList.add('bs-idle');
+        ambientLoop(S, S.loopId);
+      }, 360);
+    }
+
+    S.wrap.addEventListener('pointerdown', onPointerDown);
   }
 
   function setFacing(S, dir){ S.facing=dir; S.wrap.classList.toggle('bs-flip', dir===-1); }
@@ -1173,10 +1230,11 @@ function regSubmit() {
 
   const AMBIENT = ['run','run','walk','look','wave','dance','dance','sit','stretch','toss','confetti','chase'];
 
-  function ambientLoop(S){
-    if (paused || S.busy) { setTimeout(()=>ambientLoop(S), 600); return; }
+  function ambientLoop(S, id){
+    if (id !== S.loopId) return;
+    if (paused || S.busy) { setTimeout(()=>ambientLoop(S, id), 600); return; }
     const act = AMBIENT[rand(0,AMBIENT.length-1)];
-    doAmbient(S, act, ()=>ambientLoop(S));
+    doAmbient(S, act, ()=>ambientLoop(S, id));
   }
 
   function doAmbient(S, act, done){
@@ -1202,7 +1260,7 @@ function regSubmit() {
     const dist=Math.abs(target-S.x); const speed=gait==='run'?10:20;
     const time=Math.max(1200, dist*speed);
     S.wrap.style.transition=`transform ${time}ms cubic-bezier(.37,0,.63,1)`;
-    requestAnimationFrame(()=>requestAnimationFrame(()=>{ S.wrap.style.transform=`translateX(${target}px)`; S.wrap.classList.toggle('bs-flip', S.facing===-1); }));
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{ S.wrap.style.transform=`translate(${target}px, ${S.y}px)`; S.wrap.classList.toggle('bs-flip', S.facing===-1); }));
     S.x=target;
     S._moveTimer = setTimeout(()=>{ S.wrap.style.transition='none'; done(); }, time);
   }
@@ -1238,7 +1296,7 @@ function regSubmit() {
     setFacing(S, target>S.x?1:-1); S.body.classList.add('bs-run');
     const time=Math.max(1000,Math.abs(target-S.x)*10);
     S.wrap.style.transition=`transform ${time}ms cubic-bezier(.37,0,.63,1)`;
-    requestAnimationFrame(()=>requestAnimationFrame(()=>{ S.wrap.style.transform=`translateX(${target}px)`; S.wrap.classList.toggle('bs-flip',S.facing===-1); }));
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{ S.wrap.style.transform=`translate(${target}px, ${S.y}px)`; S.wrap.classList.toggle('bs-flip',S.facing===-1); }));
     S.x=target;
   }
   function maybeChase(S, done){
@@ -1298,7 +1356,7 @@ function regSubmit() {
         const m=new DOMMatrixReadOnly(t); S.x=m.m41;
       }
       S.wrap.style.transition='none';
-      S.wrap.style.transform=`translateX(${S.x}px)`+(S.facing===-1?' scaleX(-1)':'');
+      S.wrap.style.transform=`translate(${S.x}px, ${S.y}px)`+(S.facing===-1?' scaleX(-1)':'');
     });
   }
   function resume(){
@@ -1362,7 +1420,7 @@ function regSubmit() {
   const bruno = Sprite('bruno', brunoSVG, 1000);
 
   applyVisibility();
-  window.addEventListener('resize', ()=>{ [sally,bruno].forEach(S=>{ if(S.x>W()-60){ S.x=W()-60; S.wrap.style.transform=`translateX(${S.x}px)`; } }); });
+  window.addEventListener('resize', ()=>{ [sally,bruno].forEach(S=>{ if(S.x>W()-60){ S.x=W()-60; setXY(S); } }); });
 })();
 </script>
 <!-- ===== end sprites ===== -->
