@@ -59,6 +59,10 @@ body{font-family:"Jost",sans-serif;background:var(--cream);color:var(--ink);line
 .poll-opt .pct{font-weight:700;font-size:0.78rem;color:var(--sage);min-width:2.5rem;text-align:right}
 .poll-total{font-size:0.72rem;color:var(--ink-soft);margin-top:0.5rem}
 .voted-tick{color:var(--sage);font-weight:700;margin-left:0.3rem}
+.poll-opt-row{display:flex;gap:0.5rem;align-items:center}
+.poll-opt-row .name-input{margin-bottom:0}
+.poll-opt-remove{flex-shrink:0;width:30px;height:30px;border:1.5px solid var(--line);border-radius:50%;background:#fff;color:var(--ink-soft);cursor:pointer;font-size:0.9rem;display:flex;align-items:center;justify-content:center;transition:all 0.15s;-webkit-tap-highlight-color:transparent}
+.poll-opt-remove:hover{border-color:var(--warm);color:var(--warm)}
 
 /* ── MESSAGE BOARD ── */
 /* Compose box */
@@ -176,6 +180,20 @@ footer{text-align:center;padding:2rem 1rem;font-size:0.78rem;color:var(--ink-sof
 <!-- ══ PREDICTIONS ══ -->
 <div class="panel active" id="panel-predictions">
   <p style="color:var(--ink-soft);font-size:0.85rem;margin-bottom:1.2rem">Tap to vote. Results update live.</p>
+
+  <div class="compose-card">
+    <div class="feed-header" style="margin-bottom:0.9rem">
+      <h3>Create a prediction</h3>
+    </div>
+    <input type="text" class="name-input" id="poll-q-input" placeholder="Ask a question…" maxlength="140" style="width:100%;margin-bottom:0.7rem"/>
+    <div id="poll-opts-inputs" style="display:flex;flex-direction:column;gap:0.5rem;margin-bottom:0.7rem"></div>
+    <button type="button" class="add-react-btn" id="poll-add-opt-btn" onclick="addPollOptionInput()" style="padding:0.35rem 0.9rem;font-family:'Jost',sans-serif">+ Add option</button>
+    <button class="post-btn" id="poll-submit-btn" onclick="submitNewPoll()" style="margin-top:0.9rem">
+      <span>Post prediction</span><span>🔮</span>
+    </button>
+    <div class="status-msg" id="poll-compose-status"></div>
+  </div>
+
   <div class="poll-grid" id="poll-grid">
     <div class="loading">Loading predictions…</div>
   </div>
@@ -755,6 +773,100 @@ function castVote(pollId, optionIdx){
     });
 }
 
+// ── CREATE POLL ────────────────────────────────────────────
+var pollOptRowId = 0;
+var MIN_POLL_OPTS = 2;
+var MAX_POLL_OPTS = 6;
+
+function addPollOptionInput(){
+  var wrap = document.getElementById('poll-opts-inputs');
+  if(!wrap) return;
+  if(wrap.children.length >= MAX_POLL_OPTS) return;
+  var id = 'poll-opt-' + (pollOptRowId++);
+  var row = document.createElement('div');
+  row.className = 'poll-opt-row';
+  row.id = 'row-'+id;
+
+  var input = document.createElement('input');
+  input.type = 'text';
+  input.className = 'name-input';
+  input.id = id;
+  input.maxLength = 60;
+  row.appendChild(input);
+
+  var removeBtn = document.createElement('button');
+  removeBtn.type = 'button';
+  removeBtn.className = 'poll-opt-remove';
+  removeBtn.innerHTML = '&#10005;';
+  removeBtn.setAttribute('aria-label','Remove option');
+  removeBtn.onclick = function(){ removePollOptionInput(id); };
+  row.appendChild(removeBtn);
+
+  wrap.appendChild(row);
+  updatePollOptControls();
+}
+
+function removePollOptionInput(id){
+  var wrap = document.getElementById('poll-opts-inputs');
+  if(!wrap) return;
+  if(wrap.children.length <= MIN_POLL_OPTS) return;
+  var row = document.getElementById('row-'+id);
+  if(row) row.remove();
+  updatePollOptControls();
+}
+
+function updatePollOptControls(){
+  var wrap = document.getElementById('poll-opts-inputs');
+  if(!wrap) return;
+  var rows = wrap.children;
+  for(var i=0;i<rows.length;i++){
+    var input = rows[i].querySelector('input');
+    if(input) input.placeholder = 'Option ' + (i+1);
+    var removeBtn = rows[i].querySelector('.poll-opt-remove');
+    if(removeBtn) removeBtn.style.visibility = rows.length > MIN_POLL_OPTS ? 'visible' : 'hidden';
+  }
+  var addBtn = document.getElementById('poll-add-opt-btn');
+  if(addBtn) addBtn.style.display = rows.length >= MAX_POLL_OPTS ? 'none' : '';
+}
+
+function resetPollCompose(){
+  var q = document.getElementById('poll-q-input');
+  if(q) q.value = '';
+  var wrap = document.getElementById('poll-opts-inputs');
+  if(!wrap) return;
+  wrap.innerHTML = '';
+  addPollOptionInput();
+  addPollOptionInput();
+}
+
+function submitNewPoll(){
+  var qInput = document.getElementById('poll-q-input');
+  var question = qInput.value.trim();
+  var status = document.getElementById('poll-compose-status');
+  var btn = document.getElementById('poll-submit-btn');
+
+  var wrap = document.getElementById('poll-opts-inputs');
+  var optionTexts = Array.prototype.map.call(wrap.querySelectorAll('input'), function(inp){ return inp.value.trim(); })
+    .filter(function(t){ return t.length>0; });
+
+  if(!question){ showStatus(status,'Ask a question first 👆','err'); return; }
+  if(optionTexts.length < MIN_POLL_OPTS){ showStatus(status,'Add at least 2 options.','err'); return; }
+
+  btn.disabled = true;
+  var options = optionTexts.map(function(t){ return {text:t, votes:0}; });
+  supa.from('polls').insert({question:question, options:options})
+    .then(function(res){
+      if(res.error){ showStatus(status,'Error: '+res.error.message,'err'); btn.disabled=false; return; }
+      resetPollCompose();
+      showStatus(status,'Prediction posted! 🎉','ok');
+      loadPolls();
+      btn.disabled = false;
+    }).catch(function(e){
+      showStatus(status,'Failed: '+(e&&e.message?e.message:e),'err');
+      btn.disabled = false;
+    });
+}
+
 // ── UTILS ──────────────────────────────────────────────────
 function escHtml(s){
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -786,10 +898,27 @@ supa.channel('community-posts')
     }
   });
 
+// Subscribe to INSERT and UPDATE on polls table (new predictions + votes)
+// Requires Realtime enabled on the polls table in Supabase dashboard:
+// Database → Replication → supabase_realtime publication → add 'polls' table
+supa.channel('community-polls')
+  .on('postgres_changes', {event:'INSERT', schema:'public', table:'polls'}, function(payload){
+    loadPolls();
+  })
+  .on('postgres_changes', {event:'UPDATE', schema:'public', table:'polls'}, function(payload){
+    loadPolls();
+  })
+  .subscribe(function(status){
+    console.log('Polls realtime status:', status);
+  });
+
 // Fallback: poll every 20s in case realtime isn't available
 setInterval(function(){
   if(document.getElementById('panel-messages').classList.contains('active')){
     loadPosts();
+  }
+  if(document.getElementById('panel-predictions').classList.contains('active')){
+    loadPolls();
   }
 }, 20000);
 
@@ -802,6 +931,7 @@ document.addEventListener('DOMContentLoaded', function(){
   if(btnGif)   btnGif.addEventListener('click',   function(){ togglePicker('gif'); });
 });
 
+resetPollCompose();
 loadPolls();
 loadPosts();
 

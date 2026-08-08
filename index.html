@@ -950,15 +950,15 @@ function regSubmit() {
 }
 </script>
 
-<!-- ===== Bruno & Sally pixel sprites ===== -->
+<!-- ===== Bruno & Sally pixel sprites (shell) ===== -->
 <style>
 #bs-sprite-layer {
     position:fixed; left:0; bottom:0; width:100%; height:140px;
     pointer-events:none; z-index:9998; overflow:hidden;
-    transition:opacity .4s ease, transform .4s cubic-bezier(0.4,0,0.2,1);
   }
-  #bs-sprite-layer.bs-hidden { opacity:0; }
-  #bs-sprite-layer.bs-shown  { opacity:1; }
+  #bs-sprite-layer.bs-hidden { opacity:0; transition:opacity .4s ease; }
+  #bs-sprite-layer.bs-shown  { opacity:1; transition:opacity .4s ease, transform .4s cubic-bezier(0.4,0,0.2,1); }
+  #bs-sprite-layer { transition:transform .4s cubic-bezier(0.4,0,0.2,1); }
 
   .bs-sprite {
     position:absolute; bottom:8px; width:64px; height:104px;
@@ -1292,8 +1292,9 @@ function regSubmit() {
     paused=true;
     [sally,bruno].forEach(S=>{
       S.wrap.classList.add('bs-paused');
+      // lock current transform so a queued transition doesn't jump on resume
       const t=getComputedStyle(S.wrap).transform;
-      if(S._moveTimer){
+      if(S._moveTimer){ /* mid-move: settle to current spot */
         const m=new DOMMatrixReadOnly(t); S.x=m.m41;
       }
       S.wrap.style.transition='none';
@@ -1310,68 +1311,58 @@ function regSubmit() {
   window.addEventListener('blur', freeze);
   window.addEventListener('focus', resume);
 
+  
+
+  
+  /* ---- shell visibility: hide on games tab, name gate, registry modal ---- */
+  var HIDE_ON = ['games'];
+  function pageHidden(){
+    try {
+      var cur = (typeof currentPage !== 'undefined' && currentPage) ? currentPage : (location.pathname.replace(/^\//,'').split('/')[0] || 'home');
+      if (HIDE_ON.indexOf(cur) >= 0) return true;
+    } catch(e){}
+    // name gate open?
+    var gate = document.getElementById('name-gate');
+    if (gate && !gate.classList.contains('hidden') && getComputedStyle(gate).display !== 'none') return true;
+    // registry modal open?
+    var reg = document.getElementById('reg-modal-overlay');
+    if (reg && reg.classList.contains('open')) return true;
+    return false;
+  }
+  function applyVisibility(){
+    var hide = pageHidden();
+    layer.classList.toggle('bs-hidden', hide);
+    layer.classList.toggle('bs-shown', !hide);
+    if (hide) freeze(); else resume();
+  }
+
+  /* wrap the shell's nav() so we react on every tab change */
+  if (typeof window.nav === 'function') {
+    var _nav = window.nav;
+    window.nav = function(){ var r = _nav.apply(this, arguments); setTimeout(applyVisibility, 30); return r; };
+  }
+  window.addEventListener('popstate', function(){ setTimeout(applyVisibility, 30); });
+  // catch gate/modal open/close via mutation
+  new MutationObserver(applyVisibility).observe(document.body, {attributes:true, subtree:true, attributeFilter:['class','style']});
+
+  /* ---- lift above the Spotify bar when it slides up ---- */
+  function spotifyBarHeight(){
+    var bar = document.getElementById('spotify-bar');
+    if (bar && bar.classList.contains('open')) return bar.offsetHeight || 64;
+    return 0;
+  }
+  function applyBarOffset(){
+    var h = spotifyBarHeight();
+    layer.style.transform = h ? ('translateY(-' + h + 'px)') : 'none';
+  }
+  new MutationObserver(applyBarOffset).observe(document.body, {attributes:true, subtree:true, attributeFilter:['class']});
+  applyBarOffset();
+
   const sally = Sprite('sally', sallySVG, 300);
   const bruno = Sprite('bruno', brunoSVG, 1000);
 
+  applyVisibility();
   window.addEventListener('resize', ()=>{ [sally,bruno].forEach(S=>{ if(S.x>W()-60){ S.x=W()-60; S.wrap.style.transform=`translateX(${S.x}px)`; } }); });
-
-  /* ---- shell-specific visibility: hide on games tab, name-gate, registry modal ---- */
-  const nameGateEl = document.getElementById('name-gate');
-  const regModalEl = document.getElementById('reg-modal-overlay');
-  const spotifyBarEl = document.getElementById('spotify-bar');
-
-  function bsShouldShow(){
-    if (typeof currentPage !== 'undefined' && currentPage === 'games') return false;
-    if (nameGateEl && !nameGateEl.classList.contains('hidden')) return false;
-    if (regModalEl && regModalEl.classList.contains('open')) return false;
-    return true;
-  }
-
-  function bsUpdateVisibility(){
-    const show = bsShouldShow();
-    layer.classList.toggle('bs-shown', show);
-    layer.classList.toggle('bs-hidden', !show);
-  }
-
-  function bsUpdateOffset(){
-    const lift = (spotifyBarEl && spotifyBarEl.classList.contains('open')) ? spotifyBarEl.offsetHeight : 0;
-    layer.style.transform = lift ? `translateY(-${lift}px)` : 'translateY(0)';
-  }
-
-  if (typeof window.nav === 'function' && !window.nav._bsWrapped) {
-    const bsOrigNav = window.nav;
-    window.nav = function() {
-      const result = bsOrigNav.apply(this, arguments);
-      bsUpdateVisibility();
-      return result;
-    };
-    window.nav._bsWrapped = true;
-  }
-
-  window.addEventListener('popstate', bsUpdateVisibility);
-
-  if (nameGateEl) {
-    new MutationObserver(bsUpdateVisibility).observe(nameGateEl, { attributes:true, attributeFilter:['class'] });
-  }
-  if (regModalEl) {
-    new MutationObserver(bsUpdateVisibility).observe(regModalEl, { attributes:true, attributeFilter:['class'] });
-  }
-  if (spotifyBarEl) {
-    new MutationObserver(bsUpdateOffset).observe(spotifyBarEl, { attributes:true, attributeFilter:['class'] });
-  }
-
-  function bsInitialPage(){
-    if (typeof currentPage !== 'undefined' && currentPage) return currentPage;
-    const path = window.location.pathname.replace(/^\//, '').split('/')[0];
-    return path || 'home';
-  }
-  const bsInit = bsInitialPage();
-  if (bsInit === 'games') {
-    layer.classList.remove('bs-shown');
-    layer.classList.add('bs-hidden');
-  }
-  bsUpdateVisibility();
-  bsUpdateOffset();
 })();
 </script>
 <!-- ===== end sprites ===== -->
