@@ -1431,8 +1431,12 @@ function regSubmit() {
     window.nav = function(){ var r = _nav.apply(this, arguments); setTimeout(applyVisibility, 30); return r; };
   }
   window.addEventListener('popstate', function(){ setTimeout(applyVisibility, 30); });
-  // catch gate/modal open/close via mutation
-  new MutationObserver(applyVisibility).observe(document.body, {attributes:true, subtree:true, attributeFilter:['class','style']});
+  // catch gate/modal open/close via mutation — scoped to just those two elements,
+  // NOT document.body, so sprite/nav class churn elsewhere can't retrigger this
+  var _gateEl = document.getElementById('name-gate');
+  var _regEl = document.getElementById('reg-modal-overlay');
+  if (_gateEl) new MutationObserver(applyVisibility).observe(_gateEl, {attributes:true, attributeFilter:['class']});
+  if (_regEl) new MutationObserver(applyVisibility).observe(_regEl, {attributes:true, attributeFilter:['class']});
 
   /* ---- lift above the Spotify bar when it slides up ---- */
   function spotifyBarHeight(){
@@ -1444,7 +1448,8 @@ function regSubmit() {
     var h = spotifyBarHeight();
     layer.style.transform = h ? ('translateY(-' + h + 'px)') : 'none';
   }
-  new MutationObserver(applyBarOffset).observe(document.body, {attributes:true, subtree:true, attributeFilter:['class']});
+  var _barEl = document.getElementById('spotify-bar');
+  if (_barEl) new MutationObserver(applyBarOffset).observe(_barEl, {attributes:true, attributeFilter:['class']});
   applyBarOffset();
 
   const sally = Sprite('sally', sallySVG, 300);
