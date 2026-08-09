@@ -1221,7 +1221,7 @@ function regSubmit() {
       window.removeEventListener('pointerup', onPointerUp);
       if (!moved){ onTap(S); return; }
       S.wrap.classList.remove('bs-dragging');
-      S.wrap.style.transition = 'transform .35s cubic-bezier(.34,1.56,.64,1)';
+      S.wrap.style.transition = 'transform .85s cubic-bezier(.33,.9,.4,1.2)';
       S.y = 0;
       setXY(S);
       setTimeout(()=>{
@@ -1229,7 +1229,7 @@ function regSubmit() {
         S.dragging = false; S.busy = false;
         clearStates(S); S.body.classList.add('bs-idle');
         ambientLoop(S, S.loopId);
-      }, 360);
+      }, 860);
     }
 
     S.wrap.addEventListener('pointerdown', onPointerDown);
