@@ -953,12 +953,13 @@ function regSubmit() {
 <!-- ===== Bruno & Sally pixel sprites (shell) ===== -->
 <style>
 #bs-sprite-layer {
-    position:fixed; left:0; bottom:0; width:100%; height:140px;
+    position:fixed; left:0; top:0; width:100%; height:100%;
     pointer-events:none; z-index:9998; overflow:hidden;
+    transition:opacity .4s ease, transform .4s cubic-bezier(0.4,0,0.2,1);
   }
-  #bs-sprite-layer.bs-hidden { opacity:0; transition:opacity .4s ease; }
-  #bs-sprite-layer.bs-shown  { opacity:1; transition:opacity .4s ease, transform .4s cubic-bezier(0.4,0,0.2,1); }
-  #bs-sprite-layer { transition:transform .4s cubic-bezier(0.4,0,0.2,1); }
+  #bs-sprite-layer.bs-hidden { opacity:0; pointer-events:none !important; }
+  #bs-sprite-layer.bs-hidden .bs-sprite { pointer-events:none !important; }
+  #bs-sprite-layer.bs-shown  { opacity:1; }
 
   .bs-sprite {
     position:absolute; bottom:8px; width:64px; height:104px;
@@ -969,6 +970,17 @@ function regSubmit() {
   .bs-sprite svg { width:100%; height:100%; display:block; }
   .bs-paused * { animation-play-state:paused !important; }
   .bs-dragging { cursor:grabbing; z-index:1; filter:drop-shadow(0 6px 8px rgba(0,0,0,.25)); }
+
+  #bs-toggle-btn {
+    position:fixed; left:1rem; bottom:1rem; z-index:9997;
+    width:42px; height:42px; border-radius:50%; border:1.5px solid rgba(0,0,0,.12);
+    background:#fff; box-shadow:0 2px 8px rgba(0,0,0,.15);
+    display:flex; align-items:center; justify-content:center;
+    font-size:18px; cursor:pointer; -webkit-tap-highlight-color:transparent;
+    transition:opacity .25s, transform .15s;
+  }
+  #bs-toggle-btn:hover { transform:scale(1.06); }
+  #bs-toggle-btn.bs-off { opacity:.5; }
 
   @keyframes bs-bob { 0%{transform:translateY(0);} 25%{transform:translateY(-2px);} 50%{transform:translateY(-3.5px);} 75%{transform:translateY(-2px);} 100%{transform:translateY(0);} }
   @keyframes bs-walkbob { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-1.5px);} }
@@ -1033,6 +1045,7 @@ function regSubmit() {
   @keyframes bs-confettiFall { 0%{transform:translateY(0) rotate(0); opacity:1;} 100%{transform:translateY(60px) rotate(320deg); opacity:0;} }
 </style>
 <div id="bs-sprite-layer" class="bs-shown"></div>
+<button id="bs-toggle-btn" type="button" aria-label="Toggle Bruno & Sally sprites" title="Toggle Bruno & Sally">🧍</button>
 <script>
 (function () {
   const layer = document.getElementById('bs-sprite-layer');
@@ -1374,6 +1387,9 @@ function regSubmit() {
   
   /* ---- shell visibility: hide on games tab, name gate, registry modal ---- */
   var HIDE_ON = ['games'];
+  var TOGGLE_KEY = 'bs_sprites_hidden';
+  var userHidden = localStorage.getItem(TOGGLE_KEY) === '1';
+
   function pageHidden(){
     try {
       var cur = (typeof currentPage !== 'undefined' && currentPage) ? currentPage : (location.pathname.replace(/^\//,'').split('/')[0] || 'home');
@@ -1388,10 +1404,25 @@ function regSubmit() {
     return false;
   }
   function applyVisibility(){
-    var hide = pageHidden();
+    var forced = pageHidden();
+    var hide = forced || userHidden;
     layer.classList.toggle('bs-hidden', hide);
     layer.classList.toggle('bs-shown', !hide);
     if (hide) freeze(); else resume();
+    var btn = document.getElementById('bs-toggle-btn');
+    if (btn) {
+      btn.classList.toggle('bs-off', userHidden);
+      btn.style.display = forced ? 'none' : '';
+    }
+  }
+
+  var toggleBtn = document.getElementById('bs-toggle-btn');
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', function(){
+      userHidden = !userHidden;
+      localStorage.setItem(TOGGLE_KEY, userHidden ? '1' : '0');
+      applyVisibility();
+    });
   }
 
   /* wrap the shell's nav() so we react on every tab change */
