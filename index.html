@@ -1044,7 +1044,7 @@ function regSubmit() {
   .bs-confetti { position:absolute; width:5px; height:5px; pointer-events:none; will-change:transform,opacity; }
   @keyframes bs-confettiFall { 0%{transform:translateY(0) rotate(0); opacity:1;} 100%{transform:translateY(60px) rotate(320deg); opacity:0;} }
 </style>
-<div id="bs-sprite-layer" class="bs-shown"></div>
+<div id="bs-sprite-layer" class="bs-hidden"></div>
 <button id="bs-toggle-btn" type="button" aria-label="Toggle Bruno & Sally sprites" title="Toggle Bruno & Sally">🧍</button>
 <script>
 (function () {
@@ -1075,10 +1075,12 @@ function regSubmit() {
       <rect x="28" y="21" width="2" height="3" fill="#4a3320"/>
       <rect x="36" y="21" width="3" height="3" fill="#fff"/>
       <rect x="36" y="21" width="2" height="3" fill="#4a3320"/>
-      <rect x="27" y="19" width="3" height="1" fill="#5c3f24"/>
-      <rect x="36" y="19" width="3" height="1" fill="#5c3f24"/>
-      <rect x="30" y="27" width="6" height="2" fill="#c15b5b"/>
-      <rect x="31" y="28" width="4" height="1" fill="#fff"/>
+      <rect x="27" y="18" width="3" height="1" fill="#5c3f24"/>
+      <rect x="36" y="18" width="3" height="1" fill="#5c3f24"/>
+      <rect x="30" y="27" width="1" height="1" fill="#c15b5b"/>
+      <rect x="35" y="27" width="1" height="1" fill="#c15b5b"/>
+      <rect x="31" y="28" width="4" height="1" fill="#c15b5b"/>
+      <rect x="32" y="28" width="2" height="1" fill="#fff"/>
       <rect x="29" y="31" width="6" height="3" fill="#f2ccb0"/>
       <rect x="22" y="34" width="20" height="14" fill="#ffffff"/>
       <rect x="22" y="45" width="20" height="3" fill="#e9e6df"/>
@@ -1126,11 +1128,13 @@ function regSubmit() {
       <rect x="28" y="21" width="2" height="3" fill="#4a3320"/>
       <rect x="36" y="21" width="3" height="3" fill="#fff"/>
       <rect x="36" y="21" width="2" height="3" fill="#4a3320"/>
-      <rect x="27" y="19" width="3" height="1" fill="#4a331d"/>
-      <rect x="36" y="19" width="3" height="1" fill="#4a331d"/>
+      <rect x="27" y="18" width="3" height="1" fill="#4a331d"/>
+      <rect x="36" y="18" width="3" height="1" fill="#4a331d"/>
       <rect x="24" y="28" width="18" height="2" fill="#d9a97f"/>
-      <rect x="30" y="26" width="6" height="2" fill="#b85454"/>
-      <rect x="31" y="27" width="4" height="1" fill="#fff"/>
+      <rect x="30" y="26" width="1" height="1" fill="#b85454"/>
+      <rect x="35" y="26" width="1" height="1" fill="#b85454"/>
+      <rect x="31" y="27" width="4" height="1" fill="#b85454"/>
+      <rect x="32" y="27" width="2" height="1" fill="#fff"/>
       <rect x="29" y="31" width="8" height="3" fill="#eec39f"/>
       <rect x="26" y="34" width="12" height="4" fill="#ffffff"/>
       <rect x="30" y="34" width="4" height="14" fill="#ffffff"/>
@@ -1388,7 +1392,8 @@ function regSubmit() {
   /* ---- shell visibility: hide on games tab, name gate, registry modal ---- */
   var HIDE_ON = ['games'];
   var TOGGLE_KEY = 'bs_sprites_hidden';
-  var userHidden = localStorage.getItem(TOGGLE_KEY) === '1';
+  var storedHidden = localStorage.getItem(TOGGLE_KEY);
+  var userHidden = storedHidden === null ? true : storedHidden === '1';
 
   function pageHidden(){
     try {
