@@ -18,179 +18,327 @@
   --line:rgba(44,44,42,0.1);--line-med:rgba(44,44,42,0.16);
 }
 html{scroll-behavior:smooth}
-body{
-  font-family:"Jost",sans-serif;
-  background:var(--cream);
-  color:var(--ink);
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  padding:3rem 2rem;
-  text-align:center;
-}
+body{font-family:"Jost",sans-serif;background:var(--cream);color:var(--ink);min-height:100vh}
 
-.sun{margin-bottom:2rem}
-.sun svg{width:56px;height:56px}
+/* HERO */
+.hero{padding:4rem 2rem 3rem;text-align:center;border-bottom:1px solid var(--line)}
+.hero-eyebrow{font-size:0.65rem;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:var(--warm);margin-bottom:1rem}
+.hero h1{font-family:"Cormorant Garamond",serif;font-size:clamp(2.2rem,6vw,3.4rem);font-weight:300;line-height:1.05;margin-bottom:0.8rem}
+.hero h1 em{color:var(--sage);font-style:italic}
+.hero-sub{font-size:0.88rem;color:var(--ink-soft);max-width:480px;margin:0 auto 2rem;line-height:1.7}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
 
-.eyebrow{
-  font-size:0.65rem;
-  font-weight:600;
-  letter-spacing:0.28em;
-  text-transform:uppercase;
-  color:var(--warm);
-  margin-bottom:1rem;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:0.8rem;
-}
-.eyebrow::before,.eyebrow::after{
-  content:"";
-  width:24px;
-  height:1px;
-  background:var(--warm);
-}
+/* ACTION CARDS */
+.actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1px;background:var(--line);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:3rem}
+.action-card{background:var(--cream);padding:2rem 2.2rem;display:flex;flex-direction:column;gap:0.6rem}
+.action-icon{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:0.4rem}
+.action-icon.sage{background:var(--sage-bg);color:var(--sage)}
+.action-eyebrow{font-size:0.62rem;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-faint)}
+.action-title{font-family:"Cormorant Garamond",serif;font-size:1.35rem;font-weight:400;color:var(--ink);line-height:1.2}
+.action-desc{font-size:0.82rem;color:var(--ink-soft);line-height:1.6;flex:1}
+.action-btn{display:inline-flex;align-items:center;gap:0.5rem;margin-top:0.8rem;padding:0.7rem 1.2rem;border:none;border-radius:2px;font-family:"Jost",sans-serif;font-size:0.68rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:all 0.2s;align-self:flex-start}
+.action-btn.primary{background:var(--sage);color:#fff}
+.action-btn.primary:hover{background:var(--sage-light)}
+.action-btn.outline{background:transparent;color:var(--ink);border:1.5px solid var(--line-med)}
+.action-btn.outline:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
 
-h1{
-  font-family:"Cormorant Garamond",serif;
-  font-size:clamp(2.2rem,6vw,3.2rem);
-  font-weight:300;
-  line-height:1.05;
-  margin-bottom:1rem;
-  color:var(--ink);
-}
-h1 em{color:var(--sage);font-style:italic}
+/* SECTION */
+.section{max-width:860px;margin:0 auto;padding:0 2rem 4rem}
+.section-header{display:flex;align-items:baseline;gap:1rem;margin-bottom:1.8rem;padding-bottom:1rem;border-bottom:1px solid var(--line)}
+.section-header h2{font-family:"Cormorant Garamond",serif;font-size:1.5rem;font-weight:400}
+.section-header .meta{font-size:0.68rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-faint)}
 
-.sub{
-  font-size:0.9rem;
-  color:var(--ink-soft);
-  max-width:44ch;
-  margin:0 auto 2.5rem;
-  line-height:1.75;
-}
+/* TABS */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:2rem}
+.tab{padding:0.45rem 0.9rem;background:transparent;border:1px solid var(--line-med);border-radius:20px;font-family:"Jost",sans-serif;font-size:0.7rem;font-weight:500;letter-spacing:0.08em;color:var(--ink-soft);cursor:pointer;transition:all 0.18s}
+.tab:hover{border-color:var(--sage);color:var(--sage)}
+.tab.active{background:var(--sage);border-color:var(--sage);color:#fff}
 
-.divider{
-  width:48px;
-  height:1px;
-  background:var(--line-med);
-  margin:0 auto 2.5rem;
-}
+/* GIFT GRID */
+.gift-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.gift-card{background:var(--cream);padding:1.4rem 1.5rem;display:flex;flex-direction:column;gap:0.45rem;transition:background 0.15s;position:relative}
+.gift-card:hover:not(.claimed){background:var(--stone)}
+.gift-card.claimed{opacity:0.45;pointer-events:none}
+.gift-claimed-badge{position:absolute;top:0.75rem;right:0.75rem;font-size:0.6rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;background:var(--stone);color:var(--ink-faint);padding:0.2rem 0.55rem;border-radius:10px;border:1px solid var(--line-med)}
+.gift-cat{font-size:0.6rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--warm)}
+.gift-name{font-family:"Cormorant Garamond",serif;font-size:1.05rem;font-weight:400;color:var(--ink);line-height:1.25}
+.gift-brand{font-size:0.72rem;color:var(--ink-faint)}
+.gift-desc{font-size:0.78rem;color:var(--ink-soft);line-height:1.5;flex:1}
+.gift-footer{display:flex;align-items:center;justify-content:space-between;margin-top:0.6rem;padding-top:0.7rem;border-top:1px solid var(--line);gap:0.5rem;flex-wrap:wrap}
+.gift-price{font-size:0.7rem;font-weight:600;letter-spacing:0.06em;color:var(--ink-soft);white-space:nowrap}
+.gift-actions{display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap}
+.gift-select-btn{font-size:0.62rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#fff;background:var(--sage);border:none;border-radius:2px;padding:0.3rem 0.7rem;cursor:pointer;font-family:"Jost",sans-serif;transition:background 0.15s;white-space:nowrap}
+.gift-select-btn:hover{background:var(--sage-light)}
+.gift-link{font-size:0.65rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-faint);text-decoration:none;display:flex;align-items:center;gap:0.25rem;white-space:nowrap}
+.gift-link:hover{color:var(--ink)}
+.gift-link svg{width:10px;height:10px}
+.gift-link.monzo{color:var(--warm)}
+.gift-link.monzo:hover{color:var(--ink)}
+.monzo-pill{font-size:0.6rem;font-weight:700;padding:0.15rem 0.45rem;background:var(--warm-bg);border:1px solid var(--warm-light);border-radius:10px;color:var(--warm)}
 
-.cards{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:1px;
-  background:var(--line);
-  border:1px solid var(--line);
-  max-width:560px;
-  width:100%;
-  margin:0 auto 3rem;
-}
-.card{
-  background:var(--cream);
-  padding:1.8rem 1.6rem;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:0.6rem;
-}
-.card-icon{
-  width:40px;height:40px;
-  border-radius:50%;
-  background:var(--sage-bg);
-  display:flex;align-items:center;justify-content:center;
-  color:var(--sage);
-  margin-bottom:0.3rem;
-}
-.card-label{
-  font-size:0.62rem;
-  font-weight:600;
-  letter-spacing:0.2em;
-  text-transform:uppercase;
-  color:var(--ink-faint);
-}
-.card-value{
-  font-family:"Cormorant Garamond",serif;
-  font-size:1.1rem;
-  font-weight:400;
-  color:var(--ink);
-  line-height:1.2;
-}
+/* HONEY BANNER */
+.honey-banner{background:var(--stone);border:1px solid var(--line);border-radius:2px;padding:2rem 2.2rem;margin-top:2rem;display:flex;align-items:flex-start;gap:1.5rem}
+.honey-banner .hb-icon{font-size:2rem;flex-shrink:0;margin-top:0.1rem}
+.honey-banner h3{font-family:"Cormorant Garamond",serif;font-size:1.3rem;font-weight:400;margin-bottom:0.4rem}
+.honey-banner p{font-size:0.82rem;color:var(--ink-soft);line-height:1.65;margin-bottom:1rem}
+.honey-btn{display:inline-flex;align-items:center;gap:0.5rem;padding:0.6rem 1rem;background:var(--warm);color:#fff;border:none;border-radius:2px;font-family:"Jost",sans-serif;font-size:0.65rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;text-decoration:none;transition:background 0.2s;cursor:pointer}
+.honey-btn:hover{background:#b8793a}
 
-.note{
-  font-size:0.8rem;
-  color:var(--ink-faint);
-  max-width:38ch;
-  margin:0 auto;
-  line-height:1.7;
-}
-.note a{color:var(--sage);text-decoration:none}
-.note a:hover{text-decoration:underline}
+/* FOOTER */
+.registry-footer{text-align:center;padding:2rem;font-size:0.75rem;color:var(--ink-faint);border-top:1px solid var(--line)}
+.registry-footer a{color:var(--sage);text-decoration:none}
+.registry-footer a:hover{text-decoration:underline}
 
-@media(max-width:480px){
-  .cards{grid-template-columns:1fr}
+@media(max-width:600px){
+  .hero{padding:2.5rem 1.2rem 2rem}
+  .action-card{padding:1.5rem 1.4rem}
+  .section{padding:0 1.2rem 3rem}
+  .honey-banner{flex-direction:column;gap:0.8rem}
+  .gift-grid{grid-template-columns:1fr 1fr}
 }
+@media(max-width:420px){.gift-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
-<div class="sun">
-  <!-- Sun icon matching the site's nav sun -->
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-    <circle cx="50" cy="50" r="22" fill="#C4894A"/>
-    <g stroke="#C4894A" stroke-width="7" stroke-linecap="round">
-      <line x1="50" y1="8"  x2="50" y2="18"/>
-      <line x1="50" y1="82" x2="50" y2="92"/>
-      <line x1="8"  y1="50" x2="18" y2="50"/>
-      <line x1="82" y1="50" x2="92" y2="50"/>
-      <line x1="21" y1="21" x2="28" y2="28"/>
-      <line x1="72" y1="72" x2="79" y2="79"/>
-      <line x1="79" y1="21" x2="72" y2="28"/>
-      <line x1="28" y1="72" x2="21" y2="79"/>
-    </g>
-  </svg>
+<!-- HERO -->
+<div class="hero">
+  <p class="hero-eyebrow">Bruno &amp; Sally · 18 September 2027</p>
+  <h1>Our <em>registry</em></h1>
+  <p class="hero-sub">Your presence at our wedding is the greatest gift. But if you'd like to give something, here's what we'd love.</p>
 </div>
 
-<p class="eyebrow">Bruno &amp; Sally · Registry</p>
-
-<h1>Stay tuned<br>for <em>more information</em></h1>
-
-<p class="sub">
-  Our gift registry is being put together with care. 
-  Check back closer to the wedding — we'll have everything ready in plenty of time.
-</p>
-
-<div class="divider"></div>
-
-<div class="cards">
-  <div class="card">
-    <div class="card-icon">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="18" height="18">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/>
-      </svg>
+<!-- ACTION CARDS -->
+<div class="actions">
+  <div class="action-card">
+    <div class="action-icon sage">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg>
     </div>
-    <p class="card-label">The big day</p>
-    <p class="card-value">18th September 2027</p>
+    <p class="action-eyebrow">Step 1</p>
+    <h3 class="action-title">Browse the full list</h3>
+    <p class="action-desc">We've put together gifts across every budget. Click "Select this gift" on anything you'd like to give — it takes about a minute.</p>
+    <a href="#registry" class="action-btn primary">
+      See the registry
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+    </a>
   </div>
-  <div class="card">
-    <div class="card-icon">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="18" height="18">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
-        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/>
-      </svg>
+  <div class="action-card">
+    <div class="action-icon sage">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
     </div>
-    <p class="card-label">Where</p>
-    <p class="card-value">Newton Ferrers, Devon</p>
+    <p class="action-eyebrow">Step 2</p>
+    <h3 class="action-title">Leave us a message</h3>
+    <p class="action-desc">Tell us what you've chosen and leave a note. It helps us keep track and means we can thank you properly — and we'd love to hear from you.</p>
+    <a href="#registry" class="action-btn outline">
+      Pick a gift to start
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+    </a>
   </div>
 </div>
 
-<p class="note">
-  In the meantime, if you have any questions just drop us a line at
-  <a href="mailto:brunoandsally2027@gmail.com">brunoandsally2027@gmail.com</a>
-</p>
+<!-- REGISTRY -->
+<div class="section" id="registry">
+  <div class="section-header">
+    <h2>Gift list</h2>
+    <span class="meta" id="gift-meta">loading…</span>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="filterCat('all',this)">All</button>
+    <button class="tab" onclick="filterCat('kitchen',this)">Kitchen</button>
+    <button class="tab" onclick="filterCat('home',this)">Home</button>
+    <button class="tab" onclick="filterCat('hosting',this)">Hosting</button>
+    <button class="tab" onclick="filterCat('adventures',this)">Adventures</button>
+    <button class="tab" onclick="filterCat('tech',this)">Tech</button>
+    <button class="tab" onclick="filterCat('art',this)">Art &amp; décor</button>
+    <button class="tab" onclick="filterCat('honeymoon',this)">Honeymoon fund</button>
+  </div>
+  <div class="gift-grid" id="gift-grid"></div>
+  <div class="honey-banner" id="honey-banner" style="display:none">
+    <div class="hb-icon">✈️</div>
+    <div>
+      <h3>Honeymoon fund</h3>
+      <p>For honeymoon contributions, pay any amount via Monzo — pre-set to our joint account. Then use the "Select this gift" button on the item above to leave us a message.</p>
+      <a href="https://monzo.me/brunorenucci?h=D5OpO6&d=Donation%20to%20Honeymoon%20fund&account_type=joint" target="_blank" rel="noopener" class="honey-btn">Pay via Monzo →</a>
+    </div>
+  </div>
+</div>
 
+<div class="registry-footer">
+  Struggling to buy online? Drop us a message at <a href="mailto:brunoandsally2027@gmail.com">brunoandsally2027@gmail.com</a>
+</div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────────────────────
+var RESPONSES_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTJhHW103r7bHqO_Rb-zFrGEtI8ialWYW5oLzf5FsRJjBYvZm9vinSYsWa6fkWvHyaCiWO3GyWPx7gB/pub?output=csv&gid=1928998401';
+
+// ── GIFT DATA ─────────────────────────────────────────────────────────────────
+var GIFTS = [
+  {cat:"kitchen",name:"Le Creuset Casserole Dish",brand:"Le Creuset",desc:"26cm signature cast iron — the forever pot for slow cooks and hosting dinners",price:"£250–£300",link:"https://www.lecreuset.co.uk",monzo:false},
+  {cat:"kitchen",name:"KitchenAid Stand Mixer",brand:"KitchenAid Artisan",desc:"Bread, pasta, cakes — the hosting centrepiece that earns its counter space",price:"£450–£550",link:"https://www.kitchenaid.co.uk",monzo:false},
+  {cat:"kitchen",name:"Sage Barista Express",brand:"Sage",desc:"Built-in grinder, professional espresso at home every morning",price:"£600–£700",link:"https://www.sageappliances.com/uk",monzo:false},
+  {cat:"kitchen",name:"Vitamix Blender",brand:"Vitamix E310",desc:"The last blender you'll ever buy — soups, smoothies, everything",price:"£350–£450",link:"https://www.vitamix.com/uk",monzo:false},
+  {cat:"kitchen",name:"Global Knife Set",brand:"Global",desc:"Chef's, bread & paring — Japanese steel that holds its edge",price:"£120–£160",link:"https://www.globalknives.uk",monzo:false},
+  {cat:"kitchen",name:"Cast Iron Skillet",brand:"Lodge / Finex",desc:"Sear, bake, fry — one pan from hob to oven to table",price:"£50–£90",link:"https://www.lodgecastiron.com",monzo:false},
+  {cat:"kitchen",name:"Copper Saucepan Set",brand:"Stellar / Hestan",desc:"3-piece that makes the kitchen feel grown-up",price:"£100–£180",link:"https://www.johnlewis.com",monzo:false},
+  {cat:"kitchen",name:"Pasta Maker",brand:"Marcato Atlas 150",desc:"Fresh pasta nights — the kind of Saturday you'll love",price:"£60–£80",link:"https://www.amazon.co.uk",monzo:false},
+  {cat:"kitchen",name:"Spice Collection",brand:"Steenbergs / Spice Kitchen",desc:"Curated set — the building blocks of every meal",price:"£25–£40",link:"https://www.steenbergs.co.uk",monzo:false},
+  {cat:"kitchen",name:"Ottolenghi Cookbook Bundle",brand:"Ottolenghi",desc:"Jerusalem, Plenty, Simple — the hosting trio",price:"£30–£45",link:"https://www.bookshop.org",monzo:false},
+  {cat:"home",name:"Luxury Goose Down Duvet",brand:"Soak & Sleep",desc:"Hungarian goose down — the bed upgrade that changes your mornings",price:"£200–£350",link:"https://www.soakandsleep.com",monzo:false},
+  {cat:"home",name:"Linen Bedding Set",brand:"Piglet in Bed",desc:"Washed linen — softer after every wash, lasts for years",price:"£80–£150",link:"https://www.pigletinbed.com",monzo:false},
+  {cat:"home",name:"Luxury Bath Towel Set (x4)",brand:"The White Company",desc:"Heavyweight hotel-feel towels for two",price:"£60–£100",link:"https://www.thewhitecompany.com",monzo:false},
+  {cat:"home",name:"Merino Throw Blankets",brand:"Bemboka / Johnstons of Elgin",desc:"Sofa essential for cosy evenings",price:"£60–£120",link:"https://www.johnstonscashmere.com",monzo:false},
+  {cat:"home",name:"Dyson Cordless Hoover",brand:"Dyson V15",desc:"The one everyone eventually buys — might as well get a great one",price:"£350–£600",link:"https://www.dyson.co.uk",monzo:false},
+  {cat:"home",name:"Diptyque Candle Set",brand:"Diptyque",desc:"Baies, Feu de Bois — scents that make a home feel like one",price:"£30–£50 each",link:"https://www.diptyqueparis.com/en_uk",monzo:false},
+  {cat:"home",name:"Reed Diffuser",brand:"Aesop / Jo Malone",desc:"Hallway atmosphere — immediate on arrival",price:"£30–£45",link:"https://www.aesop.com/uk",monzo:false},
+  {cat:"home",name:"Gallery Photo Frames Set",brand:"Oliver Bonas / Desenio",desc:"Matching frames for an adventure photo wall",price:"£20–£40",link:"https://www.desenio.co.uk",monzo:false},
+  {cat:"hosting",name:"Wine Fridge (12-bottle)",brand:"Liebherr / Caso",desc:"Under-counter — for the couple who hosts dinner parties",price:"£200–£350",link:"https://www.johnlewis.com",monzo:false},
+  {cat:"hosting",name:"Riedel Wine Glasses (x12)",brand:"Riedel Veritas",desc:"Red, white and champagne flutes for 6 guests",price:"£200–£280",link:"https://www.riedel.com/en-gb",monzo:false},
+  {cat:"hosting",name:"Cocktail Making Set",brand:"Viski / W&P",desc:"Shaker, jigger, strainer, bar spoon — the full kit",price:"£60–£100",link:"https://www.amazon.co.uk",monzo:false},
+  {cat:"hosting",name:"Marble Cheese Board Set",brand:"Anthropologie / Hay",desc:"Board, knives, slate labels — centrepiece for every gathering",price:"£60–£100",link:"https://www.anthropologie.com/en-gb",monzo:false},
+  {cat:"hosting",name:"Linen Napkins & Tablecloth",brand:"Piglet in Bed",desc:"Set of 8 napkins — makes a casual dinner feel like an occasion",price:"£50–£80",link:"https://www.pigletinbed.com",monzo:false},
+  {cat:"hosting",name:"Dinner Plate Set (x8)",brand:"Emma Bridgewater / Royal Doulton",desc:"A full matching set — finally not flatmate hand-me-downs",price:"£80–£150",link:"https://www.emmabridgewater.co.uk",monzo:false},
+  {cat:"hosting",name:"Champagne Flutes (x6)",brand:"LSA / John Lewis",desc:"For the toasts — always worth having a dedicated set",price:"£30–£50",link:"https://www.lsa-international.com",monzo:false},
+  {cat:"adventures",name:"Sony RX100 VII Camera",brand:"Sony",desc:"Pocket-sized but professional — for the next ski trip, Rome, or Australia",price:"£900–£1100",link:"https://www.sony.co.uk",monzo:false},
+  {cat:"adventures",name:"Arc'teryx Shell Jacket",brand:"Arc'teryx Beta AR",desc:"The last waterproof either of us will ever need to buy",price:"£500–£650",link:"https://www.arcteryx.com/gb/en",monzo:false},
+  {cat:"adventures",name:"Garmin Running Watch",brand:"Garmin Forerunner 265",desc:"GPS, heart rate, training load — upgrade for race season",price:"£350–£450",link:"https://www.garmin.com/en-GB",monzo:false},
+  {cat:"adventures",name:"Ski Helmet Upgrade",brand:"Smith / POC",desc:"MIPS certified with integrated audio — his & hers",price:"£200–£350",link:"https://www.ellis-brigham.com",monzo:false},
+  {cat:"adventures",name:"Trail Running Shoes",brand:"Salomon / Hoka",desc:"For the pair who run races together",price:"£100–£160",link:"https://www.salomon.com/en-gb",monzo:false},
+  {cat:"adventures",name:"Merino Base Layers",brand:"Icebreaker",desc:"200 weight — ski, hike, travel in any climate",price:"£60–£100",link:"https://www.icebreaker.com/en-gb",monzo:false},
+  {cat:"adventures",name:"Osprey Daypacks (x2)",brand:"Osprey",desc:"His & hers — matching packs for hikes and travel days",price:"£70–£110",link:"https://www.ospreypacks.com/uk/en",monzo:false},
+  {cat:"adventures",name:"Waterproof Drybags",brand:"Ortlieb / Helly Hansen",desc:"For boat days, kayaking, beach trips",price:"£50–£80",link:"https://www.ortlieb.com/en_GB",monzo:false},
+  {cat:"adventures",name:"Travel Packing Cubes Set",brand:"Peak Design / Monos",desc:"Organisation upgrade for every trip ahead",price:"£30–£50",link:"https://www.peakdesign.com",monzo:false},
+  {cat:"tech",name:"Sonos Era 100",brand:"Sonos",desc:"Room-filling sound for cooking, hosting, lazy Sunday mornings",price:"£220–£280",link:"https://www.sonos.com/en-gb",monzo:false},
+  {cat:"tech",name:"Robot Vacuum",brand:"iRobot / Roborock",desc:"The home upgrade neither of us knew we needed",price:"£300–£500",link:"https://www.irobot.co.uk",monzo:false},
+  {cat:"tech",name:"Noise-Cancelling Headphones (x2)",brand:"Sony WH-1000XM5",desc:"One pair each — for long-haul flights on future adventures",price:"£280–£350 each",link:"https://www.sony.co.uk",monzo:false},
+  {cat:"tech",name:"Anker MagSafe 3-in-1 Charger",brand:"Anker",desc:"Phone, watch and earbuds simultaneously on the bedside",price:"£60–£100",link:"https://www.amazon.co.uk",monzo:false},
+  {cat:"tech",name:"Portable Power Bank",brand:"Anker 747",desc:"High capacity — essential for travel days and ski trips",price:"£60–£90",link:"https://www.amazon.co.uk",monzo:false},
+  {cat:"art",name:"Original Artwork Commission",brand:"Etsy / local artist",desc:"A piece made for our home — abstract or a place meaningful to us",price:"£200–£500",link:"https://www.etsy.com/uk",monzo:false},
+  {cat:"art",name:"Statement Floor Lamp",brand:"HAY / Muuto",desc:"Transforms a living room — good design that lasts decades",price:"£200–£400",link:"https://www.hay.com/en-gb",monzo:false},
+  {cat:"art",name:"Framed Prints Set",brand:"Desenio / Artfinder",desc:"Gallery wall kit — 3–5 coordinated frames",price:"£60–£120",link:"https://www.desenio.co.uk",monzo:false},
+  {cat:"art",name:"Ceramic Vases (trio)",brand:"HAY",desc:"Varying heights — simplest way to style a shelf",price:"£50–£100",link:"https://www.hay.com/en-gb",monzo:false},
+  {cat:"art",name:"Large Plant + Ceramic Pot",brand:"Patch Plants",desc:"Fiddle leaf fig or monstera — instant homeliness",price:"£60–£100",link:"https://www.patchplants.com",monzo:false},
+  {cat:"art",name:"Coffee Table Books",brand:"Assouline / Taschen",desc:"Architecture, travel, photography — beautiful on the table",price:"£30–£50",link:"https://www.assouline.com",monzo:false},
+  {cat:"honeymoon",name:"Honeymoon Flights",brand:"Monzo",desc:"Help us get there — any amount goes toward our flights",price:"Any amount",link:"https://monzo.me/brunorenucci?h=D5OpO6&d=Donation%20to%20Honeymoon%20fund&account_type=joint",monzo:true},
+  {cat:"honeymoon",name:"One Night Hotel Upgrade",brand:"Monzo",desc:"A splurge suite for our first night as a married couple",price:"£200–£500",link:"https://monzo.me/brunorenucci?h=D5OpO6&d=Donation%20to%20Honeymoon%20fund&account_type=joint",monzo:true},
+  {cat:"honeymoon",name:"Michelin Dinner for Two",brand:"Monzo",desc:"A special meal at a bucket-list restaurant on our trip",price:"£200–£400",link:"https://monzo.me/brunorenucci?h=D5OpO6&d=Donation%20to%20Honeymoon%20fund&account_type=joint",monzo:true},
+  {cat:"honeymoon",name:"Spa Day for Two",brand:"Monzo",desc:"Post-wedding recovery — a proper half-day treatment each",price:"£100–£200",link:"https://monzo.me/brunorenucci?h=D5OpO6&d=Donation%20to%20Honeymoon%20fund&account_type=joint",monzo:true},
+  {cat:"honeymoon",name:"Adventure Excursion",brand:"Monzo",desc:"Snorkelling, sailing, hiking — something adventurous on location",price:"£80–£150",link:"https://monzo.me/brunorenucci?h=D5OpO6&d=Donation%20to%20Honeymoon%20fund&account_type=joint",monzo:true},
+  {cat:"honeymoon",name:"Matching Luggage Set",brand:"Monos / Away",desc:"Cabin + check-in for two — the practical honeymoon gift",price:"£400–£600",link:"https://www.monos.com/en-gb",monzo:false},
+  {cat:"honeymoon",name:"Noise-Cancelling Headphones",brand:"Sony",desc:"One pair each for long-haul flights on honeymoon",price:"£280–£350 each",link:"https://www.sony.co.uk",monzo:false},
+];
+
+var CAT_LABELS = {kitchen:"Kitchen & Cooking",home:"Home & Cosy Living",hosting:"Hosting & Drinks",adventures:"Adventures & Outdoors",tech:"Tech",art:"Art & Décor",honeymoon:"Honeymoon Fund"};
+
+// ── CLAIMED TRACKING ──────────────────────────────────────────────────────────
+var claimedNames = [];  // lowercased gift names that have been submitted
+
+function normName(s){ return s.trim().toLowerCase(); }
+
+function loadClaimed(){
+  if(RESPONSES_CSV_URL === 'PASTE_PUBLISHED_CSV_URL_HERE'){ renderGifts('all'); return; }
+  fetch(RESPONSES_CSV_URL + '&t=' + Date.now())
+    .then(function(r){ return r.text(); })
+    .then(function(csv){
+      var lines = csv.trim().split('\n');
+      claimedNames = [];
+      for(var i = 1; i < lines.length; i++){
+        // CSV col 3 (0-indexed) = "Which gift are you contributing to?"
+        var cols = parseCSVLine(lines[i]);
+        if(cols[3]) claimedNames.push(normName(cols[3]));
+      }
+      renderGifts(currentCat);
+    })
+    .catch(function(){ renderGifts(currentCat); });
+}
+
+function parseCSVLine(line){
+  var result = [], cur = '', inQ = false;
+  for(var i = 0; i < line.length; i++){
+    var c = line[i];
+    if(c === '"'){ inQ = !inQ; }
+    else if(c === ',' && !inQ){ result.push(cur); cur = ''; }
+    else { cur += c; }
+  }
+  result.push(cur);
+  return result;
+}
+
+function isClaimed(name){ return claimedNames.indexOf(normName(name)) !== -1; }
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+var currentCat = 'all';
+
+function renderGifts(cat){
+  var list = cat === 'all' ? GIFTS : GIFTS.filter(function(g){ return g.cat === cat; });
+  var grid = document.getElementById('gift-grid');
+  var honey = document.getElementById('honey-banner');
+  var meta = document.getElementById('gift-meta');
+
+  var available = list.filter(function(g){ return !isClaimed(g.name); }).length;
+  var total = list.length;
+  meta.textContent = total + ' gifts' + (claimedNames.length > 0 ? ' · ' + (total - available) + ' claimed' : '');
+
+  honey.style.display = list.some(function(g){ return g.monzo; }) ? 'flex' : 'none';
+
+  grid.innerHTML = list.map(function(g){
+    var claimed = isClaimed(g.name);
+    var buyLink = g.monzo
+      ? '<a href="' + g.link + '" target="_blank" rel="noopener" class="gift-link monzo">Pay via Monzo <span class="monzo-pill">Monzo</span></a>'
+      : '<a href="' + g.link + '" target="_blank" rel="noopener" class="gift-link">Buy <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" width="10" height="10"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"/></svg></a>';
+    var selectBtn = claimed
+      ? ''
+      : '<button class="gift-select-btn" onclick="openModal(' + JSON.stringify(g.name) + ')">Select this gift</button>';
+    return '<div class="gift-card' + (claimed ? ' claimed' : '') + '">'
+      + (claimed ? '<span class="gift-claimed-badge">Claimed</span>' : '')
+      + '<p class="gift-cat">' + CAT_LABELS[g.cat] + '</p>'
+      + '<h3 class="gift-name">' + g.name + '</h3>'
+      + '<p class="gift-brand">' + g.brand + '</p>'
+      + '<p class="gift-desc">' + g.desc + '</p>'
+      + '<div class="gift-footer">'
+      + '<span class="gift-price">' + g.price + '</span>'
+      + '<div class="gift-actions">' + selectBtn + buyLink + '</div>'
+      + '</div></div>';
+  }).join('');
+}
+
+function filterCat(cat, btn){
+  currentCat = cat;
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+  btn.classList.add('active');
+  renderGifts(cat);
+}
+
+// ── OPEN MODAL: tell parent to show it ───────────────────────────────────────
+function openModal(giftName){
+  var g = GIFTS.find(function(x){ return x.name === giftName; });
+  var price = g ? g.price : '';
+  // If running inside an iframe, message the parent shell
+  // If window.parent has regOpenModal directly (same origin), call it
+  try {
+    if (window.parent !== window && typeof window.parent.regOpenModal === 'function') {
+      window.parent.regOpenModal(giftName, price);
+    } else {
+      window.parent.postMessage({type:'openRegistryModal', gift: giftName, price: price}, '*');
+    }
+  } catch(e) {
+    // Fallback: shouldn't happen in normal flow
+    window.postMessage({type:'openRegistryModal', gift: giftName, price: price}, '*');
+  }
+}
+
+// ── LISTEN for markClaimed back from parent after successful submit ───────────
+window.addEventListener('message', function(e){
+  if(e.data && e.data.type === 'markClaimed'){
+    if(claimedNames.indexOf(normName(e.data.gift)) === -1){
+      claimedNames.push(normName(e.data.gift));
+    }
+    renderGifts(currentCat);
+  }
+});
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+loadClaimed();
+</script>
 <script>
 // Redirect to shell if loaded directly (not inside the iframe)
 (function(){
