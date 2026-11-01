@@ -40,26 +40,34 @@ footer{background:var(--ink);color:rgba(255,255,255,0.4);text-align:center;paddi
 })();
 </script>
 <style>
-/* Hero collage: two rows, one extra column per photo added */
+/* Hero collage: two rows (three on phones), one extra column per photo added.
+   The first photo spans both rows so an odd number of photos leaves no gap. */
 .wp-hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#1B3A4B 0%,#5C7A5C 100%);height:40vh;min-height:260px;display:flex;align-items:flex-end;padding:2.5rem 2rem}
 .wp-collage{position:absolute;inset:0;display:grid;grid-template-rows:repeat(2,minmax(0,1fr));grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:2px}
 .wp-collage img{width:100%;height:100%;object-fit:cover;display:block}
+.wp-collage .tall{grid-row:span 2}
+@media(max-width:600px){.wp-collage{grid-template-rows:repeat(3,minmax(0,1fr))}}
 .wp-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(27,58,75,0.92) 0%,rgba(27,58,75,0.45) 55%,rgba(27,58,75,0.15) 100%)}
 </style>
 <div class="wp-hero">
   <div class="wp-collage" aria-hidden="true">
-    <img src="/images/wedding-party/00.jpg" alt=""/>
-    <img src="/images/wedding-party/05.jpg" alt=""/>
-    <img src="/images/wedding-party/06.jpg" alt=""/>
-    <img src="/images/wedding-party/01.jpg" alt=""/>
-    <img src="/images/wedding-party/02.jpg" alt=""/>
-    <img src="/images/wedding-party/07.jpg" alt=""/>
-    <img src="/images/wedding-party/08.jpg" alt=""/>
-    <img src="/images/wedding-party/03.jpg" alt=""/>
-    <img src="/images/wedding-party/04.jpg" alt=""/>
-    <img src="/images/wedding-party/09.jpg" alt=""/>
-    <img src="/images/wedding-party/parents-stacey.jpg" alt=""/>
-    <img src="/images/wedding-party/parents-renucci.jpg" alt=""/>
+    <img class="tall" src="/images/wedding-party/collage/01.jpg" alt=""/>
+    <img src="/images/wedding-party/collage/02.jpg" alt=""/>
+    <img src="/images/wedding-party/collage/03.jpg" alt=""/>
+    <img src="/images/wedding-party/collage/04.jpg" alt=""/>
+    <img src="/images/wedding-party/collage/05.jpg" alt=""/>
+    <img src="/images/wedding-party/collage/06.jpg" alt=""/>
+    <img src="/images/wedding-party/collage/07.jpg" alt=""/>
+    <img src="/images/wedding-party/collage/08.jpg" alt=""/>
+    <img src="/images/wedding-party/collage/09.jpg" alt=""/>
+    <img src="/images/wedding-party/collage/10.jpg" alt=""/>
+    <img src="/images/wedding-party/collage/11.jpg" alt=""/>
+    <img src="/images/wedding-party/collage/12.jpg" alt=""/>
+    <img src="/images/wedding-party/collage/13.jpg" alt=""/>
+    <img src="/images/wedding-party/collage/14.jpg" alt=""/>
+    <img src="/images/wedding-party/collage/15.jpg" alt=""/>
+    <img src="/images/wedding-party/collage/16.jpg" alt=""/>
+    <img src="/images/wedding-party/collage/17.jpg" alt=""/>
   </div>
   <div style="position:relative;z-index:1;max-width:1100px;width:100%;margin:0 auto;color:#fff">
     <p style="font-size:0.78rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.65);margin-bottom:0.3rem">The people beside us</p>
