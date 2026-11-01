@@ -82,6 +82,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.4);text-align:center;paddi
 .wm-layout{display:grid;grid-template-columns:minmax(260px,320px) 1fr;border:1px solid var(--line);border-radius:2px;overflow:hidden;background:#fff}
 .wm-list{max-height:520px;overflow-y:auto;border-right:1px solid var(--line)}
 .wm-canvas{height:520px;min-height:100%;isolation:isolate}
+.wm-canvas .leaflet-tile-pane{filter:saturate(0.6) brightness(1.03)}
 .wm-group h3{position:sticky;top:0;z-index:1;display:flex;align-items:center;gap:0.5rem;padding:0.8rem 1rem 0.4rem;background:#fff;font-size:0.67rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-soft)}
 .wm-group ul{list-style:none;padding-bottom:0.4rem}
 .wm-item{display:block;width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer;background:none;border:0;border-left:3px solid transparent;padding:0.55rem 1rem 0.55rem calc(1rem - 3px)}
@@ -282,9 +283,10 @@ footer{background:var(--ink);color:rgba(255,255,255,0.4);text-align:center;paddi
   var canvas = document.getElementById("wm-canvas");
 
   var map = L.map(canvas, { scrollWheelZoom: false, zoomControl: true });
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
-    maxZoom: 19, subdomains: "abcd",
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
+  // OpenStreetMap's own tiles need no API key (CARTO's now do); fine for a low-traffic site with attribution
+  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(map);
 
   // Enable scroll zoom only after the map is clicked, so the page scrolls normally
