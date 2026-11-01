@@ -15,7 +15,12 @@ h2{font-family:"Cormorant Garamond",serif;font-weight:300;font-size:clamp(2rem,5
 .btn-outline{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}.btn-outline:hover{background:var(--ink);color:#fff}
 footer{background:var(--ink);color:rgba(255,255,255,0.4);text-align:center;padding:2.5rem 1.5rem;font-size:0.77rem;letter-spacing:0.1em}footer{background-image:url(/images/patterns/sprig-dark-bl.svg),url(/images/patterns/sprig-dark-tr.svg);background-position:left bottom,right top;background-repeat:no-repeat;background-size:clamp(100px,14vw,160px)}
 .ft-name{font-family:"Cormorant Garamond",serif;font-size:1.4rem;font-weight:300;color:rgba(255,255,255,0.8);margin-bottom:0.4rem}
-.section{padding:5.5rem 2rem}.si{max-width:720px;margin:0 auto}
+.section{padding:4rem 2rem}.si{max-width:820px;margin:0 auto}
+/* Content sits on cream panels so the waves only show around and between them */
+.panels{display:grid;gap:2.5rem}
+.panel{background:var(--cream);border:1px solid var(--line);border-radius:4px;padding:3.5rem 3rem;box-shadow:0 18px 40px -28px rgba(27,58,75,0.35)}
+.panel>:last-child{margin-bottom:0}
+@media(max-width:700px){.section{padding:2rem 0.75rem}.panel{padding:2.4rem 1.3rem}.panels{gap:1.5rem}}
 .da-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin:2rem 0 2.5rem}@media(max-width:700px){.da-grid{grid-template-columns:1fr}}
 .da-card{background:#fff;border:1px solid var(--line);border-radius:2px;padding:2rem;display:flex;flex-direction:column}
 .da-card .ic{font-size:2rem;margin-bottom:1rem}
@@ -34,13 +39,13 @@ footer{background:var(--ink);color:rgba(255,255,255,0.4);text-align:center;paddi
   }
 })();
 </script>
-<div style="background-image:url('/images/day-after/00.jpg');background-size:cover;background-position:center 40%;height:40vh;min-height:260px;display:flex;align-items:flex-end;padding:2.5rem 2rem;position:relative;padding:0">
+<div style="background-image:url('/images/day-after/00.jpg');background-size:cover;background-position:center 40%;height:40vh;min-height:260px;display:flex;align-items:flex-end;padding:2.5rem 2rem;position:relative">
   <div style="position:absolute;inset:0;background:rgba(0,0,0,0.5)"></div><div style="position:relative;z-index:1;max-width:1100px;width:100%;margin:0 auto;color:#fff">
     <p style="font-size:0.78rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.65);margin-bottom:0.3rem">Sunday 19th September 2027</p>
     <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:300">The Morning After</h1>
   </div>
 </div>
-<div class="section"><div class="si">
+<div class="section"><div class="si panel">
   <p style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-style:italic;color:var(--ink-soft);margin-bottom:2rem;line-height:1.6">Still standing? Excellent. Join us for a relaxed recovery day at Carswell.</p>
   <div class="da-grid">
     <div class="da-card">
