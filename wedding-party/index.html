@@ -34,8 +34,27 @@ footer{background:var(--ink);color:rgba(255,255,255,0.4);text-align:center;paddi
   }
 })();
 </script>
-<div style="background:linear-gradient(135deg,#1B3A4B 0%,#5C7A5C 100%);height:40vh;min-height:260px;display:flex;align-items:flex-end;padding:2.5rem 2rem">
-  <div style="max-width:1100px;width:100%;margin:0 auto;color:#fff">
+<style>
+/* Hero collage: two rows, one extra column per photo added */
+.wp-hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#1B3A4B 0%,#5C7A5C 100%);height:40vh;min-height:260px;display:flex;align-items:flex-end;padding:2.5rem 2rem}
+.wp-collage{position:absolute;inset:0;display:grid;grid-template-rows:repeat(2,minmax(0,1fr));grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:2px}
+.wp-collage img{width:100%;height:100%;object-fit:cover;display:block}
+.wp-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(27,58,75,0.92) 0%,rgba(27,58,75,0.45) 55%,rgba(27,58,75,0.15) 100%)}
+</style>
+<div class="wp-hero">
+  <div class="wp-collage" aria-hidden="true">
+    <img src="/images/wedding-party/00.jpg" alt=""/>
+    <img src="/images/wedding-party/05.jpg" alt=""/>
+    <img src="/images/wedding-party/06.jpg" alt=""/>
+    <img src="/images/wedding-party/01.jpg" alt=""/>
+    <img src="/images/wedding-party/02.jpg" alt=""/>
+    <img src="/images/wedding-party/07.jpg" alt=""/>
+    <img src="/images/wedding-party/08.jpg" alt=""/>
+    <img src="/images/wedding-party/03.jpg" alt=""/>
+    <img src="/images/wedding-party/04.jpg" alt=""/>
+    <img src="/images/wedding-party/09.jpg" alt=""/>
+  </div>
+  <div style="position:relative;z-index:1;max-width:1100px;width:100%;margin:0 auto;color:#fff">
     <p style="font-size:0.78rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.65);margin-bottom:0.3rem">The people beside us</p>
     <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:300">Wedding Party</h1>
   </div>
@@ -76,23 +95,23 @@ footer{background:var(--ink);color:rgba(255,255,255,0.4);text-align:center;paddi
     <div class="parent-card">
       <p class="subtitle">Parents of the Bride</p>
       <h3>Jon &amp; Janice Stacey</h3>
-      <p>Sally's mum and dad — and two of the warmest people you'll meet. If you find yourself next to them, you're in excellent company.</p>
+      <p>Sally’s mum and dad. Jon is an avid sailor who recently crossed the Atlantic, officially for the adventure, unofficially to stock up on Caribbean rum. Janice is seemingly impervious to cold water and will happily take a dip in the sea in any weather. Beach fit, handy at table tennis and never far from a white wine spritz.</p>
       <p style="font-size:0.8rem;font-weight:600;color:var(--ink);margin-bottom:0.4rem">Good conversation starters</p>
       <div class="topics">
-        <span class="topic">⛵ Sailing (Jon)</span>
-        <span class="topic">🌊 Wild swimming (Janice)</span>
-        <span class="topic">💬 Anything, really</span>
+        <span class="topic">⛵ Sailing and rum (Jon)</span>
+        <span class="topic">🌊 Sea swimming and table tennis (Janice)</span>
+        <span class="topic">🥂 A white wine spritz</span>
       </div>
     </div>
     <div class="parent-card">
       <p class="subtitle">Parents of the Groom</p>
       <h3>Paul &amp; Judy Renucci</h3>
-      <p>Bruno's mum and dad — enthusiastic, welcoming, and very pleased Sally said yes. They'll put you at ease immediately.</p>
+      <p>Bruno’s mum and dad. Paul is proudly Scottish (or Italian-Irish), especially when the Six Nations is on. He’s passionate about golf (as many rounds a week as possible), skiing and a good bath, and is currently on a 2,000+ day Duolingo streak, so loves practising his Italian, especially in Spanish restaurants. Judy is the kindest person you’ll meet and incredibly knowledgeable about all things health and wellness, including homeopathy and nutrition. Together they’re very well-travelled (most recently Peru) and fluent in French after years living in France, a skill Ad inherited but Bruno and Hugo dodged.</p>
       <p style="font-size:0.8rem;font-weight:600;color:var(--ink);margin-bottom:0.4rem">Good conversation starters</p>
       <div class="topics">
-        <span class="topic">🏉 Rugby &amp; sport (Paul)</span>
-        <span class="topic">🧘 Yoga (Judy)</span>
-        <span class="topic">💬 Anything, really</span>
+        <span class="topic">🏉 Rugby and golf (Paul)</span>
+        <span class="topic">🌿 Health &amp; wellness (Judy)</span>
+        <span class="topic">🌍 Travel and France (both)</span>
       </div>
     </div>
   </div>
