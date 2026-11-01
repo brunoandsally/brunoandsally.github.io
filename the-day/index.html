@@ -6,6 +6,7 @@
 <title>Bruno &amp; Sally — The Day</title>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--sage:#5C7A5C;--sage-light:#8FA882;--sage-pale:#EEF2E8;--sky:#4A7FA8;--sky-light:#7BAFD4;--sky-pale:#EAF3F9;--cream:#FAF8F3;--stone:#F0EBE1;--ink:#2C2C2A;--ink-soft:#5C5A56;--warm:#C4894A;--warm-light:#E8C49A;--line:rgba(44,44,42,0.1)}
 html{scroll-behavior:smooth}body{font-family:"Jost",sans-serif;background:var(--cream) url(/images/patterns/waves.svg);color:var(--ink);line-height:1.7;overflow-x:hidden}
@@ -72,6 +73,32 @@ footer{background:var(--ink);color:rgba(255,255,255,0.4);text-align:center;paddi
 .acc a{font-size:0.78rem;color:var(--sky);font-weight:500;text-decoration:none}
 .wp-link{background:var(--stone);border:1px solid var(--line);border-radius:2px;padding:1.6rem;margin-top:2.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 @media(max-width:900px){.sw,.vc{grid-template-columns:1fr}.tg{grid-template-columns:1fr}}
+/* Map (Leaflet) */
+.wm-intro{color:var(--ink-soft);font-size:0.95rem;max-width:60ch;margin-bottom:1.5rem}
+.wm-filters{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1rem}
+.wm-chip{font-family:"Jost",sans-serif;font-size:0.7rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;padding:0.5rem 0.95rem;border-radius:2px;border:1px solid var(--line);background:#fff;color:var(--ink);transition:all 0.2s}
+.wm-chip:hover{border-color:var(--sage-light)}
+.wm-chip[aria-pressed="true"]{background:var(--sage);border-color:var(--sage);color:#fff}
+.wm-layout{display:grid;grid-template-columns:minmax(260px,320px) 1fr;border:1px solid var(--line);border-radius:2px;overflow:hidden;background:#fff}
+.wm-list{max-height:520px;overflow-y:auto;border-right:1px solid var(--line)}
+.wm-canvas{height:520px;min-height:100%;isolation:isolate}
+.wm-group h3{position:sticky;top:0;z-index:1;display:flex;align-items:center;gap:0.5rem;padding:0.8rem 1rem 0.4rem;background:#fff;font-size:0.67rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-soft)}
+.wm-group ul{list-style:none;padding-bottom:0.4rem}
+.wm-item{display:block;width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer;background:none;border:0;border-left:3px solid transparent;padding:0.55rem 1rem 0.55rem calc(1rem - 3px)}
+.wm-item:hover{background:var(--sage-pale)}
+.wm-item[aria-current="true"]{background:var(--sage-pale);border-left-color:var(--sage)}
+.wm-item strong{display:block;font-family:"Cormorant Garamond",serif;font-size:1.12rem;font-weight:500;line-height:1.25}
+.wm-item span{display:block;font-size:0.8rem;color:var(--ink-soft);line-height:1.45;margin-top:0.15rem}
+.wm-chip:focus-visible,.wm-item:focus-visible{outline:2px solid var(--sky);outline-offset:-2px}
+.wm-dot{width:9px;height:9px;border-radius:50%;flex:none}
+.wm-pin{display:block;width:100%;height:100%;border-radius:50%;border:3px solid #fff;box-shadow:0 1px 4px rgba(27,58,75,0.45)}
+.wm-pin--wedding{background:var(--warm)}.wm-pin--pub{background:#9B4F5E}.wm-pin--water{background:var(--sky)}.wm-pin--outdoors{background:var(--sage)}.wm-pin--stay{background:#7A6890}
+.wm-canvas .leaflet-popup-content-wrapper{border-radius:2px}
+.wm-canvas .leaflet-popup-content{margin:0.8rem 1rem;font-family:"Jost",sans-serif;line-height:1.45}
+.wm-pop strong{display:block;font-family:"Cormorant Garamond",serif;font-size:1.2rem;font-weight:500;color:var(--ink);margin-bottom:0.15rem}
+.wm-pop p{margin:0 0 0.5rem;color:var(--ink-soft);font-size:0.82rem}
+.wm-pop a{color:var(--sky);font-weight:600;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none}
+@media(max-width:760px){.wm-layout{grid-template-columns:1fr}.wm-canvas{height:360px;order:-1}.wm-list{max-height:none;border-right:0;border-top:1px solid var(--line)}}
 </style>
 </head>
 <body>
@@ -117,6 +144,24 @@ footer{background:var(--ink);color:rgba(255,255,255,0.4);text-align:center;paddi
   <div class="dc"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a2 2 0 1 0-2-2M12 8.5v1.2l-8.4 5.7a.9.9 0 0 0 .5 1.6h15.8a.9.9 0 0 0 .5-1.6L12 9.7"/></svg><div><h3>Dress Code</h3><p><strong>Garden party</strong> &mdash; long, summery dresses (tea length or longer) and suits, linen, or something equally smart for the men. Colour very much encouraged.</p><p style="margin-top:0.5rem;font-size:0.84rem">Comfortable shoes and a light layer for the sea breeze are both a good idea.</p></div></div>
   </div>
 
+  <section class="panel" id="wedding-map" aria-labelledby="wm-title">
+   <p class="eyebrow">Around Newton Ferrers</p>
+   <h2 id="wm-title">Finding your way</h2>
+   <p class="wm-intro">The ceremony is at Holy Cross Church in Newton Ferrers, followed by the reception at Carswell near Holbeton. Tap a place for directions.</p>
+   <div class="wm-filters" role="group" aria-label="Filter places">
+    <button type="button" class="wm-chip" data-filter="all" aria-pressed="true">Everything</button>
+    <button type="button" class="wm-chip" data-filter="wedding" aria-pressed="false">The day</button>
+    <button type="button" class="wm-chip" data-filter="pub" aria-pressed="false">Pubs</button>
+    <button type="button" class="wm-chip" data-filter="water" aria-pressed="false">On the water</button>
+    <button type="button" class="wm-chip" data-filter="outdoors" aria-pressed="false">Beaches &amp; walks</button>
+    <button type="button" class="wm-chip" data-filter="stay" aria-pressed="false">Where to stay</button>
+   </div>
+   <div class="wm-layout">
+    <div class="wm-list" id="wm-list"></div>
+    <div class="wm-canvas" id="wm-canvas" role="region" aria-label="Map of wedding locations"></div>
+   </div>
+  </section>
+
   <div class="panel">
    <p class="eyebrow">Getting there &amp; getting home</p>
    <h2>Transport &amp; Parking</h2>
@@ -150,6 +195,210 @@ footer{background:var(--ink);color:rgba(255,255,255,0.4);text-align:center;paddi
  </div>
 </div>
 <footer><p class="ft-name">Bruno &amp; Sally</p><p>18th September 2027 &middot; Newton Ferrers &amp; Carswell, Devon</p><p style="margin-top:0.7rem;font-size:0.67rem">Made with love, Aperol Spritz, and a lot of games &#x1F9E9;</p></footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+(function () {
+  /*
+    Map places. lat/lng positions the pin; coordinates are approximate, so confirm each one
+    by right-clicking the exact spot in Google Maps and copying the numbers.
+    query is what the Directions link sends to Google Maps (name + postcode is most reliable).
+  */
+  var PLACES = [
+    { cat: "wedding", name: "Holy Cross Church", lat: 50.3157, lng: -4.0337,
+      blurb: "Ceremony. Newton Ferrers, PL8 1AT.",
+      query: "Holy Cross Church, Newton Ferrers, Plymouth PL8 1AT" },
+    { cat: "wedding", name: "Carswell", lat: 50.3176, lng: -3.9797,
+      blurb: "Reception, dinner and dancing. Holbeton, PL8 1HH.",
+      query: "Carswell Farm, Holbeton, Plymouth PL8 1HH" },
+
+    { cat: "pub", name: "The Dolphin Inn", lat: 50.3135, lng: -4.0366,
+      blurb: "Waterside pub in Newton Ferrers.",
+      query: "The Dolphin Inn, Newton Ferrers" },
+    { cat: "pub", name: "The Swan Inn", lat: 50.3112, lng: -4.0394,
+      blurb: "Across the creek in Noss Mayo.",
+      query: "The Swan Inn, Noss Mayo" },
+    { cat: "pub", name: "The Ship Inn", lat: 50.3097, lng: -4.0354,
+      blurb: "At the head of the creek in Noss Mayo.",
+      query: "The Ship Inn, Noss Mayo" },
+    { cat: "pub", name: "The Mildmay Colours", lat: 50.3340, lng: -3.9585,
+      blurb: "Village pub in Holbeton, closest to Carswell.",
+      query: "Mildmay Colours Inn, Holbeton" },
+
+    { cat: "water", name: "Maggie", lat: 50.31653, lng: -4.05453,
+      blurb: "Nobody's boarding, but give her a wave if you're passing.",
+      query: "50.31653,-4.05453" },
+
+    { cat: "outdoors", name: "Mothecombe Beach", lat: 50.3105, lng: -3.9530,
+      blurb: "Sandy beach at the mouth of the Erme, closest to Carswell.",
+      query: "Mothecombe Beach, Holbeton" },
+    { cat: "outdoors", name: "Cellar Beach", lat: 50.3095, lng: -4.0610,
+      blurb: "Small sheltered beach at the mouth of the Yealm, below Noss Mayo.",
+      query: "Cellar Beach, Noss Mayo" },
+    { cat: "outdoors", name: "Wembury Beach", lat: 50.3170, lng: -4.0840,
+      blurb: "Across the estuary from Noss Mayo. Rock pools and a beach cafe.",
+      query: "Wembury Beach" },
+    { cat: "outdoors", name: "Revelstoke Drive cliff walk", lat: 50.3005, lng: -4.0535,
+      blurb: "Coastal loop from the National Trust car park above Noss Mayo.",
+      query: "National Trust Noss Mayo car park" },
+    { cat: "outdoors", name: "Pool Mill alpacas", lat: 50.3171, lng: -4.0032,
+      blurb: "Alpaca farm at Pool Mill, Membland, between Newton Ferrers and Carswell.",
+      query: "Pool Mill, Membland, Newton Ferrers" },
+
+    { cat: "stay", name: "Worswell Barton", lat: 50.3040, lng: -4.0520,
+      blurb: "Near Noss Mayo.",
+      query: "Worswell Barton, Noss Mayo, Plymouth" },
+    { cat: "stay", name: "Premier Inn Plymouth East", lat: 50.3940, lng: -4.0920,
+      blurb: "Marsh Mills, east Plymouth. Free parking.",
+      query: "Premier Inn Plymouth East, Marsh Mills" },
+    { cat: "stay", name: "ibis Plymouth", lat: 50.3950, lng: -4.0880,
+      blurb: "Marsh Mills, next to Premier Inn Plymouth East.",
+      query: "ibis Plymouth, Marsh Mills" },
+    { cat: "stay", name: "Premier Inn Plymouth City (Lockyers Quay)", lat: 50.3680, lng: -4.1300,
+      blurb: "By Sutton Harbour. Two Premier Inns sit side by side here.",
+      query: "Premier Inn Plymouth City Centre Lockyers Quay" },
+    { cat: "stay", name: "Premier Inn Plymouth City Centre (Derry's Cross)", lat: 50.3700, lng: -4.1470,
+      blurb: "City centre, near the Theatre Royal.",
+      query: "Premier Inn Plymouth City Centre Derry's Cross" },
+    { cat: "stay", name: "Travelodge Plymouth Derriford", lat: 50.4170, lng: -4.1170,
+      blurb: "North Plymouth, near Derriford Hospital.",
+      query: "Travelodge Plymouth Derriford" }
+  ];
+
+  var GROUPS = [
+    { id: "wedding", label: "The day" },
+    { id: "pub", label: "Pubs" },
+    { id: "water", label: "On the water" },
+    { id: "outdoors", label: "Beaches & walks" },
+    { id: "stay", label: "Where to stay" }
+  ];
+
+  var root = document.getElementById("wedding-map");
+  if (!root || typeof L === "undefined") return;
+
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // At this width the map sits above the list and the list scrolls with the page
+  var stacked = window.matchMedia("(max-width: 760px)");
+  var listEl = document.getElementById("wm-list");
+  var canvas = document.getElementById("wm-canvas");
+
+  var map = L.map(canvas, { scrollWheelZoom: false, zoomControl: true });
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
+    maxZoom: 19, subdomains: "abcd",
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
+  }).addTo(map);
+
+  // Enable scroll zoom only after the map is clicked, so the page scrolls normally
+  map.on("click", function () { map.scrollWheelZoom.enable(); });
+  map.on("mouseout", function () { map.scrollWheelZoom.disable(); });
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  function dirUrl(p) {
+    return "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(p.query);
+  }
+
+  var current = null;
+
+  PLACES.forEach(function (p, i) {
+    var size = p.cat === "wedding" ? 26 : 18;
+    p.marker = L.marker([p.lat, p.lng], {
+      title: p.name,
+      icon: L.divIcon({
+        className: "",
+        html: '<span class="wm-pin wm-pin--' + p.cat + '"></span>',
+        iconSize: [size, size], iconAnchor: [size / 2, size / 2], popupAnchor: [0, -size / 2]
+      }),
+      zIndexOffset: p.cat === "wedding" ? 1000 : 0
+    }).bindPopup(
+      '<div class="wm-pop"><strong>' + esc(p.name) + "</strong><p>" + esc(p.blurb) +
+      '</p><a href="' + dirUrl(p) + '" target="_blank" rel="noopener">Get directions</a></div>'
+    );
+    p.marker.on("click", function () { setCurrent(i, false); });
+  });
+
+  GROUPS.forEach(function (g) {
+    var items = PLACES.map(function (p, i) { return { p: p, i: i }; })
+      .filter(function (x) { return x.p.cat === g.id; });
+    if (!items.length) return;
+
+    var wrap = document.createElement("div");
+    wrap.className = "wm-group";
+    wrap.dataset.cat = g.id;
+    wrap.innerHTML = '<h3><span class="wm-dot wm-pin--' + g.id + '"></span>' + esc(g.label) + "</h3><ul></ul>";
+    var ul = wrap.querySelector("ul");
+
+    items.forEach(function (x) {
+      var li = document.createElement("li");
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "wm-item";
+      btn.innerHTML = "<strong>" + esc(x.p.name) + "</strong><span>" + esc(x.p.blurb) + "</span>";
+      btn.addEventListener("click", function () { setCurrent(x.i, true); });
+      x.p.button = btn;
+      li.appendChild(btn);
+      ul.appendChild(li);
+    });
+    listEl.appendChild(wrap);
+  });
+
+  // Scroll the list box itself (never the page) so the picked item clears the sticky group heading
+  function revealInList(btn) {
+    var lr = listEl.getBoundingClientRect(), br = btn.getBoundingClientRect(), header = 40;
+    var dy = br.top < lr.top + header ? br.top - lr.top - header : br.bottom > lr.bottom ? br.bottom - lr.bottom : 0;
+    if (dy) listEl.scrollBy({ top: dy, behavior: reduceMotion ? "auto" : "smooth" });
+  }
+
+  function setCurrent(i, fromList) {
+    if (current !== null && PLACES[current].button) PLACES[current].button.removeAttribute("aria-current");
+    current = i;
+    var p = PLACES[i];
+    if (p.button) {
+      p.button.setAttribute("aria-current", "true");
+      if (!fromList && !stacked.matches) revealInList(p.button);
+    }
+    if (fromList) {
+      if (stacked.matches) canvas.scrollIntoView({ block: "nearest", behavior: reduceMotion ? "auto" : "smooth" });
+      // Open the popup once the map arrives: opening it mid-flight lets autopan cut the flight short
+      map.closePopup();
+      map.once("moveend", function () { p.marker.openPopup(); });
+      var z = Math.max(map.getZoom(), 15);
+      if (reduceMotion) map.setView([p.lat, p.lng], z); else map.flyTo([p.lat, p.lng], z, { duration: 0.8 });
+    }
+  }
+
+  function applyFilter(cat) {
+    var visible = [];
+    PLACES.forEach(function (p) {
+      var show = cat === "all" || p.cat === cat;
+      if (show) { p.marker.addTo(map); visible.push([p.lat, p.lng]); }
+      else map.removeLayer(p.marker);
+    });
+    listEl.querySelectorAll(".wm-group").forEach(function (g) {
+      g.hidden = !(cat === "all" || g.dataset.cat === cat);
+    });
+    if (visible.length === 1) map.setView(visible[0], 15);
+    else if (visible.length) map.fitBounds(visible, { padding: [40, 40], maxZoom: 15 });
+  }
+
+  root.querySelectorAll(".wm-chip").forEach(function (chip) {
+    chip.addEventListener("click", function () {
+      root.querySelectorAll(".wm-chip").forEach(function (c) { c.setAttribute("aria-pressed", "false"); });
+      chip.setAttribute("aria-pressed", "true");
+      map.closePopup();
+      applyFilter(chip.dataset.filter);
+    });
+  });
+
+  applyFilter("all");
+
+  // Keep tiles sized correctly when the shell's iframe or the layout resizes
+  if ("ResizeObserver" in window) new ResizeObserver(function () { map.invalidateSize(); }).observe(canvas);
+})();
+</script>
 <script>
 (function() {
   var VALID = ['home','the-day','our-story','rsvp','faq','wedding-party','day-after','games','community','registry'];
