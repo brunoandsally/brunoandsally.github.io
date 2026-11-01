@@ -26,6 +26,10 @@ body{display:flex;flex-direction:column;background:var(--cream)}
 #name-gate{
   position:fixed;inset:0;z-index:9999;
   background:var(--cream);
+  background-image:url(/images/patterns/sprig-tl.svg),url(/images/patterns/sprig-br.svg);
+  background-position:left top,right bottom;
+  background-repeat:no-repeat;
+  background-size:clamp(150px,26vw,280px);
   display:flex;align-items:center;justify-content:center;
   flex-direction:column;
   padding:2rem;
