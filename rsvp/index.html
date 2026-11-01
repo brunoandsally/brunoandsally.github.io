@@ -369,12 +369,13 @@
 
   let foundGuest = null;
 
-  // ── Guest list: loaded from guests.csv in the same folder ──
+  // ── Guest list: guests.csv in the same folder (the only copy — the name gate reads it too) ──
   let guestList = [];
+  let guestsReady = null;
 
   async function loadGuestList() {
     try {
-      const res = await fetch('guests.csv');
+      const res = await fetch('guests.csv', { cache: 'no-cache' });
       if (!res.ok) throw new Error('CSV not found');
       const text = await res.text();
       const lines = text.trim().split('\n').slice(1);
@@ -385,8 +386,7 @@
         return { name, invite_type };
       }).filter(g => g.name);
     } catch (e) {
-      console.warn('Could not load guests.csv, using inline fallback');
-      guestList = INLINE_GUESTS;
+      console.warn('Could not load guests.csv', e);
     }
   }
 
@@ -401,9 +401,12 @@
     return guestList.find(g => normalise(g.name) === q) || null;
   }
 
-  function lookupGuest() {
+  async function lookupGuest() {
     const query = document.getElementById('name-input').value.trim();
     if (!query) return;
+
+    await guestsReady;
+    if (!guestList.length) await loadGuestList();
 
     const guest = findGuest(query);
     const resultEl = document.getElementById('lookup-result');
@@ -514,158 +517,9 @@
     document.getElementById('name-input').addEventListener('keydown', e => {
       if (e.key === 'Enter') lookupGuest();
     });
-    loadGuestList();
+    guestsReady = loadGuestList();
   });
 
-  // ── Inline fallback (mirrors guests.csv) ──
-  const INLINE_GUESTS = [
-    {name:"Sally Stacey",invite_type:"ceremony_reception"},
-    {name:"Bruno Renucci",invite_type:"ceremony_reception"},
-    {name:"Jon Stacey",invite_type:"ceremony_reception"},
-    {name:"Janice Stacey",invite_type:"ceremony_reception"},
-    {name:"Sophie Howard",invite_type:"ceremony_reception"},
-    {name:"Max Stacey",invite_type:"ceremony_reception"},
-    {name:"Judy Renucci",invite_type:"ceremony_reception"},
-    {name:"Paul Renucci",invite_type:"ceremony_reception"},
-    {name:"Sophia Staab",invite_type:"ceremony_reception"},
-    {name:"Callum Aughterson",invite_type:"ceremony_reception"},
-    {name:"Stanley Auticci",invite_type:"ceremony_reception"},
-    {name:"Adriana Renucci",invite_type:"ceremony_reception"},
-    {name:"Hugo Renucci",invite_type:"ceremony_reception"},
-    {name:"Tim Stacey",invite_type:"ceremony_reception"},
-    {name:"Sarah Stacey",invite_type:"ceremony_reception"},
-    {name:"Kay Phillips",invite_type:"ceremony_reception"},
-    {name:"Dave Phillips",invite_type:"ceremony_reception"},
-    {name:"Kate Stacey",invite_type:"ceremony_reception"},
-    {name:"Tom Stacey",invite_type:"ceremony_reception"},
-    {name:"Lara Phillips",invite_type:"ceremony_reception"},
-    {name:"Matthew Boswell",invite_type:"ceremony_reception"},
-    {name:"Emma Phillips",invite_type:"ceremony_reception"},
-    {name:"Freddie Forkuo",invite_type:"ceremony_reception"},
-    {name:"Chris Phillips",invite_type:"ceremony_reception"},
-    {name:"Ann Harding",invite_type:"ceremony_reception"},
-    {name:"Mike Dewey",invite_type:"ceremony_reception"},
-    {name:"Jan Stacey",invite_type:"ceremony_reception"},
-    {name:"Jennie Chelsom",invite_type:"ceremony_reception"},
-    {name:"Paul Chelsom",invite_type:"ceremony_reception"},
-    {name:"Biddie Davies",invite_type:"ceremony_reception"},
-    {name:"Jono Davies",invite_type:"ceremony_reception"},
-    {name:"Maddie Thompson",invite_type:"ceremony_reception"},
-    {name:"Hugh Thomson",invite_type:"ceremony_reception"},
-    {name:"Bel Chelsom",invite_type:"ceremony_reception"},
-    {name:"Harry Davies",invite_type:"ceremony_reception"},
-    {name:"Harri Jordan",invite_type:"ceremony_reception"},
-    {name:"Dominic Chelsom",invite_type:"ceremony_reception"},
-    {name:"Megan Davies",invite_type:"ceremony_reception"},
-    {name:"Dan Fishburn",invite_type:"ceremony_reception"},
-    {name:"Mark Renucci",invite_type:"ceremony_reception"},
-    {name:"Roisin Renucci",invite_type:"ceremony_reception"},
-    {name:"Marisa Renucci",invite_type:"ceremony_reception"},
-    {name:"Joe Renucci",invite_type:"ceremony_reception"},
-    {name:"Paul Renucci",invite_type:"ceremony_reception"},
-    {name:"Michael Renucci",invite_type:"ceremony_reception"},
-    {name:"Jess Lugsdin",invite_type:"ceremony_reception"},
-    {name:"Demi Renucci",invite_type:"ceremony_reception"},
-    {name:"Christina Renucci",invite_type:"ceremony_reception"},
-    {name:"Lee Mackintosh",invite_type:"ceremony_reception"},
-    {name:"Peter Renucci",invite_type:"ceremony_reception"},
-    {name:"Mark Renucci",invite_type:"ceremony_reception"},
-    {name:"Pauline Renucci",invite_type:"ceremony_reception"},
-    {name:"Marianne Renucci",invite_type:"ceremony_reception"},
-    {name:"Willow Pemberton-pigott",invite_type:"ceremony_reception"},
-    {name:"Wendy Veale",invite_type:"ceremony_reception"},
-    {name:"Emily Colmer",invite_type:"ceremony_reception"},
-    {name:"Bex Howell",invite_type:"ceremony_reception"},
-    {name:"Kayleigh Baker",invite_type:"ceremony_reception"},
-    {name:"Fliss James",invite_type:"ceremony_reception"},
-    {name:"Ben Hetzel",invite_type:"ceremony_reception"},
-    {name:"Josh Wong",invite_type:"ceremony_reception"},
-    {name:"Jamie Gray",invite_type:"ceremony_reception"},
-    {name:"Kirsty Dinsmore",invite_type:"ceremony_reception"},
-    {name:"Ted Morgan",invite_type:"ceremony_reception"},
-    {name:"Ali Ahmad",invite_type:"ceremony_reception"},
-    {name:"Luke Jagger",invite_type:"ceremony_reception"},
-    {name:"James Parsons",invite_type:"ceremony_reception"},
-    {name:"Nick Pilato",invite_type:"ceremony_reception"},
-    {name:"Archie Roberts",invite_type:"ceremony_reception"},
-    {name:"Mercedes Stringer Martin",invite_type:"ceremony_reception"},
-    {name:"Janusz Drogomirecki",invite_type:"ceremony_reception"},
-    {name:"Ella Beardsley",invite_type:"ceremony_reception"},
-    {name:"George Kolarov",invite_type:"ceremony_reception"},
-    {name:"Cecily Edwards",invite_type:"ceremony_reception"},
-    {name:"Benjamin Bowen-Jones",invite_type:"ceremony_reception"},
-    {name:"Hamish Woodham",invite_type:"ceremony_reception"},
-    {name:"Laura Clarke",invite_type:"ceremony_reception"},
-    {name:"Christie Charnock",invite_type:"ceremony_reception"},
-    {name:"Bradley Pankhurst",invite_type:"ceremony_reception"},
-    {name:"Vanessa Morro",invite_type:"reception_only"},
-    {name:"Sarah Blampied",invite_type:"ceremony_reception"},
-    {name:"Brad Nicholls",invite_type:"ceremony_reception"},
-    {name:"George Mattimoe",invite_type:"ceremony_reception"},
-    {name:"Joseph Weston",invite_type:"ceremony_reception"},
-    {name:"Christopher-James Dewilde",invite_type:"ceremony_reception"},
-    {name:"Erica Dewilde",invite_type:"ceremony_reception"},
-    {name:"Cecilia Derrick",invite_type:"ceremony_reception"},
-    {name:"Emma Hetzel",invite_type:"ceremony_reception"},
-    {name:"Faye Rota",invite_type:"ceremony_reception"},
-    {name:"Sean Rota",invite_type:"ceremony_reception"},
-    {name:"Bao Wang",invite_type:"ceremony_reception"},
-    {name:"Jack Wadsworth",invite_type:"ceremony_reception"},
-    {name:"Ella Walker-Hunt",invite_type:"ceremony_reception"},
-    {name:"Tracy Wilson",invite_type:"ceremony_reception"},
-    {name:"Jamie Wilson",invite_type:"ceremony_reception"},
-    {name:"Eilish Doelly",invite_type:"ceremony_reception"},
-    {name:"Tony Burns",invite_type:"ceremony_reception"},
-    {name:"Brian James",invite_type:"reception_only"},
-    {name:"Joolz James",invite_type:"reception_only"},
-    {name:"Helen Colmer",invite_type:"reception_only"},
-    {name:"Mark Colmer",invite_type:"reception_only"},
-    {name:"Charles James",invite_type:"reception_only"},
-    {name:"Ollie Hicks",invite_type:"reception_only"},
-    {name:"Giselle Thong",invite_type:"reception_only"},
-    {name:"Ben Nouhan",invite_type:"reception_only"},
-    {name:"Gabi Watkins",invite_type:"reception_only"},
-    {name:"Natalie Pound",invite_type:"reception_only"},
-    {name:"Jenny Wark",invite_type:"reception_only"},
-    {name:"Bokun Wei",invite_type:"reception_only"},
-    {name:"Leia Findlay",invite_type:"reception_only"},
-    {name:"Nick Boreham",invite_type:"reception_only"},
-    {name:"Ben Mcdonald",invite_type:"reception_only"},
-    {name:"Abhitaj Banga",invite_type:"reception_only"},
-    {name:"Gurinder Jagpal",invite_type:"reception_only"},
-    {name:"Sian Harvey",invite_type:"reception_only"},
-    {name:"Jenny Whitten",invite_type:"reception_only"},
-    {name:"Andy Govier",invite_type:"reception_only"},
-    {name:"Sophie Lloyd",invite_type:"reception_only"},
-    {name:"Lucy Baston",invite_type:"reception_only"},
-    {name:"Felix Woodroffe",invite_type:"reception_only"},
-    {name:"Holly Clibbon",invite_type:"reception_only"},
-    {name:"Sam Green",invite_type:"reception_only"},
-    {name:"Roseanna McMahon",invite_type:"reception_only"},
-    {name:"Ryan Palmer",invite_type:"reception_only"},
-    {name:"Bea Pengelly",invite_type:"reception_only"},
-    {name:"Tegan Hull",invite_type:"reception_only"},
-    {name:"Chris Cawthorn",invite_type:"reception_only"},
-    {name:"Xinyi Liu",invite_type:"reception_only"},
-    {name:"Adam Driver",invite_type:"reception_only"},
-    {name:"Erald Ceni",invite_type:"reception_only"},
-    {name:"Angelina Rodrigues",invite_type:"reception_only"},
-    {name:"George Davies",invite_type:"reception_only"},
-    {name:"Sophie Stevens",invite_type:"reception_only"},
-    {name:"Rachel Sfeir",invite_type:"reception_only"},
-    {name:"Nitai Levi",invite_type:"reception_only"},
-    {name:"Max Findlay",invite_type:"reception_only"},
-    {name:"Aylish Boreham",invite_type:"reception_only"},
-    {name:"Chris Harvey",invite_type:"reception_only"},
-    {name:"Gytis Chaleckas",invite_type:"reception_only"},
-    {name:"Anika Cawthorn",invite_type:"reception_only"},
-    {name:"Zhe Wang",invite_type:"reception_only"},
-    {name:"Josh Rampley",invite_type:"reception_only"},
-    {name:"Emily Baldwin",invite_type:"reception_only"},
-    {name:"Zen Salaria",invite_type:"reception_only"},
-    {name:"Matt Davies",invite_type:"reception_only"},
-    {name:"Josie Smith",invite_type:"reception_only"},
-  ];
 </script>
 
 </body>
