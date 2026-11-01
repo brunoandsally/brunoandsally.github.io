@@ -200,28 +200,28 @@ footer{background:var(--ink);color:rgba(255,255,255,0.4);text-align:center;paddi
 <script>
 (function () {
   /*
-    Map places. lat/lng positions the pin; coordinates are approximate, so confirm each one
-    by right-clicking the exact spot in Google Maps and copying the numbers.
+    Map places. lat/lng positions the pin; checked against OpenStreetMap in November 2026.
+    To move a pin, right-click the exact spot in Google Maps and copy the numbers.
     query is what the Directions link sends to Google Maps (name + postcode is most reliable).
   */
   var PLACES = [
-    { cat: "wedding", name: "Holy Cross Church", lat: 50.3157, lng: -4.0337,
+    { cat: "wedding", name: "Holy Cross Church", lat: 50.3154, lng: -4.0378,
       blurb: "Ceremony. Newton Ferrers, PL8 1AT.",
       query: "Holy Cross Church, Newton Ferrers, Plymouth PL8 1AT" },
-    { cat: "wedding", name: "Carswell", lat: 50.3176, lng: -3.9797,
+    { cat: "wedding", name: "Carswell", lat: 50.3124, lng: -3.9826,
       blurb: "Reception, dinner and dancing. Holbeton, PL8 1HH.",
       query: "Carswell Farm, Holbeton, Plymouth PL8 1HH" },
 
-    { cat: "pub", name: "The Dolphin Inn", lat: 50.3135, lng: -4.0366,
+    { cat: "pub", name: "The Dolphin Inn", lat: 50.3137, lng: -4.0395,
       blurb: "Waterside pub in Newton Ferrers.",
       query: "The Dolphin Inn, Newton Ferrers" },
-    { cat: "pub", name: "The Swan Inn", lat: 50.3112, lng: -4.0394,
+    { cat: "pub", name: "The Swan Inn", lat: 50.3117, lng: -4.0395,
       blurb: "Across the creek in Noss Mayo.",
       query: "The Swan Inn, Noss Mayo" },
-    { cat: "pub", name: "The Ship Inn", lat: 50.3097, lng: -4.0354,
+    { cat: "pub", name: "The Ship Inn", lat: 50.3108, lng: -4.0408,
       blurb: "At the head of the creek in Noss Mayo.",
       query: "The Ship Inn, Noss Mayo" },
-    { cat: "pub", name: "The Mildmay Colours", lat: 50.3340, lng: -3.9585,
+    { cat: "pub", name: "The Mildmay Colours", lat: 50.3351, lng: -3.9495,
       blurb: "Village pub in Holbeton, closest to Carswell.",
       query: "Mildmay Colours Inn, Holbeton" },
 
@@ -229,38 +229,38 @@ footer{background:var(--ink);color:rgba(255,255,255,0.4);text-align:center;paddi
       blurb: "Nobody's boarding, but give her a wave if you're passing.",
       query: "50.31653,-4.05453" },
 
-    { cat: "outdoors", name: "Mothecombe Beach", lat: 50.3105, lng: -3.9530,
+    { cat: "outdoors", name: "Mothecombe Beach", lat: 50.3081, lng: -3.9488,
       blurb: "Sandy beach at the mouth of the Erme, closest to Carswell.",
       query: "Mothecombe Beach, Holbeton" },
-    { cat: "outdoors", name: "Cellar Beach", lat: 50.3095, lng: -4.0610,
+    { cat: "outdoors", name: "Cellar Beach", lat: 50.3100, lng: -4.0643,
       blurb: "Small sheltered beach at the mouth of the Yealm, below Noss Mayo.",
       query: "Cellar Beach, Noss Mayo" },
-    { cat: "outdoors", name: "Wembury Beach", lat: 50.3170, lng: -4.0840,
+    { cat: "outdoors", name: "Wembury Beach", lat: 50.3177, lng: -4.0851,
       blurb: "Across the estuary from Noss Mayo. Rock pools and a beach cafe.",
       query: "Wembury Beach" },
-    { cat: "outdoors", name: "Revelstoke Drive cliff walk", lat: 50.3005, lng: -4.0535,
+    { cat: "outdoors", name: "Revelstoke Drive cliff walk", lat: 50.3012, lng: -4.0499,
       blurb: "Coastal loop from the National Trust car park above Noss Mayo.",
-      query: "National Trust Noss Mayo car park" },
+      query: "Warren Car Park, Noss Mayo" },
     { cat: "outdoors", name: "Pool Mill alpacas", lat: 50.3171, lng: -4.0032,
       blurb: "Alpaca farm at Pool Mill, Membland, between Newton Ferrers and Carswell.",
       query: "Pool Mill, Membland, Newton Ferrers" },
 
-    { cat: "stay", name: "Worswell Barton", lat: 50.3040, lng: -4.0520,
+    { cat: "stay", name: "Worswell Barton", lat: 50.3057, lng: -4.0563,
       blurb: "Near Noss Mayo.",
       query: "Worswell Barton, Noss Mayo, Plymouth" },
-    { cat: "stay", name: "Premier Inn Plymouth East", lat: 50.3940, lng: -4.0920,
+    { cat: "stay", name: "Premier Inn Plymouth East", lat: 50.3907, lng: -4.0888,
       blurb: "Marsh Mills, east Plymouth. Free parking.",
-      query: "Premier Inn Plymouth East, Marsh Mills" },
-    { cat: "stay", name: "ibis Plymouth", lat: 50.3950, lng: -4.0880,
-      blurb: "Marsh Mills, next to Premier Inn Plymouth East.",
-      query: "ibis Plymouth, Marsh Mills" },
-    { cat: "stay", name: "Premier Inn Plymouth City (Lockyers Quay)", lat: 50.3680, lng: -4.1300,
+      query: "Premier Inn Plymouth East, Plymouth PL3 6RW" },
+    { cat: "stay", name: "ibis Plymouth", lat: 50.3959, lng: -4.0958,
+      blurb: "Marsh Mills, east Plymouth, near Premier Inn Plymouth East.",
+      query: "ibis Plymouth, Longbridge Road, Plymouth PL6 8LD" },
+    { cat: "stay", name: "Premier Inn Plymouth City (Lockyers Quay)", lat: 50.3680, lng: -4.1288,
       blurb: "By Sutton Harbour. Two Premier Inns sit side by side here.",
       query: "Premier Inn Plymouth City Centre Lockyers Quay" },
-    { cat: "stay", name: "Premier Inn Plymouth City Centre (Derry's Cross)", lat: 50.3700, lng: -4.1470,
+    { cat: "stay", name: "Premier Inn Plymouth City Centre (Derry's Cross)", lat: 50.3706, lng: -4.1455,
       blurb: "City centre, near the Theatre Royal.",
       query: "Premier Inn Plymouth City Centre Derry's Cross" },
-    { cat: "stay", name: "Travelodge Plymouth Derriford", lat: 50.4170, lng: -4.1170,
+    { cat: "stay", name: "Travelodge Plymouth Derriford", lat: 50.4182, lng: -4.1205,
       blurb: "North Plymouth, near Derriford Hospital.",
       query: "Travelodge Plymouth Derriford" }
   ];
