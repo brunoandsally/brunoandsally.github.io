@@ -13,7 +13,7 @@ html{scroll-behavior:smooth}body{font-family:"Jost",sans-serif;background:var(--
 .eyebrow{font-size:0.68rem;font-weight:600;letter-spacing:0.28em;text-transform:uppercase;color:var(--warm);margin-bottom:0.8rem;display:flex;align-items:center;gap:0.8rem}.eyebrow::before{content:"";width:28px;height:1px;background:var(--warm)}
 h2{font-family:"Cormorant Garamond",serif;font-weight:300;font-size:clamp(2rem,5vw,3.2rem);line-height:1.08;letter-spacing:-0.01em;margin-bottom:1rem}
 .lede{color:var(--ink-soft);font-size:1.04rem;max-width:55ch;margin-bottom:2.5rem}
-.section{padding:5.5rem 2rem}.si{max-width:1100px;margin:0 auto}
+.section{padding:4rem 2rem}.si{max-width:1100px;margin:0 auto}
 .btn{display:inline-block;padding:0.8rem 2rem;border-radius:1px;font-size:0.72rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;text-decoration:none;cursor:pointer;border:none;transition:all 0.2s;font-family:"Jost",sans-serif}
 .btn-sage{background:var(--sage);color:#fff}.btn-sage:hover{background:var(--sage-light);transform:translateY(-1px)}
 .btn-outline{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}.btn-outline:hover{background:var(--ink);color:#fff}
@@ -27,8 +27,12 @@ h2{font-family:"Cormorant Garamond",serif;font-weight:300;font-size:clamp(2rem,5
 .page-hero-text h1{font-family:"Cormorant Garamond",serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:300;line-height:1;margin-top:0.3rem}
 footer{background:var(--ink);color:rgba(255,255,255,0.4);text-align:center;padding:2.5rem 1.5rem;font-size:0.77rem;letter-spacing:0.1em}footer{background-image:url(/images/patterns/sprig-dark-bl.svg),url(/images/patterns/sprig-dark-tr.svg);background-position:left bottom,right top;background-repeat:no-repeat;background-size:clamp(100px,14vw,160px)}
 .ft-name{font-family:"Cormorant Garamond",serif;font-size:1.4rem;font-weight:300;color:rgba(255,255,255,0.8);margin-bottom:0.4rem}
-@media(max-width:700px){.section{padding:3.5rem 1.4rem}}
-.sw{display:grid;grid-template-columns:1fr 1fr;gap:4rem;margin-top:3rem;align-items:start}
+/* Content sits on cream panels so the waves only show around and between them */
+.panels{display:grid;gap:2.5rem}
+.panel{background:var(--cream);border:1px solid var(--line);border-radius:4px;padding:3.5rem 3rem;box-shadow:0 18px 40px -28px rgba(27,58,75,0.35)}
+@media(max-width:700px){.section{padding:2rem 0.75rem}.panel{padding:2.4rem 1.3rem}.panels{gap:1.5rem}}
+.ico{width:26px;height:26px;fill:none;stroke:var(--sage);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.sw{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start}
 .sch{display:flex;flex-direction:column}
 .si2{display:grid;grid-template-columns:50px 4px 1fr;gap:0 1.1rem;padding:0.9rem 0;border-bottom:1px solid var(--line);align-items:start}
 .si2:last-child{border-bottom:none}
@@ -36,19 +40,20 @@ footer{background:var(--ink);color:rgba(255,255,255,0.4);text-align:center;paddi
 .sp{border-radius:2px;align-self:stretch;min-height:26px}
 .p-c{background:var(--warm)}.p-t{background:var(--sky-light)}.p-d{background:var(--sage)}.p-p{background:var(--sky-light)}.p-r{background:var(--warm)}.p-e{background:var(--sage)}.p-f{background:#7BAF6A}.p-x{background:rgba(0,0,0,0.12)}
 .sn{font-weight:500;font-size:0.96rem;color:var(--ink)}.sno{font-size:0.79rem;color:var(--ink-soft);margin-top:0.1rem}
-.vc{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-top:2rem}
+.vc{display:grid;grid-template-columns:1fr;gap:1.2rem}
 .vcard{background:#fff;border:1px solid var(--line);border-radius:2px;overflow:hidden}
 .vt{padding:1.6rem;border-bottom:1px solid var(--line)}
-.vt h3{font-family:"Cormorant Garamond",serif;font-size:1.4rem;font-weight:400;margin-bottom:0.7rem}
+.vt .vk{font-size:0.66rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--warm);margin-bottom:0.2rem}
+.vt h3{font-family:"Cormorant Garamond",serif;font-size:1.5rem;font-weight:400;line-height:1.2;margin-bottom:0.6rem}
 .vt p{font-size:0.87rem;color:var(--ink-soft);margin-bottom:0.3rem}
 .lbl{color:var(--sage);font-weight:500}
 .vb{padding:0.9rem 1.6rem;background:var(--stone);font-size:0.77rem;color:var(--ink-soft)}
-.dc{background:var(--sage-pale);border:1px solid var(--sage-light);border-radius:2px;padding:1.8rem;margin-top:1.2rem;display:flex;gap:1.2rem;align-items:flex-start}
+.dc{background:var(--sage-pale);border:1px solid var(--sage-light);border-radius:2px;padding:1.8rem;margin-top:3rem;display:flex;gap:1.2rem;align-items:flex-start}
 .dc h3{font-family:"Cormorant Garamond",serif;font-size:1.3rem;font-weight:400;margin-bottom:0.4rem}
 .dc p{font-size:0.9rem;color:var(--ink-soft)}
 .tg{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;margin-top:2rem}
 .tc{background:#fff;border:1px solid var(--line);padding:1.5rem;border-radius:2px}
-.tc .ic{font-size:1.5rem;margin-bottom:0.7rem}
+.tc .ico{margin-bottom:0.8rem}
 .tc h4{font-family:"Cormorant Garamond",serif;font-size:1.15rem;font-weight:400;margin-bottom:0.5rem}
 .tc p{font-size:0.87rem;color:var(--ink-soft);margin-bottom:0.3rem}
 .tbox{background:var(--stone);border:1px solid var(--line);border-radius:2px;padding:1.8rem;margin-top:1.5rem}
@@ -65,7 +70,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.4);text-align:center;paddi
 .acc h4{font-family:"Cormorant Garamond",serif;font-size:1.15rem;font-weight:400;margin-bottom:0.5rem}
 .acc p{font-size:0.85rem;color:var(--ink-soft);margin-bottom:0.5rem}
 .acc a{font-size:0.78rem;color:var(--sky);font-weight:500;text-decoration:none}
-.wp-link{background:var(--stone);border:1px solid var(--line);border-radius:2px;padding:1.6rem;margin-top:1rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.wp-link{background:var(--stone);border:1px solid var(--line);border-radius:2px;padding:1.6rem;margin-top:2.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 @media(max-width:900px){.sw,.vc{grid-template-columns:1fr}.tg{grid-template-columns:1fr}}
 </style>
 </head>
@@ -83,7 +88,8 @@ footer{background:var(--ink);color:rgba(255,255,255,0.4);text-align:center;paddi
   <div class="page-hero-text"><small>18th September 2027 &middot; Devon</small><h1>The Day</h1></div>
 </div>
 <div class="section">
- <div class="si">
+ <div class="si panels">
+  <div class="panel">
   <div class="sw">
    <div>
     <p class="eyebrow">Order of events</p>
@@ -103,39 +109,41 @@ footer{background:var(--ink);color:rgba(255,255,255,0.4);text-align:center;paddi
     <p class="eyebrow">The venues</p>
     <h2>Where to find us</h2>
     <div class="vc">
-     <div class="vcard"><div class="vt"><h3>&#x26EA; The Ceremony</h3><p><span class="lbl">Time</span> &middot; 12:30 PM</p><p><span class="lbl">Church</span> &middot; Holy Cross Church</p><p><span class="lbl">Village</span> &middot; Newton Ferrers, Devon</p><p><span class="lbl">Postcode</span> &middot; PL8 1AT</p></div><div class="vb">Please arrive by 12:15 so we can start on time</div></div>
-     <div class="vcard"><div class="vt"><h3>&#x1F942; The Reception</h3><p><span class="lbl">Drinks from</span> &middot; 14:30</p><p><span class="lbl">Evening guests</span> &middot; From 7pm</p><p><span class="lbl">Venue</span> &middot; Carswell, Devon</p><p><span class="lbl">Carriages</span> &middot; 11pm &amp; 12:30am to Plymouth</p></div><div class="vb">what3words: <a class="w3w" href="https://what3words.com/awestruck.bloomers.ideal" target="_blank" rel="noopener">///awestruck.bloomers.ideal</a></div></div>
-    </div>
-    <div class="dc"><div style="font-size:1.8rem;flex-shrink:0">&#x1F457;</div><div><h3>Dress Code</h3><p><strong>Garden party</strong> &mdash; long, summery dresses (tea length or longer) and suits, linen, or something equally smart for the men. Colour very much encouraged.</p><p style="margin-top:0.5rem;font-size:0.84rem">Comfortable shoes and a light layer for the sea breeze are both a good idea.</p></div></div>
-    <div class="wp-link">
-      <div><p style="font-size:0.68rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--warm);margin-bottom:0.3rem">Wedding Party</p><p style="font-family:'Cormorant Garamond',serif;font-size:1.15rem">Meet the people standing with us on the day</p></div>
-      <a class="btn btn-sage" href="/wedding-party" onclick="if(window.parent!==window){window.parent.nav('wedding-party');return false}">Meet the team &rarr;</a>
+     <div class="vcard"><div class="vt"><p class="vk">The ceremony</p><h3>Holy Cross Church</h3><p><span class="lbl">Time</span> &middot; 12:30pm</p><p><span class="lbl">Address</span> &middot; Newton Ferrers, Devon PL8 1AT</p></div><div class="vb">Please arrive by 12:15 so we can start on time</div></div>
+     <div class="vcard"><div class="vt"><p class="vk">The reception</p><h3>Carswell, Devon</h3><p><span class="lbl">Drinks from</span> &middot; 14:30</p><p><span class="lbl">Evening guests</span> &middot; From 7pm</p><p><span class="lbl">Carriages</span> &middot; 11pm &amp; 12:30am to Plymouth</p></div><div class="vb">what3words: <a class="w3w" href="https://what3words.com/awestruck.bloomers.ideal" target="_blank" rel="noopener">///awestruck.bloomers.ideal</a></div></div>
     </div>
    </div>
   </div>
+  <div class="dc"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a2 2 0 1 0-2-2M12 8.5v1.2l-8.4 5.7a.9.9 0 0 0 .5 1.6h15.8a.9.9 0 0 0 .5-1.6L12 9.7"/></svg><div><h3>Dress Code</h3><p><strong>Garden party</strong> &mdash; long, summery dresses (tea length or longer) and suits, linen, or something equally smart for the men. Colour very much encouraged.</p><p style="margin-top:0.5rem;font-size:0.84rem">Comfortable shoes and a light layer for the sea breeze are both a good idea.</p></div></div>
+  </div>
 
-  <div style="margin-top:5rem">
+  <div class="panel">
    <p class="eyebrow">Getting there &amp; getting home</p>
    <h2>Transport &amp; Parking</h2>
    <div class="tg">
-    <div class="tc"><div class="ic">&#x26EA;</div><h4>Parking at the church</h4><p>Very limited near Holy Cross Church. We recommend arriving by taxi, being dropped off, or arranging a lift for the ceremony.</p></div>
-    <div class="tc"><div class="ic">&#x1F697;</div><h4>Parking at Carswell</h4><p>Guests are welcome to park in the field at Carswell for the reception. Plenty of space &mdash; follow the signs.</p></div>
-    <div class="tc"><div class="ic">&#x1F68C;</div><h4>Carriages home</h4><p>Carriages depart Carswell for Plymouth at <strong>11:00pm</strong> and <strong>12:30am</strong>. Seats limited &mdash; the carriage won&apos;t wait!</p></div>
+    <div class="tc"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v4M10.5 3.5h3M7 21v-9l5-4 5 4v9M3 21h18M10 21v-3.5a2 2 0 0 1 4 0V21"/></svg><h4>Parking at the church</h4><p>Very limited near Holy Cross Church. We recommend arriving by taxi, being dropped off, or arranging a lift for the ceremony.</p></div>
+    <div class="tc"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 16.5H3.5v-3.7l1.8-4A2 2 0 0 1 7.1 7.5h9.8a2 2 0 0 1 1.8 1.3l1.8 4v3.7H19M3.5 12.5h17M9 16.5h6"/><circle cx="7" cy="16.5" r="1.8"/><circle cx="17" cy="16.5" r="1.8"/></svg><h4>Parking at Carswell</h4><p>Guests are welcome to park in the field at Carswell for the reception. Plenty of space &mdash; follow the signs.</p></div>
+    <div class="tc"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3.5" width="16" height="14" rx="2"/><path d="M4 11h16M8 6.5h8M7 17.5V20M17 17.5V20M7.5 14.5h.01M16.5 14.5h.01"/></svg><h4>Carriages home</h4><p>Carriages depart Carswell for Plymouth at <strong>11:00pm</strong> and <strong>12:30am</strong>. Seats limited &mdash; the carriage won&apos;t wait!</p></div>
    </div>
    <div class="tbox">
-    <h3>&#x1F695; Recommended taxis</h3>
+    <h3>Recommended taxis</h3>
     <p style="margin-bottom:0.8rem">Taxis in this part of Devon fill up fast &mdash; especially on September Saturdays. We&apos;ll share recommended local firms closer to the day.</p>
-    <p style="font-size:0.82rem;color:var(--warm);font-weight:600">&#x26A0; Book early &mdash; we cannot stress this enough.</p>
+    <p style="font-size:0.82rem;color:var(--warm);font-weight:600">Book early &mdash; we cannot stress this enough.</p>
    </div>
   </div>
 
-  <div style="margin-top:4rem">
-   <h2 style="margin-bottom:0.8rem">&#x1F3E8; Accommodation</h2>
+  <div class="panel">
+   <p class="eyebrow">Where to stay</p>
+   <h2 style="margin-bottom:0.8rem">Accommodation</h2>
    <p style="color:var(--ink-soft);font-size:0.95rem;margin-bottom:1.5rem">We&apos;ve pre-allocated on-site accommodation at Carswell for close family &mdash; if you haven&apos;t heard from us about this, please arrange your own stay. September in South Devon is beautiful, and everything books up quickly!</p>
    <div class="acc-grid">
     <div class="acc"><p class="at">Airbnbs &bull; Booked &amp; allocated</p><h4>Our Airbnbs</h4><p>We&apos;ve booked a few Airbnbs near the venue and have already allocated the rooms. If you&apos;re staying in one, we&apos;ll be in touch with the details &mdash; if you haven&apos;t heard from us, please book one of the other options here.</p></div>
     <div class="acc"><p class="at">B&amp;B / Farmstay &bull; Very close</p><h4>Worswell Barton Farmhouse</h4><p>A working farm B&amp;B with coastal scenery, wonderful breakfasts, and the South West Coast Path passing right by. Rooms and self-catering cottage available.</p><p style="font-style:italic;font-size:0.78rem">Search: Worswell Barton Farmhouse Devon</p></div>
     <div class="acc"><p class="at">Plymouth city &bull; ~15&ndash;20 min taxi</p><h4>Plymouth Hotels</h4><p><strong>Premier Inn Plymouth City Centre</strong> &mdash; reliable and good value.<br/><strong>Travelodge Plymouth</strong> &mdash; budget-friendly. Book on booking.com or direct.</p><p style="font-size:0.78rem;color:var(--warm);font-weight:600">Book early for September 2027.</p></div>
+   </div>
+   <div class="wp-link">
+     <div><p style="font-size:0.68rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--warm);margin-bottom:0.3rem">Wedding Party</p><p style="font-family:'Cormorant Garamond',serif;font-size:1.15rem">Meet the people standing with us on the day</p></div>
+     <a class="btn btn-sage" href="/wedding-party" onclick="if(window.parent!==window){window.parent.nav('wedding-party');return false}">Meet the team &rarr;</a>
    </div>
   </div>
 
