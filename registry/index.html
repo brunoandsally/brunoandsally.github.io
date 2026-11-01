@@ -97,26 +97,54 @@ body{font-family:"Jost",sans-serif;background:var(--cream);color:var(--ink);min-
   .gift-grid{grid-template-columns:1fr 1fr}
 }
 @media(max-width:420px){.gift-grid{grid-template-columns:1fr}}
-.dev-banner{display:flex;align-items:flex-start;gap:1rem;background:var(--warm-bg);border:1.5px solid var(--warm-light);border-radius:2px;padding:1.1rem 1.4rem;max-width:560px;margin:0 auto;text-align:left}
-.dev-banner-dot{flex-shrink:0;margin-top:0.25rem;width:8px;height:8px;border-radius:50%;background:var(--warm);animation:pulse 2s ease-in-out infinite}
-.dev-banner-title{font-size:0.72rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--warm);margin-bottom:0.3rem}
-.dev-banner-text{font-size:0.82rem;color:var(--ink-soft);line-height:1.55}
+
+/* COMING SOON (what guests see) */
+[hidden]{display:none!important}
+.soon{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;border-bottom:none}
+.soon-badge{display:inline-flex;align-items:center;gap:0.6rem;margin:0.4rem 0 1.6rem;padding:0.55rem 1.1rem;background:var(--warm-bg);border:1.5px solid var(--warm-light);border-radius:20px;font-size:0.72rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--warm)}
+.soon-dot{flex-shrink:0;width:8px;height:8px;border-radius:50%;background:var(--warm);animation:pulse 2s ease-in-out infinite}
+.soon .hero-sub{margin-bottom:1rem}
+.soon-preview{margin-top:1.4rem;padding:0.6rem 1.1rem;background:transparent;border:1.5px dashed var(--line-med);border-radius:2px;font-family:"Jost",sans-serif;font-size:0.65rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-soft);cursor:pointer;transition:all 0.2s}
+.soon-preview:hover{border-color:var(--warm);color:var(--warm)}
+.soon-note{margin-top:2.5rem;font-size:0.75rem;color:var(--ink-faint)}
+.soon-note a{color:var(--sage);text-decoration:none}
+.soon-note a:hover{text-decoration:underline}
+
+/* DRAFT BAR (only shown to Bruno & Sally while previewing) */
+.draft-bar{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:0.8rem;flex-wrap:wrap;padding:0.7rem 2rem;background:var(--warm);color:#fff;font-size:0.78rem;line-height:1.45}
+.draft-bar-text{flex:1;min-width:200px}
+.draft-bar strong{font-size:0.68rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;margin-right:0.4rem}
+.draft-bar button{padding:0.45rem 0.85rem;background:#fff;color:var(--warm);border:none;border-radius:2px;font-family:"Jost",sans-serif;font-size:0.62rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;white-space:nowrap}
+.draft-bar button:hover{background:var(--warm-bg)}
+@media(max-width:600px){.draft-bar{padding:0.7rem 1.2rem}}
 </style>
 </head>
 <body>
+
+<!-- COMING SOON — what guests see until the registry is ready -->
+<div class="hero soon" id="soon">
+  <p class="hero-eyebrow">Bruno &amp; Sally · 18 September 2027</p>
+  <h1>Our <em>registry</em></h1>
+  <div class="soon-badge"><span class="soon-dot"></span>Under construction</div>
+  <p class="hero-sub">We're still putting our gift list together, so there's nothing to see here just yet. We'll let everyone know as soon as it's ready.</p>
+  <p class="hero-sub">In the meantime, your presence at our wedding really is the greatest gift.</p>
+  <button class="soon-preview" id="soon-preview" onclick="showDraft()" hidden>Preview the draft &rarr;</button>
+  <p class="soon-note">Any questions? Drop us a message at <a href="mailto:brunoandsally2027@gmail.com">brunoandsally2027@gmail.com</a></p>
+</div>
+
+<!-- DRAFT — only Bruno & Sally can open this, via the button above -->
+<div id="draft" hidden>
+
+<div class="draft-bar">
+  <span class="draft-bar-text"><strong>Draft preview</strong>Only you two can see this. Guests see the &ldquo;under construction&rdquo; page.</span>
+  <button onclick="hideDraft()">Back to guest view</button>
+</div>
 
 <!-- HERO -->
 <div class="hero">
   <p class="hero-eyebrow">Bruno &amp; Sally · 18 September 2027</p>
   <h1>Our <em>registry</em></h1>
   <p class="hero-sub">Your presence at our wedding is the greatest gift. But if you'd like to give something, here's what we'd love.</p>
-  <div class="dev-banner">
-    <div class="dev-banner-dot"></div>
-    <div>
-      <p class="dev-banner-title">Placeholders only</p>
-      <p class="dev-banner-text">This page is still under construction &mdash; the gifts below are placeholders for now. We'll let you know once the real registry is ready.</p>
-    </div>
-  </div>
 </div>
 
 <!-- ACTION CARDS -->
@@ -177,6 +205,8 @@ body{font-family:"Jost",sans-serif;background:var(--cream);color:var(--ink);min-
 <div class="registry-footer">
   Struggling to buy online? Drop us a message at <a href="mailto:brunoandsally2027@gmail.com">brunoandsally2027@gmail.com</a>
 </div>
+
+</div><!-- /draft -->
 
 <script>
 // ── CONFIG ────────────────────────────────────────────────────────────────────
@@ -347,8 +377,43 @@ window.addEventListener('message', function(e){
   }
 });
 
+// ── DRAFT GATE ────────────────────────────────────────────────────────────────
+// Guests only see the "under construction" screen. Bruno & Sally, signed in
+// through the name gate as themselves, get a button to preview the draft.
+// The preview stays open across page changes until "Back to guest view".
+var DRAFT_VIEWERS = ['bruno renucci', 'sally stacey'];
+var DRAFT_KEY = 'bs_registry_draft';
+var draftLoaded = false;
+
+function canPreviewDraft(){
+  try {
+    var g = JSON.parse(localStorage.getItem('bs_guest_auth'));
+    return !!g && DRAFT_VIEWERS.indexOf(normName(g.name)) !== -1;
+  } catch(e){ return false; }
+}
+
+function showDraft(){
+  document.getElementById('soon').hidden = true;
+  document.getElementById('draft').hidden = false;
+  try { sessionStorage.setItem(DRAFT_KEY, '1'); } catch(e){}
+  if(!draftLoaded){ draftLoaded = true; loadClaimed(); }
+  window.scrollTo(0, 0);
+}
+
+function hideDraft(){
+  document.getElementById('draft').hidden = true;
+  document.getElementById('soon').hidden = false;
+  try { sessionStorage.removeItem(DRAFT_KEY); } catch(e){}
+  window.scrollTo(0, 0);
+}
+
 // ── INIT ──────────────────────────────────────────────────────────────────────
-loadClaimed();
+if(canPreviewDraft()){
+  document.getElementById('soon-preview').hidden = false;
+  var reopenDraft = false;
+  try { reopenDraft = sessionStorage.getItem(DRAFT_KEY) === '1'; } catch(e){}
+  if(reopenDraft) showDraft();
+}
 </script>
 <script>
 // Redirect to shell if loaded directly (not inside the iframe)
