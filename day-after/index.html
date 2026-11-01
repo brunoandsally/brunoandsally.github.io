@@ -23,7 +23,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.4);text-align:center;paddi
 @media(max-width:700px){.section{padding:2rem 0.75rem}.panel{padding:2.4rem 1.3rem}.panels{gap:1.5rem}}
 .da-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin:2rem 0 2.5rem}@media(max-width:700px){.da-grid{grid-template-columns:1fr}}
 .da-card{background:#fff;border:1px solid var(--line);border-radius:2px;padding:2rem;display:flex;flex-direction:column}
-.da-card .ic{font-size:2rem;margin-bottom:1rem}
+.da-card .ico{width:30px;height:30px;fill:none;stroke:var(--sage);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;margin-bottom:1rem}
 .da-card h3{font-family:"Cormorant Garamond",serif;font-size:1.5rem;font-weight:400;margin-bottom:0.8rem}
 .da-card p{color:var(--ink-soft);font-size:0.93rem;line-height:1.7}
 .da-card .opt{font-size:0.68rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--warm);margin-bottom:0.6rem}.timing{font-size:0.74rem;color:var(--ink-soft);font-style:italic;margin-top:auto;padding-top:0.8rem;border-top:1px solid var(--line)}
@@ -40,7 +40,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.4);text-align:center;paddi
 })();
 </script>
 <div style="background-image:url('/images/day-after/00.jpg');background-size:cover;background-position:center 40%;height:40vh;min-height:260px;display:flex;align-items:flex-end;padding:2.5rem 2rem;position:relative">
-  <div style="position:absolute;inset:0;background:rgba(0,0,0,0.5)"></div><div style="position:relative;z-index:1;max-width:1100px;width:100%;margin:0 auto;color:#fff">
+  <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.65) 0%,rgba(0,0,0,0.15) 60%,transparent 100%)"></div><div style="position:relative;z-index:1;max-width:1100px;width:100%;margin:0 auto;color:#fff">
     <p style="font-size:0.78rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.65);margin-bottom:0.3rem">Sunday 19th September 2027</p>
     <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:300">The Morning After</h1>
   </div>
@@ -49,21 +49,21 @@ footer{background:var(--ink);color:rgba(255,255,255,0.4);text-align:center;paddi
   <p style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-style:italic;color:var(--ink-soft);margin-bottom:2rem;line-height:1.6">Still standing? Excellent. Join us for a relaxed recovery day at Carswell.</p>
   <div class="da-grid">
     <div class="da-card">
-      <div class="ic">&#x1F30A;</div>
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 8c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 4-2M2 13c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 4-2M2 18c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 4-2"/></svg>
       <p class="opt">For the brave</p>
       <h3>Morning Swim</h3>
       <p>A (late) morning dip for those who are up for it. The Devon sea is bracingly cold and entirely worth it. No pressure &mdash; but no sympathy for those who don&apos;t.</p>
       <p class="timing">Timing TBC</p>
     </div>
     <div class="da-card">
-      <div class="ic">&#x1F3C5;</div>
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 2.5l3 6.5M16 2.5l-3 6.5"/><circle cx="12" cy="15" r="5.5"/><circle cx="12" cy="15" r="2.3"/></svg>
       <p class="opt">Optional</p>
       <h3>Sports Day</h3>
       <p>A gentle, entirely non-competitive programme of lawn games, mild exertion, and competitive spirit dressed up as fun. Teams TBC. Prizes unlikely to be proportionate to effort.</p>
       <p class="timing">Timing TBC</p>
     </div>
     <div class="da-card">
-      <div class="ic">&#x1F416;</div>
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10h16a8 8 0 0 1-16 0zM8.5 17.5 6.5 22M15.5 17.5l2 4.5M12 18v4M9 6.5c0-1.5 1.5-2 1.5-3.5M13.5 6.5c0-1.5 1.5-2 1.5-3.5"/></svg>
       <p class="opt">Essential</p>
       <h3>BBQ</h3>
       <p>We&apos;ll be firing up the BBQ in the same field &mdash; because the only thing better than yesterday&apos;s feast is today&apos;s. Come hungry.</p>
@@ -71,7 +71,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.4);text-align:center;paddi
     </div>
   </div>
   <div style="background:var(--sage-pale);border:1px solid var(--sage-light);border-radius:2px;padding:2rem;text-align:center;margin-bottom:2rem">
-    <div style="font-size:1.8rem;margin-bottom:0.8rem">&#x2600;&#xFE0F;</div>
+    <svg viewBox="0 0 100 100" width="40" height="40" aria-hidden="true" style="display:block;margin:0 auto 0.8rem"><circle cx="50" cy="50" r="22" fill="#C4894A"/><g stroke="#C4894A" stroke-width="7" stroke-linecap="round"><line x1="50" y1="8" x2="50" y2="18"/><line x1="50" y1="82" x2="50" y2="92"/><line x1="8" y1="50" x2="18" y2="50"/><line x1="82" y1="50" x2="92" y2="50"/><line x1="21" y1="21" x2="28" y2="28"/><line x1="72" y1="72" x2="79" y2="79"/><line x1="79" y1="21" x2="72" y2="28"/><line x1="28" y1="72" x2="21" y2="79"/></g></svg>
     <p style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-style:italic;color:var(--ink)">Let us know if you can make it &mdash; tick the box on the RSVP and we&apos;ll share the plan.</p>
     <p style="font-size:0.82rem;color:var(--ink-soft);margin-top:0.4rem">(weather permitting)</p>
     <a class="btn btn-sage" href="/rsvp" style="margin-top:1.2rem">RSVP &rarr;</a>

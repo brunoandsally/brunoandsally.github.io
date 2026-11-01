@@ -27,19 +27,23 @@
 
     body {
       font-family: 'Jost', sans-serif;
-      background: var(--cream);
-      background-image: url(/images/patterns/sprig-tl.svg), url(/images/patterns/sprig-tr.svg);
-      background-position: left top, right top;
-      background-repeat: no-repeat;
-      background-size: clamp(120px, 22vw, 240px);
+      background: var(--cream) url(/images/patterns/waves.svg);
       color: var(--ink);
       min-height: 100vh;
     }
 
+    /* The page sits as a cream panel on the waves, like the rest of the site */
     .page {
       max-width: 680px;
-      margin: 0 auto;
-      padding: 48px 24px 80px;
+      margin: 48px auto;
+      padding: 48px 40px 56px;
+      background: var(--cream);
+      border: 1px solid rgba(44,44,42,0.1);
+      border-radius: 4px;
+      box-shadow: 0 18px 40px -28px rgba(27,58,75,0.35);
+    }
+    @media (max-width: 720px) {
+      .page { margin: 16px 12px 24px; padding: 36px 20px 40px; }
     }
 
     /* Hero */
