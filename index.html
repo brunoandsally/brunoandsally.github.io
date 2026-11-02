@@ -283,15 +283,19 @@ body{display:flex;flex-direction:column;background:var(--cream)}
 .rm-field{display:flex;flex-direction:column}
 .rm-label{font-size:0.68rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:#5C5A56;margin-bottom:0.4rem}
 .rm-label span{color:#C4894A;margin-left:0.15rem}
-.rm-input,.rm-textarea,.rm-select{width:100%;padding:0.75rem 0.9rem;border:1.5px solid rgba(44,44,42,0.16);border-radius:2px;background:#fff;font-family:"Jost",sans-serif;font-size:0.9rem;color:#2C2C2A;outline:none;transition:border-color 0.2s;box-sizing:border-box}
-.rm-input:focus,.rm-textarea:focus,.rm-select:focus{border-color:#5C7A5C}
+.rm-input,.rm-textarea{width:100%;padding:0.75rem 0.9rem;border:1.5px solid rgba(44,44,42,0.16);border-radius:2px;background:#fff;font-family:"Jost",sans-serif;font-size:0.9rem;color:#2C2C2A;outline:none;transition:border-color 0.2s;box-sizing:border-box}
+.rm-input:focus,.rm-textarea:focus{border-color:#5C7A5C}
 .rm-textarea{resize:vertical;min-height:90px;line-height:1.5}
-.rm-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' viewBox='0 0 12 8'%3E%3Cpath stroke='%235C5A56' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 0.9rem center;padding-right:2.2rem}
 .rm-hint{font-size:0.72rem;color:#9C9A94;line-height:1.4;margin-top:0.25rem}
-.rm-monzo{display:flex;align-items:center;gap:0.75rem;padding:0.8rem;background:#FBF3EA;border:1px solid #E8C49A;border-radius:2px}
-.rm-monzo p{font-size:0.78rem;color:#5C5A56;line-height:1.5;flex:1;margin:0}
-.rm-monzo a{white-space:nowrap;flex-shrink:0;font-size:0.65rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#fff;background:#C4894A;border-radius:2px;padding:0.4rem 0.75rem;text-decoration:none}
-.rm-monzo a:hover{background:#b8793a}
+.rm-chip-status{display:block;margin-top:0.2rem}
+.rm-kinds{display:flex;flex-direction:column;gap:0.5rem}
+.rm-kind{display:flex;align-items:flex-start;gap:0.7rem;padding:0.75rem 0.9rem;border:1.5px solid rgba(44,44,42,0.16);border-radius:2px;background:#fff;cursor:pointer;font-size:0.78rem;color:#5C5A56;line-height:1.45;transition:border-color 0.2s}
+.rm-kind:has(input:checked){border-color:#5C7A5C;background:#EDF2ED}
+.rm-kind input{margin-top:0.2rem;accent-color:#5C7A5C}
+.rm-kind strong{display:block;font-size:0.85rem;font-weight:500;color:#2C2C2A}
+.rm-amount{position:relative}
+.rm-amount span{position:absolute;left:0.9rem;top:50%;transform:translateY(-50%);font-size:0.9rem;color:#5C5A56}
+.rm-amount .rm-input{padding-left:1.8rem}
 .rm-submit{padding:0.9rem;background:#5C7A5C;color:#fff;border:none;border-radius:2px;font-family:"Jost",sans-serif;font-size:0.72rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;cursor:pointer;transition:background 0.2s;width:100%}
 .rm-submit:hover:not(:disabled){background:#8FA882}
 .rm-submit:disabled{opacity:0.6;cursor:not-allowed}
@@ -300,6 +304,17 @@ body{display:flex;flex-direction:column;background:var(--cream)}
 .rm-success-icon{font-size:2.5rem;margin-bottom:1rem}
 .rm-success h3{font-family:"Cormorant Garamond",serif;font-size:1.5rem;font-weight:300;margin-bottom:0.6rem;color:#2C2C2A}
 .rm-success p{font-size:0.85rem;color:#5C5A56;line-height:1.6}
+.rm-address{margin:1.4rem 0 0;padding:1.1rem 1.2rem;background:#F0EBE1;border-radius:2px;text-align:left}
+.rm-address .rm-label{margin-bottom:0.5rem}
+.rm-address-text{white-space:pre-line;font-size:0.92rem;color:#2C2C2A;line-height:1.55}
+.rm-copy{margin-top:0.8rem;padding:0.45rem 0.85rem;background:#fff;border:1.5px solid rgba(44,44,42,0.16);border-radius:2px;font-family:"Jost",sans-serif;font-size:0.62rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#2C2C2A;cursor:pointer}
+.rm-copy:hover{border-color:#5C7A5C;color:#5C7A5C}
+.rm-address .rm-hint{margin-top:0.7rem}
+.rm-pay{display:block;margin-top:1.4rem;padding:0.9rem;background:#C4894A;color:#fff;border-radius:2px;font-size:0.72rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;text-decoration:none;transition:background 0.2s}
+.rm-pay:hover{background:#b8793a}
+.rm-success .rm-after{margin-top:0.9rem;font-size:0.75rem;color:#9C9A94}
+.rm-shop{display:inline-block;margin-top:1.1rem;font-size:0.68rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#5C7A5C;text-decoration:none}
+.rm-shop:hover{text-decoration:underline}
 @media(max-width:600px){.rm-header,.rm-body{padding-left:1.4rem;padding-right:1.4rem}.rm-chip{margin-left:1.4rem;margin-right:1.4rem}}
 </style>
 </head>
@@ -332,7 +347,7 @@ body{display:flex;flex-direction:column;background:var(--cream)}
       placeholder="e.g. Jane Smith"
       autocomplete="name"
       onkeydown="if(event.key==='Enter')checkName()"/>
-    <button class="gate-btn" onclick="checkName()">Find my invitation</button>
+    <button class="gate-btn" id="name-btn" onclick="checkName()">Find my invitation</button>
     <p class="gate-err" id="name-err"></p>
   </div>
 
@@ -412,7 +427,12 @@ body{display:flex;flex-direction:column;background:var(--cream)}
 </button>
 
 <script>
-// ── Guest list (loaded from CSV at runtime) ───────────────
+// ── Site back end: the website's Google Sheet ─────────────
+// Its Apps Script web app (code in _backend/registry.gs) checks names against
+// the guest list and runs the registry. The guest list and the gift delivery
+// address stay in the Sheet, never in this public code.
+var SITE_API = 'https://script.google.com/macros/s/AKfycbzfBfw64A0nX7V7EZM0brD_hg3Bv9ouBd31iKcu9UgrgvJcH787m2lQVfNsYbkdeoEo/exec';
+
 var AUTH_KEY = 'bs_guest_auth';
 var FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScoSFQtFHedJcSKe9RtJZTQf8iXfOKdTP-ZTZJGZorPxl32gA/viewform';
 
@@ -434,40 +454,13 @@ function logActivity(page) {
   } catch(e) {}
 }
 
-// rsvp/guests.csv (name,invite_type) is the one guest list — the RSVP page
-// reads it too. Fetched once, revalidated so new guests work straight away.
-var guestsPromise = null;
-
-function parseGuests(text) {
-  return text.trim().split(/\r?\n/).slice(1).map(function(line) {
-    var lastComma = line.lastIndexOf(',');
-    return {
-      name: line.slice(0, lastComma).trim().replace(/^"|"$/g, ''),
-      invite_type: line.slice(lastComma + 1).trim()
-    };
-  }).filter(function(g) { return g.name; });
-}
-
-function loadGuests() {
-  if (!guestsPromise) {
-    guestsPromise = fetch('/rsvp/guests.csv', {cache: 'no-cache'})
-      .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
-      .then(parseGuests)
-      .catch(function(e) { guestsPromise = null; throw e; });
-  }
-  return guestsPromise;
-}
-
-function normaliseName(s) {
-  return s.trim().toLowerCase().replace(/\s+/g,' ');
-}
-
-function findGuest(guests, input) {
-  var q = normaliseName(input);
-  for (var i = 0; i < guests.length; i++) {
-    if (normaliseName(guests[i].name) === q) return guests[i];
-  }
-  return null;
+// The guest list lives in the Sheet's Guests tab; we ask the back end about one
+// name at a time, so the list itself can't be downloaded. Resolves to
+// {name, invite_type} or null. The RSVP page asks the same way.
+function lookupGuest(name) {
+  return fetch(SITE_API + '?guest=' + encodeURIComponent(name.trim()))
+    .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function(data) { return data.guest; });
 }
 
 // ── Name gate logic ───────────────────────────────────────
@@ -499,9 +492,12 @@ function checkName() {
   }
 
   err.textContent = '';
+  var btn = document.getElementById('name-btn');
+  btn.disabled = true; btn.textContent = 'Checking\u2026';
+  function done() { btn.disabled = false; btn.textContent = 'Find my invitation'; }
 
-  loadGuests().then(function(guests) {
-    var guest = findGuest(guests, val);
+  lookupGuest(val).then(function(guest) {
+    done();
     if (guest) {
       trackNameAttempt(val, 'found');
       showResult(guest);
@@ -514,7 +510,8 @@ function checkName() {
       input.select();
     }
   }, function() {
-    err.textContent = 'Sorry, we couldn’t load the guest list — please check your connection and try again.';
+    done();
+    err.textContent = 'Sorry, we couldn’t check the guest list — please check your connection and try again.';
   });
 }
 
@@ -592,7 +589,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('nav').style.visibility = 'hidden';
     document.getElementById('content-frame').style.visibility = 'hidden';
     document.getElementById('spotify-toggle').style.visibility = 'hidden';
-    loadGuests().catch(function() {}); // warm up so the name check is instant
+    lookupGuest('').catch(function() {}); // wake the back end so the name check is quick
   }
 })();
 
@@ -680,7 +677,7 @@ logActivity(initPage);
 <div id="reg-modal-overlay" onclick="regCloseOnOverlay(event)">
   <div id="reg-modal">
     <div class="rm-header">
-      <h2>Leave us a <em>message</em></h2>
+      <h2 id="rm-title">Leave us a <em>message</em></h2>
       <button class="rm-close" onclick="regCloseModal()" aria-label="Close">&#x2715;</button>
     </div>
     <div id="rm-chip" class="rm-chip" style="display:none"></div>
@@ -688,25 +685,24 @@ logActivity(initPage);
       <div class="rm-field">
         <label class="rm-label" for="rm-name">Your name <span>*</span></label>
         <input class="rm-input" id="rm-name" type="text" placeholder="Jane Smith" autocomplete="name"/>
+        <p class="rm-hint">Giving with someone? Add them too, e.g. Jane &amp; John Smith.</p>
       </div>
       <div class="rm-field">
         <label class="rm-label" for="rm-email">Email or phone</label>
         <input class="rm-input" id="rm-email" type="text" placeholder="jane@example.com" autocomplete="email"/>
         <p class="rm-hint">So we can thank you — we won't spam you, promise.</p>
       </div>
-      <div class="rm-field">
-        <label class="rm-label" for="rm-gift">Gift you're contributing to <span>*</span></label>
-        <select class="rm-select" id="rm-gift" onchange="regUpdateMonzo()"></select>
-      </div>
-      <div id="rm-monzo-row" style="display:none">
-        <div class="rm-monzo">
-          <p>This is a honeymoon fund item — please pay via Monzo first, then submit this form.</p>
-          <a href="https://monzo.me/brunorenucci?h=D5OpO6&d=Donation%20to%20Honeymoon%20fund&account_type=joint" target="_blank" rel="noopener">Pay &rarr;</a>
+      <div class="rm-field" id="rm-kind-field" style="display:none">
+        <span class="rm-label">How would you like to give? <span>*</span></span>
+        <div class="rm-kinds">
+          <label class="rm-kind"><input type="radio" name="rm-kind" value="buy" onchange="regUpdateKind()"/><span><strong>I'll buy it</strong>We'll reserve it for you and give you the address to send it to.</span></label>
+          <label class="rm-kind"><input type="radio" name="rm-kind" value="chip" onchange="regUpdateKind()"/><span><strong>I'll chip in</strong>Put any amount towards it, sent by Monzo.</span></label>
         </div>
       </div>
       <div class="rm-field" id="rm-amount-field" style="display:none">
-        <label class="rm-label" for="rm-amount">Amount you're sending</label>
-        <input class="rm-input" id="rm-amount" type="text" placeholder="e.g. £50"/>
+        <label class="rm-label" for="rm-amount">Amount <span>*</span></label>
+        <div class="rm-amount"><span>£</span><input class="rm-input" id="rm-amount" type="number" min="1" step="any" inputmode="decimal" placeholder="50"/></div>
+        <p class="rm-hint" id="rm-amount-hint"></p>
       </div>
       <div class="rm-field">
         <label class="rm-label" for="rm-message">Message for us <span>*</span></label>
@@ -717,68 +713,97 @@ logActivity(initPage);
     </div>
     <div id="rm-success" class="rm-success" style="display:none">
       <div class="rm-success-icon">&#x1F48C;</div>
-      <h3>Thank you so much!</h3>
-      <p id="rm-success-msg">We've received your message and we're so grateful.</p>
+      <h3 id="rm-success-title">Thank you so much!</h3>
+      <p id="rm-success-msg"></p>
+      <div id="rm-address" class="rm-address" style="display:none">
+        <p class="rm-label">Please send it to</p>
+        <p id="rm-address-text" class="rm-address-text"></p>
+        <button class="rm-copy" id="rm-copy" onclick="regCopyAddress()">Copy address</button>
+        <p class="rm-hint">This is a family home, so please keep the address to yourself.</p>
+      </div>
+      <a id="rm-pay" class="rm-pay" target="_blank" rel="noopener" style="display:none"></a>
+      <p id="rm-pay-after" class="rm-after" style="display:none">Your gift already counts towards the total, so please send it soon.</p>
+      <a id="rm-shop" class="rm-shop" target="_blank" rel="noopener" style="display:none">Go to the shop &rarr;</a>
     </div>
   </div>
 </div>
 
 <script>
 // ── REGISTRY MODAL (lives in parent to avoid iframe clipping) ─────────────────
-var RM_FORM_ACTION = 'https://docs.google.com/forms/d/e/1FAIpQLSd3qbEdw1-2w4Haq-kv6vG7TbMvJxEuFaX8ynMPkErHF0oBQw/formResponse';
-var RM_ENTRY = {name:'entry.492519388',email:'entry.61241163',gift:'entry.330481509',message:'entry.24251804',payref:'entry.1049822941',amount:'entry.1705630575'};
-var RM_GIFTS = ["Le Creuset Casserole Dish","KitchenAid Stand Mixer","Sage Barista Express","Vitamix Blender","Global Knife Set","Cast Iron Skillet","Copper Saucepan Set","Pasta Maker","Spice Collection","Ottolenghi Cookbook Bundle","Luxury Goose Down Duvet","Linen Bedding Set","Luxury Bath Towel Set (x4)","Merino Throw Blankets","Dyson Cordless Hoover","Diptyque Candle Set","Reed Diffuser","Gallery Photo Frames Set","Wine Fridge (12-bottle)","Riedel Wine Glasses (x12)","Cocktail Making Set","Marble Cheese Board Set","Linen Napkins & Tablecloth","Dinner Plate Set (x8)","Champagne Flutes (x6)","Sony RX100 VII Camera","Arc'teryx Shell Jacket","Garmin Running Watch","Ski Helmet Upgrade","Trail Running Shoes","Merino Base Layers","Osprey Daypacks (x2)","Waterproof Drybags","Travel Packing Cubes Set","Sonos Era 100","Robot Vacuum","Noise-Cancelling Headphones (x2)","Anker MagSafe 3-in-1 Charger","Portable Power Bank","Original Artwork Commission","Statement Floor Lamp","Framed Prints Set","Ceramic Vases (trio)","Large Plant + Ceramic Pot","Coffee Table Books","Honeymoon Flights","One Night Hotel Upgrade","Michelin Dinner for Two","Spa Day for Two","Adventure Excursion","Matching Luggage Set","Noise-Cancelling Headphones"];
-var RM_MONZO_GIFTS = ["Honeymoon Flights","One Night Hotel Upgrade","Michelin Dinner for Two","Spa Day for Two","Adventure Excursion"];
+// Gifts and contributions live in the website's Google Sheet, through SITE_API;
+// the registry page reads the gift list from it too. The delivery address only
+// comes back to a guest who has just reserved a gift to buy.
+var rmGift = null;  // the gift the modal is open for, or null for just a message
 
-// Listen for openModal message from registry iframe
-window.addEventListener('message', function(e) {
-  if (e.data && e.data.nav && VALID.indexOf(e.data.nav) >= 0) { nav(e.data.nav); }
-  if (e.data && typeof e.data.scrollTo === 'number') { window.scrollTo(0, e.data.scrollTo); }
-  if (e.data && e.data.type === 'openRegistryModal') { regOpenModal(e.data.gift, e.data.price); }
-  if (e.data && e.data.type === 'giftClaimed') { /* registry handles its own UI */ }
-});
-
-function regOpenModal(giftName, giftPrice) {
-  // Reset
+function regOpenModal(gift) {
+  rmGift = gift || null;
   document.getElementById('rm-form').style.display = 'flex';
   document.getElementById('rm-success').style.display = 'none';
   document.getElementById('rm-error').style.display = 'none';
-  document.getElementById('rm-name').value = '';
   document.getElementById('rm-email').value = '';
   document.getElementById('rm-message').value = '';
   document.getElementById('rm-amount').value = '';
+  document.querySelectorAll('input[name="rm-kind"]').forEach(function(r) { r.checked = false; });
   var btn = document.getElementById('rm-submit');
-  btn.disabled = false; btn.textContent = 'Send message \u2192';
+  btn.disabled = false;
 
-  // Chip
+  // Start from the name they signed in with
+  var signedIn = '';
+  try { signedIn = JSON.parse(localStorage.getItem(AUTH_KEY)).name; } catch(e) {}
+  document.getElementById('rm-name').value = signedIn || '';
+
+  document.getElementById('rm-title').innerHTML = rmGift ? 'Give a <em>gift</em>' : 'Leave us a <em>message</em>';
   var chip = document.getElementById('rm-chip');
-  if (giftName) {
+  if (rmGift) {
     chip.style.display = 'block';
-    chip.innerHTML = '<strong>' + giftName + '</strong>' + (giftPrice || '');
+    chip.innerHTML = '';
+    var strong = document.createElement('strong');
+    strong.textContent = rmGift.name;
+    var status = document.createElement('span');
+    status.className = 'rm-chip-status';
+    status.textContent = rmGift.target === null ? 'Any amount'
+      : rmGift.started ? rmGift.pct + '% covered · ' + regMoney(rmGift.left) + ' to go'
+      : rmGift.price;
+    chip.appendChild(strong);
+    chip.appendChild(status);
   } else { chip.style.display = 'none'; }
 
-  // Populate select
-  var sel = document.getElementById('rm-gift');
-  sel.innerHTML = '<option value="">— choose a gift —</option>';
-  RM_GIFTS.forEach(function(g) {
-    var opt = document.createElement('option');
-    opt.value = g; opt.textContent = g;
-    if (g === giftName) opt.selected = true;
-    sel.appendChild(opt);
-  });
-  regUpdateMonzo();
+  document.getElementById('rm-kind-field').style.display = regKinds(rmGift).length > 1 ? 'flex' : 'none';
+  regUpdateKind();
 
   document.getElementById('reg-modal-overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
-  setTimeout(function(){ document.getElementById('rm-name').focus(); }, 280);
+  setTimeout(function(){ document.getElementById(signedIn ? 'rm-email' : 'rm-name').focus(); }, 280);
 }
 
-function regUpdateMonzo() {
-  var val = document.getElementById('rm-gift').value;
-  var isMonzo = RM_MONZO_GIFTS.indexOf(val) !== -1;
-  document.getElementById('rm-monzo-row').style.display = isMonzo ? 'block' : 'none';
-  document.getElementById('rm-amount-field').style.display = isMonzo ? 'block' : 'none';
+// The ways this gift can be given. An "either" gift can be bought whole until
+// anyone chips in; after that it's shared.
+function regKinds(gift) {
+  if (!gift) return [];
+  if (gift.mode === 'buy') return ['buy'];
+  if (gift.mode === 'chip' || gift.started) return ['chip'];
+  return ['buy', 'chip'];
 }
+
+// 'buy', 'chip', 'message', or '' while they still have to choose
+function regKind() {
+  var kinds = regKinds(rmGift);
+  if (kinds.length < 2) return kinds[0] || 'message';
+  var picked = document.querySelector('input[name="rm-kind"]:checked');
+  return picked ? picked.value : '';
+}
+
+function regUpdateKind() {
+  var kind = regKind();
+  document.getElementById('rm-amount-field').style.display = kind === 'chip' ? 'flex' : 'none';
+  document.getElementById('rm-amount-hint').textContent = rmGift && rmGift.left !== null
+    ? regMoney(rmGift.left) + ' still to go on this one.' : 'Any amount is lovely.';
+  document.getElementById('rm-submit').textContent = {
+    buy: 'Reserve this gift →', chip: 'Continue to payment →', message: 'Send message →'
+  }[kind] || 'Continue →';
+}
+
+function regMoney(n) { return '£' + (n % 1 ? n.toFixed(2) : n); }
 
 function regCloseModal() {
   document.getElementById('reg-modal-overlay').classList.remove('open');
@@ -793,42 +818,94 @@ document.addEventListener('keydown', function(e) { if (e.key === 'Escape') regCl
 
 function regSubmit() {
   var name = document.getElementById('rm-name').value.trim();
-  var email = document.getElementById('rm-email').value.trim();
-  var gift = document.getElementById('rm-gift').value;
+  var contact = document.getElementById('rm-email').value.trim();
   var message = document.getElementById('rm-message').value.trim();
-  var amount = document.getElementById('rm-amount').value.trim();
+  var kind = regKind();
+  var amount = Number(document.getElementById('rm-amount').value);
   var errEl = document.getElementById('rm-error');
   errEl.style.display = 'none';
+  function fail(text) { errEl.textContent = text; errEl.style.display = 'block'; }
 
-  if (!name) { errEl.textContent = 'Please enter your name.'; errEl.style.display = 'block'; return; }
-  if (!gift) { errEl.textContent = 'Please select a gift.'; errEl.style.display = 'block'; return; }
-  if (!message) { errEl.textContent = 'Please leave us a message — even a short one!'; errEl.style.display = 'block'; return; }
+  if (!name) return fail('Please enter your name.');
+  if (!kind) return fail('Please choose whether you\'d like to buy it or chip in.');
+  if (kind === 'chip' && !(amount >= 1)) return fail('Please enter an amount of at least £1.');
+  if (kind === 'chip' && rmGift.left !== null && amount > rmGift.left) return fail('Only ' + regMoney(rmGift.left) + ' is still needed for this one.');
+  if (!message) return fail('Please leave us a message — even a short one!');
+
+  var guest = '';
+  try { guest = JSON.parse(localStorage.getItem(AUTH_KEY)).name; } catch(e) {}
 
   var btn = document.getElementById('rm-submit');
-  btn.disabled = true; btn.textContent = 'Sending\u2026';
+  btn.disabled = true; btn.textContent = 'Sending…';
 
-  var body = RM_ENTRY.name + '=' + encodeURIComponent(name)
-    + '&' + RM_ENTRY.email + '=' + encodeURIComponent(email)
-    + '&' + RM_ENTRY.gift + '=' + encodeURIComponent(gift)
-    + '&' + RM_ENTRY.message + '=' + encodeURIComponent(message)
-    + '&' + RM_ENTRY.payref + '=' + encodeURIComponent('')
-    + '&' + RM_ENTRY.amount + '=' + encodeURIComponent(amount);
-
-  fetch(RM_FORM_ACTION, {method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body})
-    .then(function() {
-      // Tell the registry iframe to mark this gift as claimed
-      try { document.getElementById('content-frame').contentWindow.postMessage({type:'markClaimed',gift:gift}, '*'); } catch(e){}
-      document.getElementById('rm-form').style.display = 'none';
-      document.getElementById('rm-chip').style.display = 'none';
-      var s = document.getElementById('rm-success');
-      s.style.display = 'block';
-      document.getElementById('rm-success-msg').textContent = 'We\'ve received your message about the ' + gift + ' — we\'re so grateful. We can\'t wait to celebrate with you.';
+  // Sent as text/plain so the browser doesn't need a CORS preflight, which
+  // Apps Script can't answer.
+  fetch(SITE_API, {method: 'POST', body: JSON.stringify({
+    guest: guest, name: name, contact: contact, message: message,
+    kind: kind, giftId: rmGift ? rmGift.id : '', amount: kind === 'chip' ? amount : ''
+  })})
+    .then(function(r) { return r.json(); })
+    .then(function(res) {
+      if (res.refresh) regRefreshList();
+      if (!res.ok) {
+        regUpdateKind(); btn.disabled = false;
+        return fail(res.error);
+      }
+      regShowSuccess(res);
+      regRefreshList();
     })
     .catch(function() {
-      btn.disabled = false; btn.textContent = 'Send message \u2192';
-      errEl.textContent = 'Something went wrong — please try again or email us directly.';
-      errEl.style.display = 'block';
+      regUpdateKind(); btn.disabled = false;
+      fail('Something went wrong — please try again or email us directly.');
     });
+}
+
+function regShowSuccess(res) {
+  document.getElementById('rm-form').style.display = 'none';
+  document.getElementById('rm-chip').style.display = 'none';
+  document.getElementById('rm-success').style.display = 'block';
+  var title = document.getElementById('rm-success-title');
+  var msg = document.getElementById('rm-success-msg');
+  var address = document.getElementById('rm-address');
+  var pay = document.getElementById('rm-pay');
+  var shop = document.getElementById('rm-shop');
+  address.style.display = pay.style.display = shop.style.display = 'none';
+  document.getElementById('rm-pay-after').style.display = 'none';
+
+  if (res.kind === 'buy') {
+    title.textContent = 'It\'s all yours to give';
+    msg.textContent = 'We\'ve reserved the ' + res.gift + ' for you, so no one else will buy it. Thank you so much!';
+    if (res.address) {
+      document.getElementById('rm-address-text').textContent = res.address;
+      document.getElementById('rm-copy').textContent = 'Copy address';
+      address.style.display = 'block';
+    } else {
+      msg.textContent += ' Drop us a line at brunoandsally2027@gmail.com and we\'ll send you the address to post it to.';
+    }
+    if (/^https?:\/\//.test(res.link || '')) { shop.href = res.link; shop.style.display = 'inline-block'; }
+  } else if (res.kind === 'chip') {
+    title.textContent = 'Thank you so much!';
+    msg.textContent = 'We\'ve put your ' + regMoney(res.amount) + ' towards the ' + res.gift + '. The Monzo link below has the amount and reference already filled in.';
+    pay.href = res.monzo;
+    pay.textContent = 'Send ' + regMoney(res.amount) + ' with Monzo →';
+    pay.style.display = 'block';
+    document.getElementById('rm-pay-after').style.display = 'block';
+  } else {
+    title.textContent = 'Thank you so much!';
+    msg.textContent = 'We\'ve got your message and we can\'t wait to read it, and to celebrate with you.';
+  }
+}
+
+function regCopyAddress() {
+  var text = document.getElementById('rm-address-text').textContent;
+  navigator.clipboard.writeText(text).then(function() {
+    document.getElementById('rm-copy').textContent = 'Copied';
+  }, function() {});
+}
+
+// Tell the registry page to reload the gift list so the bars catch up
+function regRefreshList() {
+  try { document.getElementById('content-frame').contentWindow.postMessage({type: 'registryChanged'}, location.origin); } catch(e) {}
 }
 </script>
 

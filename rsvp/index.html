@@ -377,47 +377,22 @@
 
   let foundGuest = null;
 
-  // ── Guest list: guests.csv in the same folder (the only copy — the name gate reads it too) ──
-  let guestList = [];
-  let guestsReady = null;
-
-  async function loadGuestList() {
-    try {
-      const res = await fetch('guests.csv', { cache: 'no-cache' });
-      if (!res.ok) throw new Error('CSV not found');
-      const text = await res.text();
-      const lines = text.trim().split('\n').slice(1);
-      guestList = lines.map(line => {
-        const lastComma = line.lastIndexOf(',');
-        const name = line.slice(0, lastComma).trim().replace(/^"|"$/g, '');
-        const invite_type = line.slice(lastComma + 1).trim();
-        return { name, invite_type };
-      }).filter(g => g.name);
-    } catch (e) {
-      console.warn('Could not load guests.csv', e);
-    }
-  }
-
-  // ── Exact match (case-insensitive, whitespace-normalised) ──
-  function normalise(str) {
-    return str.toLowerCase().replace(/\s+/g, ' ').trim();
-  }
-
-  function findGuest(query) {
-    const q = normalise(query);
-    if (!q) return null;
-    return guestList.find(g => normalise(g.name) === q) || null;
-  }
+  // ── Guest list: checked by the site's back end (lookupGuest in the shell
+  // page), one name at a time, so the list itself can't be downloaded ──
 
   async function lookupGuest() {
     const query = document.getElementById('name-input').value.trim();
     if (!query) return;
 
-    await guestsReady;
-    if (!guestList.length) await loadGuestList();
-
-    const guest = findGuest(query);
     const resultEl = document.getElementById('lookup-result');
+    let guest;
+    try {
+      guest = await window.parent.lookupGuest(query);
+    } catch (e) {
+      resultEl.style.display = 'block';
+      resultEl.innerHTML = '<div class="result-not-found"><div class="result-detail">Sorry, we couldn\u2019t check the guest list just now. Please check your connection and try again.</div></div>';
+      return;
+    }
     resultEl.style.display = 'block';
 
     if (guest) {
@@ -525,7 +500,6 @@
     document.getElementById('name-input').addEventListener('keydown', e => {
       if (e.key === 'Enter') lookupGuest();
     });
-    guestsReady = loadGuestList();
   });
 
 </script>
