@@ -11,225 +11,244 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --sage:#5C7A5C;--sage-light:#8FA882;--sage-bg:#EDF2ED;
+  --sage:#5C7A5C;--sage-light:#8FA882;--sage-pale:#EEF2E8;
   --cream:#FAF8F3;--stone:#F0EBE1;
   --ink:#2C2C2A;--ink-soft:#5C5A56;--ink-faint:#9C9A94;
   --warm:#C4894A;--warm-light:#E8C49A;--warm-bg:#FBF3EA;
   --line:rgba(44,44,42,0.1);--line-med:rgba(44,44,42,0.16);
 }
 html{scroll-behavior:smooth}
-body{font-family:"Jost",sans-serif;background:var(--cream);color:var(--ink);min-height:100vh}
-
-/* HERO */
-.hero{padding:4rem 2rem 3rem;text-align:center;border-bottom:1px solid var(--line)}
-.hero-eyebrow{font-size:0.65rem;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:var(--warm);margin-bottom:1rem}
-.hero h1{font-family:"Cormorant Garamond",serif;font-size:clamp(2.2rem,6vw,3.4rem);font-weight:300;line-height:1.05;margin-bottom:0.8rem}
-.hero h1 em{color:var(--sage);font-style:italic}
-.hero-sub{font-size:0.88rem;color:var(--ink-soft);max-width:480px;margin:0 auto 2rem;line-height:1.7}
+body{font-family:"Jost",sans-serif;background:var(--cream) url(/images/patterns/waves.svg);color:var(--ink);line-height:1.7;overflow-x:hidden}
+::selection{background:var(--sage-light);color:#fff}
+[hidden]{display:none!important}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
 
-/* ACTION CARDS */
-.actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1px;background:var(--line);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:3rem}
-.action-card{background:var(--cream);padding:2rem 2.2rem;display:flex;flex-direction:column;gap:0.6rem}
-.action-icon{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:0.4rem}
-.action-icon.sage{background:var(--sage-bg);color:var(--sage)}
-.action-eyebrow{font-size:0.62rem;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-faint)}
-.action-title{font-family:"Cormorant Garamond",serif;font-size:1.35rem;font-weight:400;color:var(--ink);line-height:1.2}
-.action-desc{font-size:0.82rem;color:var(--ink-soft);line-height:1.6;flex:1}
-.action-btn{display:inline-flex;align-items:center;gap:0.5rem;margin-top:0.8rem;padding:0.7rem 1.2rem;border:none;border-radius:2px;font-family:"Jost",sans-serif;font-size:0.68rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:all 0.2s;align-self:flex-start}
-.action-btn.primary{background:var(--sage);color:#fff}
-.action-btn.primary:hover{background:var(--sage-light)}
-.action-btn.outline{background:transparent;color:var(--ink);border:1.5px solid var(--line-med)}
-.action-btn.outline:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+.eyebrow{font-size:0.68rem;font-weight:600;letter-spacing:0.28em;text-transform:uppercase;color:var(--warm);margin-bottom:0.8rem;display:flex;align-items:center;gap:0.8rem}
+.eyebrow::before{content:"";width:28px;height:1px;background:var(--warm)}
+h2{font-family:"Cormorant Garamond",serif;font-weight:300;font-size:clamp(1.9rem,4vw,2.6rem);line-height:1.1;letter-spacing:-0.01em}
+.lead{font-family:"Cormorant Garamond",serif;font-size:1.35rem;font-style:italic;color:var(--ink-soft);line-height:1.6;max-width:720px}
+.btn{display:inline-block;padding:0.8rem 2rem;border-radius:1px;font-size:0.72rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;text-decoration:none;cursor:pointer;border:none;transition:all 0.2s;font-family:"Jost",sans-serif}
+.btn-sage{background:var(--sage);color:#fff}.btn-sage:hover{background:var(--sage-light)}
+.ico{width:30px;height:30px;fill:none;stroke:var(--sage);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 
-/* SECTION */
-.section{max-width:860px;margin:0 auto;padding:0 2rem 4rem}
-.section-header{display:flex;align-items:baseline;gap:1rem;margin-bottom:1.8rem;padding-bottom:1rem;border-bottom:1px solid var(--line)}
-.section-header h2{font-family:"Cormorant Garamond",serif;font-size:1.5rem;font-weight:400}
-.section-header .meta{font-size:0.68rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-faint)}
+/* Header photo, as on the other pages */
+.page-hero{background:url(/images/our-story/07.jpg) center 34%/cover;height:44vh;min-height:280px;display:flex;align-items:flex-end;padding:2.5rem 2rem;position:relative}
+.page-hero::before{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.62) 0%,rgba(0,0,0,0.12) 55%,transparent 100%)}
+.page-hero-text{position:relative;z-index:1;max-width:1100px;width:100%;margin:0 auto;color:#fff}
+.page-hero-text p{font-size:0.78rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:0.3rem}
+.page-hero-text h1{font-family:"Cormorant Garamond",serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:300;line-height:1.05;text-shadow:0 2px 8px rgba(0,0,0,0.3)}
 
-/* TABS */
-.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:2rem}
-.tab{padding:0.45rem 0.9rem;background:transparent;border:1px solid var(--line-med);border-radius:20px;font-family:"Jost",sans-serif;font-size:0.7rem;font-weight:500;letter-spacing:0.08em;color:var(--ink-soft);cursor:pointer;transition:all 0.18s}
+/* Content sits on a cream panel so the waves only show around it */
+.section{padding:4rem 2rem}
+.panel{max-width:1100px;margin:0 auto;background:var(--cream);border:1px solid var(--line);border-radius:4px;padding:3.5rem 3rem;box-shadow:0 18px 40px -28px rgba(27,58,75,0.35)}
+
+/* How it works: the same cards as The Day After */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin:2.2rem 0 4rem}
+.step{background:#fff;border:1px solid var(--line);border-radius:2px;padding:1.8rem;display:flex;flex-direction:column}
+.step .ico{margin-bottom:1rem}
+.step h3{font-family:"Cormorant Garamond",serif;font-size:1.45rem;font-weight:400;line-height:1.2;margin-bottom:0.6rem}
+.step p{color:var(--ink-soft);font-size:0.9rem;line-height:1.65}
+.step .step-num{font-size:0.68rem;font-weight:600;letter-spacing:0.18em;line-height:1.4;text-transform:uppercase;color:var(--warm);margin-bottom:0.5rem}
+.step-link{margin-top:auto;padding-top:1rem;align-self:flex-start;background:none;border:none;cursor:pointer;font-family:"Jost",sans-serif;font-size:0.68rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--sage)}
+.step-link:hover{color:var(--ink)}
+
+/* Gift list */
+.list-head{display:flex;align-items:baseline;justify-content:space-between;gap:0.5rem 1rem;flex-wrap:wrap;padding-bottom:1.2rem;margin-bottom:1.6rem;border-bottom:1px solid var(--line)}
+.list-meta{font-size:0.68rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-faint)}
+.tabs{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:2rem}
+.tab{padding:0.45rem 1rem;background:#fff;border:1px solid var(--line-med);border-radius:20px;font-family:"Jost",sans-serif;font-size:0.72rem;font-weight:500;letter-spacing:0.06em;color:var(--ink-soft);cursor:pointer;transition:all 0.18s}
+.tab span{margin-left:0.35rem;font-weight:400;color:var(--ink-faint)}
 .tab:hover{border-color:var(--sage);color:var(--sage)}
 .tab.active{background:var(--sage);border-color:var(--sage);color:#fff}
+.tab.active span{color:rgba(255,255,255,0.75)}
 
-/* GIFT GRID */
-.gift-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
-.gift-card{background:var(--cream);padding:1.4rem 1.5rem;display:flex;flex-direction:column;gap:0.45rem;transition:background 0.15s;position:relative}
-.gift-card:hover:not(.claimed){background:var(--stone)}
-.gift-card.claimed{opacity:0.45;pointer-events:none}
-.gift-claimed-badge{position:absolute;top:0.75rem;right:0.75rem;font-size:0.6rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;background:var(--stone);color:var(--ink-faint);padding:0.2rem 0.55rem;border-radius:10px;border:1px solid var(--line-med)}
-.gift-cat{font-size:0.6rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--warm)}
-.gift-name{font-family:"Cormorant Garamond",serif;font-size:1.05rem;font-weight:400;color:var(--ink);line-height:1.25}
-.gift-brand{font-size:0.72rem;color:var(--ink-faint)}
-.gift-desc{font-size:0.78rem;color:var(--ink-soft);line-height:1.5;flex:1}
-.gift-note-line{font-size:0.72rem;font-style:italic;color:var(--warm)}
-.gift-footer{display:flex;align-items:center;justify-content:space-between;margin-top:0.6rem;padding-top:0.7rem;border-top:1px solid var(--line);gap:0.5rem;flex-wrap:wrap}
-.gift-price{font-size:0.7rem;font-weight:600;letter-spacing:0.06em;color:var(--ink-soft);white-space:nowrap}
-.gift-actions{display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap}
-.gift-select-btn{font-size:0.62rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#fff;background:var(--sage);border:none;border-radius:2px;padding:0.3rem 0.7rem;cursor:pointer;font-family:"Jost",sans-serif;transition:background 0.15s;white-space:nowrap}
-.gift-select-btn:hover{background:var(--sage-light)}
-.gift-link{font-size:0.65rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-faint);text-decoration:none;display:flex;align-items:center;gap:0.25rem;white-space:nowrap}
+.gift-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1.25rem}
+.gift-card{background:#fff;border:1px solid var(--line);border-radius:2px;padding:1.6rem 1.6rem 1.25rem;display:flex;flex-direction:column;transition:box-shadow 0.2s,transform 0.2s}
+.gift-card:hover{box-shadow:0 16px 32px -24px rgba(27,58,75,0.5);transform:translateY(-2px)}
+.gift-body{flex:1}
+.gift-top{display:flex;align-items:center;gap:0.65rem;margin-bottom:0.9rem}
+.gift-top .ico{width:24px;height:24px}
+.gift-cat{font-size:0.62rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--warm)}
+.gift-name{font-family:"Cormorant Garamond",serif;font-size:1.4rem;font-weight:400;line-height:1.2}
+.gift-brand{font-size:0.74rem;color:var(--ink-faint);margin-top:0.15rem}
+.gift-desc{font-size:0.86rem;color:var(--ink-soft);line-height:1.6;margin-top:0.7rem}
+.gift-note-line{font-family:"Cormorant Garamond",serif;font-size:1.02rem;font-style:italic;color:var(--warm);margin-top:0.35rem}
+.gift-progress{margin-top:1.1rem}
+.gift-bar{height:4px;background:var(--stone);border-radius:2px;overflow:hidden}
+.gift-bar span{display:block;height:100%;background:var(--sage);border-radius:2px}
+.gift-status{font-size:0.72rem;color:var(--ink-soft);margin-top:0.45rem}
+.gift-share{display:flex;align-items:center;gap:0.45rem;margin-top:0.9rem;font-size:0.72rem;color:var(--sage)}
+.gift-share::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--sage-light)}
+.gift-footer{display:flex;align-items:center;justify-content:space-between;gap:0.6rem;margin-top:1.3rem;padding-top:1rem;border-top:1px solid var(--line)}
+.gift-price{font-size:0.82rem;font-weight:500;white-space:nowrap}
+.gift-actions{display:flex;align-items:center;gap:0.9rem}
+.gift-link{display:flex;align-items:center;gap:0.25rem;font-size:0.62rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-faint);text-decoration:none}
 .gift-link:hover{color:var(--ink)}
-.gift-link svg{width:10px;height:10px}
-.gift-progress{display:flex;flex-direction:column;gap:0.35rem;margin-top:0.2rem}
-.gift-bar{height:5px;background:var(--stone);border-radius:3px;overflow:hidden}
-.gift-bar span{display:block;height:100%;background:var(--sage);border-radius:3px}
-.gift-status{font-size:0.7rem;color:var(--ink-soft)}
-.gift-note{grid-column:1/-1;background:var(--cream);padding:2.5rem 1.5rem;text-align:center;font-size:0.82rem;color:var(--ink-soft);line-height:1.6}
+.gift-select-btn{padding:0.55rem 1rem;background:var(--sage);color:#fff;border:none;border-radius:1px;font-family:"Jost",sans-serif;font-size:0.62rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;white-space:nowrap;cursor:pointer;transition:background 0.2s}
+.gift-select-btn:hover{background:var(--sage-light)}
+.gift-card.gifted{background:transparent;box-shadow:none;transform:none}
+.gift-card.gifted .gift-body,.gift-card.gifted .gift-price{opacity:0.45}
+.gift-gifted{font-family:"Cormorant Garamond",serif;font-size:1.05rem;font-style:italic;color:var(--sage);white-space:nowrap}
+.grid-note{grid-column:1/-1;padding:3rem 1.5rem;text-align:center;font-size:0.9rem;color:var(--ink-soft)}
 
-/* HONEY BANNER */
-.honey-banner{background:var(--stone);border:1px solid var(--line);border-radius:2px;padding:2rem 2.2rem;margin-top:2rem;display:flex;align-items:flex-start;gap:1.5rem}
-.honey-banner .hb-icon{font-size:2rem;flex-shrink:0;margin-top:0.1rem}
-.honey-banner h3{font-family:"Cormorant Garamond",serif;font-size:1.3rem;font-weight:400;margin-bottom:0.4rem}
-.honey-banner p{font-size:0.82rem;color:var(--ink-soft);line-height:1.65}
+/* Honeymoon fund, and the note for anyone stuck */
+.honey{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:1.4rem 1.8rem;margin-top:3rem;padding:2rem 2.2rem;background:var(--sage-pale);border:1px solid var(--sage-light);border-radius:2px}
+.honey .ico{width:42px;height:42px}
+.honey h3{font-family:"Cormorant Garamond",serif;font-size:1.6rem;font-weight:400;line-height:1.15}
+.honey p{font-size:0.9rem;color:var(--ink-soft);margin-top:0.35rem;line-height:1.65}
+.help{margin-top:1.5rem;padding:1.4rem 1.5rem;background:var(--stone);border-radius:2px;font-size:0.9rem;color:var(--ink-soft)}
+.help strong{display:block;font-size:0.72rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--warm);margin-bottom:0.3rem}
+.help a,.soon-note a{color:var(--sage);font-weight:500;text-decoration:none}
+.help a:hover,.soon-note a:hover{text-decoration:underline}
 
-/* FOOTER */
-.registry-footer{text-align:center;padding:2rem;font-size:0.75rem;color:var(--ink-faint);border-top:1px solid var(--line)}
-.registry-footer a{color:var(--sage);text-decoration:none}
-.registry-footer a:hover{text-decoration:underline}
-
-@media(max-width:600px){
-  .hero{padding:2.5rem 1.2rem 2rem}
-  .action-card{padding:1.5rem 1.4rem}
-  .section{padding:0 1.2rem 3rem}
-  .honey-banner{flex-direction:column;gap:0.8rem}
-  .gift-grid{grid-template-columns:1fr 1fr}
-}
-@media(max-width:420px){.gift-grid{grid-template-columns:1fr}}
-
-/* COMING SOON (what guests see) */
-[hidden]{display:none!important}
-.soon{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;border-bottom:none;background:url(/images/patterns/sprig-tl.svg) no-repeat left top/clamp(150px,26vw,280px),url(/images/patterns/sprig-br.svg) no-repeat right bottom/clamp(150px,26vw,280px)}
-.soon-badge{display:inline-flex;align-items:center;gap:0.6rem;margin:0.4rem 0 1.6rem;padding:0.55rem 1.1rem;background:var(--warm-bg);border:1.5px solid var(--warm-light);border-radius:20px;font-size:0.72rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--warm)}
-.soon-dot{flex-shrink:0;width:8px;height:8px;border-radius:50%;background:var(--warm);animation:pulse 2s ease-in-out infinite}
-.soon .hero-sub{margin-bottom:1rem}
-.soon-preview{margin-top:1.4rem;padding:0.6rem 1.1rem;background:transparent;border:1.5px dashed var(--line-med);border-radius:2px;font-family:"Jost",sans-serif;font-size:0.65rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-soft);cursor:pointer;transition:all 0.2s}
+/* Under construction: what guests see until the list is ready */
+.soon-panel{max-width:760px;text-align:center;padding:4rem 3rem}
+.soon-badge{display:inline-flex;align-items:center;gap:0.6rem;margin-bottom:1.6rem;padding:0.5rem 1.1rem;background:var(--warm-bg);border:1.5px solid var(--warm-light);border-radius:20px;font-size:0.68rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--warm)}
+.soon-dot{width:8px;height:8px;border-radius:50%;background:var(--warm);animation:pulse 2s ease-in-out infinite}
+.soon-panel h2{margin-bottom:1.2rem}
+.soon-panel .lead{margin:0 auto 0.8rem}
+.soon-preview{margin-top:1.8rem;padding:0.6rem 1.1rem;background:transparent;border:1.5px dashed var(--line-med);border-radius:2px;font-family:"Jost",sans-serif;font-size:0.65rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-soft);cursor:pointer;transition:all 0.2s}
 .soon-preview:hover{border-color:var(--warm);color:var(--warm)}
-.soon-note{margin-top:2.5rem;font-size:0.75rem;color:var(--ink-faint)}
-.soon-note a{color:var(--sage);text-decoration:none}
-.soon-note a:hover{text-decoration:underline}
+.soon-note{margin-top:2.2rem;font-size:0.82rem;color:var(--ink-faint)}
 
-/* DRAFT BAR (only shown to Bruno & Sally while previewing) */
+/* Draft bar: only shown to Bruno & Sally while previewing */
 .draft-bar{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:0.8rem;flex-wrap:wrap;padding:0.7rem 2rem;background:var(--warm);color:#fff;font-size:0.78rem;line-height:1.45}
 .draft-bar-text{flex:1;min-width:200px}
 .draft-bar strong{font-size:0.68rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;margin-right:0.4rem}
 .draft-bar button{padding:0.45rem 0.85rem;background:#fff;color:var(--warm);border:none;border-radius:2px;font-family:"Jost",sans-serif;font-size:0.62rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;white-space:nowrap}
 .draft-bar button:hover{background:var(--warm-bg)}
-@media(max-width:600px){.draft-bar{padding:0.7rem 1.2rem}}
+
+footer{background:var(--ink);color:rgba(255,255,255,0.4);text-align:center;padding:2.5rem 1.5rem;font-size:0.77rem;letter-spacing:0.1em;background-image:url(/images/patterns/sprig-dark-bl.svg),url(/images/patterns/sprig-dark-tr.svg);background-position:left bottom,right top;background-repeat:no-repeat;background-size:clamp(100px,14vw,160px)}
+.ft-name{font-family:"Cormorant Garamond",serif;font-size:1.4rem;font-weight:300;color:rgba(255,255,255,0.8);margin-bottom:0.4rem}
+
+@media(max-width:800px){
+  .steps{grid-template-columns:1fr;gap:1rem;margin-bottom:3rem}
+  .honey{grid-template-columns:1fr;justify-items:center;text-align:center}
+}
+@media(max-width:700px){
+  .section{padding:2rem 0.75rem}
+  .panel{padding:2.4rem 1.3rem}
+  .soon-panel{padding:3rem 1.3rem}
+  .draft-bar{padding:0.7rem 1.2rem}
+  .page-hero{padding:2rem 1.3rem}
+}
 </style>
 </head>
 <body>
 
-<!-- COMING SOON — what guests see until the registry is ready -->
-<div class="hero soon" id="soon">
-  <p class="hero-eyebrow">Bruno &amp; Sally · 18 September 2027</p>
-  <h1>Our <em>registry</em></h1>
-  <div class="soon-badge"><span class="soon-dot"></span>Under construction</div>
-  <p class="hero-sub">We're still putting our gift list together, so there's nothing to see here just yet. We'll let everyone know as soon as it's ready.</p>
-  <p class="hero-sub">In the meantime, your presence at our wedding really is the greatest gift.</p>
-  <button class="soon-preview" id="soon-preview" onclick="showDraft()" hidden>Preview the draft &rarr;</button>
-  <p class="soon-note">Any questions? Drop us a message at <a href="mailto:brunoandsally2027@gmail.com">brunoandsally2027@gmail.com</a></p>
-</div>
-
-<!-- DRAFT — only Bruno & Sally can open this, via the button above -->
-<div id="draft" hidden>
-
-<div class="draft-bar">
+<div class="draft-bar" id="draft-bar" hidden>
   <span class="draft-bar-text"><strong>Draft preview</strong>Only you two can see this. Guests see the &ldquo;under construction&rdquo; page.</span>
   <button onclick="hideDraft()">Back to guest view</button>
 </div>
 
-<!-- HERO -->
-<div class="hero">
-  <p class="hero-eyebrow">Bruno &amp; Sally · 18 September 2027</p>
-  <h1>Our <em>registry</em></h1>
-  <p class="hero-sub">Your presence at our wedding is the greatest gift. But if you'd like to give something, here's what we'd love.</p>
+<div class="page-hero">
+  <div class="page-hero-text">
+    <p>Entirely optional</p>
+    <h1>Registry</h1>
+  </div>
 </div>
 
-<!-- ACTION CARDS -->
-<div class="actions">
-  <div class="action-card">
-    <div class="action-icon sage">
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg>
+<!-- UNDER CONSTRUCTION: what guests see until the registry is ready -->
+<div class="section" id="soon">
+  <div class="panel soon-panel">
+    <div class="soon-badge"><span class="soon-dot"></span>Under construction</div>
+    <h2>We're still putting our list together</h2>
+    <p class="lead">There's nothing to see here just yet. We'll let everyone know as soon as it's ready.</p>
+    <p class="lead">In the meantime, your presence at our wedding really is the greatest gift.</p>
+    <button class="soon-preview" id="soon-preview" onclick="showDraft()" hidden>Preview the draft &rarr;</button>
+    <p class="soon-note">Any questions? Drop us a message at <a href="mailto:brunoandsally2027@gmail.com">brunoandsally2027@gmail.com</a></p>
+  </div>
+</div>
+
+<!-- DRAFT: only Bruno & Sally can open this, via the button above -->
+<div class="section" id="draft" hidden>
+  <div class="panel">
+    <p class="lead">Your presence at our wedding is the greatest gift. But if you'd like to give something, here's what we'd love, and how it works.</p>
+
+    <div class="steps">
+      <div class="step">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="8.5" width="17" height="4" rx="0.5"/><path d="M5 12.5V20h14v-7.5M12 8.5V20"/><path d="M12 8.5C10.5 5.5 7 4.5 6.5 6.5s2.5 2 5.5 2zm0 0c1.5-3 5-4 5.5-2s-2.5 2-5.5 2z"/></svg>
+        <p class="step-num">Step one</p>
+        <h3>Pick something</h3>
+        <p>Tap &ldquo;Give this&rdquo; and it's reserved for you straight away, so nothing gets bought twice.</p>
+      </div>
+      <div class="step">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 7.5 12 3.5l8.5 4v9L12 20.5l-8.5-4z"/><path d="m3.5 7.5 8.5 4 8.5-4M12 11.5v9"/></svg>
+        <p class="step-num">Step two</p>
+        <h3>Buy it, or chip in</h3>
+        <p>Buy it yourself and we'll give you the address to send it to. Or put any amount towards the bigger things by Monzo, and the bar shows how close we are.</p>
+      </div>
+      <div class="step">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="1.5"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/></svg>
+        <p class="step-num">Step three</p>
+        <h3>Leave us a note</h3>
+        <p>Every gift comes with a message, and we'd love one even if you're not giving anything.</p>
+        <button class="step-link" onclick="give(-1)">Just leave a message &rarr;</button>
+      </div>
     </div>
-    <p class="action-eyebrow">Step 1</p>
-    <h3 class="action-title">Choose a gift</h3>
-    <p class="action-desc">We've put together gifts across every budget. Tap "Give this" on anything you'd like to give and it's reserved for you straight away, so no one else buys the same thing. Bigger gifts can be shared: chip in any amount and the bar shows how close we are.</p>
-    <a href="#registry" class="action-btn primary">
-      See the registry
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
-    </a>
-  </div>
-  <div class="action-card">
-    <div class="action-icon sage">
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
-    </div>
-    <p class="action-eyebrow">Step 2</p>
-    <h3 class="action-title">Leave us a message</h3>
-    <p class="action-desc">Every gift comes with a note to us, and we'd love one even without a gift. If you're buying something, we'll give you the address to send it to. If you're chipping in, we'll give you a Monzo link with the amount and reference filled in.</p>
-    <button class="action-btn outline" onclick="give(-1)">
-      Just leave a message
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
-    </button>
-  </div>
-</div>
 
-<!-- REGISTRY -->
-<div class="section" id="registry">
-  <div class="section-header">
-    <h2>Gift list</h2>
-    <span class="meta" id="gift-meta">loading…</span>
-  </div>
-  <div class="tabs">
-    <button class="tab active" onclick="filterCat('all',this)">All</button>
-    <button class="tab" onclick="filterCat('kitchen',this)">Kitchen</button>
-    <button class="tab" onclick="filterCat('home',this)">Home</button>
-    <button class="tab" onclick="filterCat('hosting',this)">Hosting</button>
-    <button class="tab" onclick="filterCat('adventures',this)">Adventures</button>
-    <button class="tab" onclick="filterCat('tech',this)">Tech</button>
-    <button class="tab" onclick="filterCat('art',this)">Art &amp; décor</button>
-    <button class="tab" onclick="filterCat('honeymoon',this)">Honeymoon fund</button>
-  </div>
-  <div class="gift-grid" id="gift-grid"></div>
-  <div class="honey-banner" id="honey-banner" style="display:none">
-    <div class="hb-icon">✈️</div>
-    <div>
-      <h3>Honeymoon fund</h3>
-      <p>Honeymoon gifts are sent by Monzo, straight to our joint account. Tap "Give this", tell us how much, and we'll give you a Monzo link with the amount and reference already filled in.</p>
+    <div id="registry">
+      <div class="list-head">
+        <h2>The list</h2>
+        <span class="list-meta" id="gift-meta">Loading&hellip;</span>
+      </div>
+      <div class="tabs" id="tabs"></div>
+      <div class="gift-grid" id="gift-grid"><p class="grid-note">Loading the list&hellip;</p></div>
+    </div>
+
+    <div class="honey" id="honey" hidden>
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></svg>
+      <div>
+        <h3>The honeymoon fund</h3>
+        <p>Rather put something towards the trip? Tell us how much and we'll give you a Monzo link with the amount and reference already filled in, straight to our joint account.</p>
+      </div>
+      <button class="btn btn-sage" onclick="giveToFund()">Give to the fund</button>
+    </div>
+
+    <div class="help">
+      <strong>Can't buy online?</strong>
+      Or want to give something that isn't here? Drop us a message at <a href="mailto:brunoandsally2027@gmail.com">brunoandsally2027@gmail.com</a> and we'll sort it out.
     </div>
   </div>
 </div>
 
-<div class="registry-footer">
-  Struggling to buy online? Drop us a message at <a href="mailto:brunoandsally2027@gmail.com">brunoandsally2027@gmail.com</a>
-</div>
-
-</div><!-- /draft -->
+<footer><p class="ft-name">Bruno &amp; Sally</p><p>18th September 2027 &middot; Newton Ferrers &amp; Carswell, Devon</p><p style="margin-top:0.7rem;font-size:0.67rem">Made with love, Aperol Spritz, and a lot of games &#x1F9E9;</p></footer>
 
 <script>
 // ── GIFTS ─────────────────────────────────────────────────────────────────────
 // The gift list, and how much of each is covered, come from the website's
 // Google Sheet through its Apps Script web app (SITE_API in /index.html, code
 // in /_backend/registry.gs). Edit gifts in the Sheet, not here.
-var CAT_LABELS = {kitchen:"Kitchen & Cooking",home:"Home & Cosy Living",hosting:"Hosting & Drinks",adventures:"Adventures & Outdoors",tech:"Tech",art:"Art & Décor",honeymoon:"Honeymoon Fund"};
+var CATEGORIES = [
+  {id:'kitchen', tab:'Kitchen', label:'Kitchen & Cooking', icon:'<path d="M4 11h16v5a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M2 11h2M20 11h2M10 3.5c-.8 1 .8 2 0 3M14 3.5c-.8 1 .8 2 0 3"/>'},
+  {id:'home', tab:'Home', label:'Home & Cosy Living', icon:'<path d="M3.5 10.5 12 4l8.5 6.5"/><path d="M5.5 9v11h13V9M10 20v-5.5h4V20"/>'},
+  {id:'hosting', tab:'Hosting', label:'Hosting & Drinks', icon:'<path d="M8 3h8l-.4 5.2a3.6 3.6 0 0 1-7.2 0z"/><path d="M12 11.8V20M8.5 20h7"/>'},
+  {id:'adventures', tab:'Adventures', label:'Adventures & Outdoors', icon:'<path d="m3 19 6-9 3.5 5 2.5-3.5L21 19z"/><circle cx="17" cy="6" r="2"/>'},
+  {id:'tech', tab:'Tech', label:'Tech', icon:'<path d="M4 16v-4a8 8 0 0 1 16 0v4"/><rect x="3.5" y="14" width="4" height="6" rx="1.2"/><rect x="16.5" y="14" width="4" height="6" rx="1.2"/>'},
+  {id:'art', tab:'Art & décor', label:'Art & Décor', icon:'<rect x="4" y="4" width="16" height="16" rx="1"/><path d="m7 17 4-4.5 3 3 2-2 2 3.5"/><circle cx="9.5" cy="9" r="1.3"/>'},
+  {id:'honeymoon', tab:'Honeymoon fund', label:'Honeymoon Fund', icon:'<path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/>'}
+];
+var GIFT_ICON = '<rect x="3.5" y="8.5" width="17" height="4" rx="0.5"/><path d="M5 12.5V20h14v-7.5M12 8.5V20"/><path d="M12 8.5C10.5 5.5 7 4.5 6.5 6.5s2.5 2 5.5 2zm0 0c1.5-3 5-4 5.5-2s-2.5 2-5.5 2z"/>';
 
 var gifts = [];
 var currentCat = 'all';
+
+function category(id){
+  return CATEGORIES.filter(function(c){ return c.id === id; })[0] || {id:id, tab:id, label:id, icon:GIFT_ICON};
+}
 
 function loadGifts(){
   var api = window.parent.SITE_API;
   if(!api || api === 'PASTE_WEB_APP_URL_HERE'){ showNote('The gift list isn’t connected to the Google Sheet yet.'); return; }
   fetch(api, {cache:'no-store'})
     .then(function(r){ return r.json(); })
-    .then(function(data){ gifts = data.gifts || []; renderGifts(currentCat); })
+    .then(function(data){ gifts = data.gifts || []; renderTabs(); renderGifts(currentCat); })
     .catch(function(){ showNote('We couldn’t load the gift list just now. Please refresh the page, or email us.'); });
 }
 
 function showNote(text){
   document.getElementById('gift-meta').textContent = '';
-  document.getElementById('gift-grid').innerHTML = '<p class="gift-note">' + esc(text) + '</p>';
+  document.getElementById('gift-grid').innerHTML = '<p class="grid-note">' + esc(text) + '</p>';
 }
 
 function esc(s){
@@ -240,40 +259,65 @@ function esc(s){
 
 function money(n){ return '£' + (n % 1 ? n.toFixed(2) : n); }
 
+function icon(paths){ return '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">' + paths + '</svg>'; }
+
 // ── RENDER ────────────────────────────────────────────────────────────────────
+// One tab per category that has gifts showing, with a count.
+function renderTabs(){
+  var tabs = [{id:'all', tab:'All', n:gifts.length}];
+  CATEGORIES.forEach(function(c){
+    var n = gifts.filter(function(g){ return g.category === c.id; }).length;
+    if(n) tabs.push({id:c.id, tab:c.tab, n:n});
+  });
+  if(!tabs.some(function(t){ return t.id === currentCat; })) currentCat = 'all';
+  document.getElementById('tabs').innerHTML = tabs.map(function(t){
+    return '<button class="tab' + (t.id === currentCat ? ' active' : '') + '" onclick="filterCat(\'' + t.id + '\',this)">'
+      + esc(t.tab) + '<span>' + t.n + '</span></button>';
+  }).join('');
+  document.getElementById('honey').hidden = !gifts.some(function(g){ return g.category === 'honeymoon'; });
+}
+
 function renderGifts(cat){
   var list = cat === 'all' ? gifts : gifts.filter(function(g){ return g.category === cat; });
-  var gifted = list.filter(function(g){ return g.full; }).length;
-  document.getElementById('gift-meta').textContent = list.length + ' gifts' + (gifted ? ' · ' + gifted + ' gifted' : '');
-  document.getElementById('honey-banner').style.display = list.some(function(g){ return g.category === 'honeymoon'; }) ? 'flex' : 'none';
+  // Gifts that are already covered sink to the end
+  list = list.slice().sort(function(a, b){ return a.full - b.full; });
+  var given = list.filter(function(g){ return g.full; }).length;
+  document.getElementById('gift-meta').textContent = list.length + (list.length === 1 ? ' gift' : ' gifts') + (given ? ' · ' + given + ' given' : '');
+  if(!list.length){ showNote('Nothing here yet.'); return; }
 
   document.getElementById('gift-grid').innerHTML = list.map(function(g){
-    var shop = g.link && g.mode !== 'chip' && /^https?:\/\//.test(g.link)
+    var c = category(g.category);
+    var shop = !g.full && g.link && g.mode !== 'chip' && /^https?:\/\//.test(g.link)
       ? '<a href="' + esc(g.link) + '" target="_blank" rel="noopener" class="gift-link">View <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" width="10" height="10"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg></a>'
       : '';
-    var giveBtn = g.full ? '' : '<button class="gift-select-btn" onclick="give(' + gifts.indexOf(g) + ')">Give this</button>';
-    return '<div class="gift-card' + (g.full ? ' claimed' : '') + '">'
-      + (g.full ? '<span class="gift-claimed-badge">Gifted</span>' : '')
-      + '<p class="gift-cat">' + esc(CAT_LABELS[g.category] || g.category) + '</p>'
+    var action = g.full
+      ? '<span class="gift-gifted">Gifted &hearts;</span>'
+      : '<button class="gift-select-btn" onclick="give(' + gifts.indexOf(g) + ')">Give this</button>';
+    return '<div class="gift-card' + (g.full ? ' gifted' : '') + '">'
+      + '<div class="gift-body">'
+      + '<div class="gift-top">' + icon(c.icon) + '<p class="gift-cat">' + esc(c.label) + '</p></div>'
       + '<h3 class="gift-name">' + esc(g.name) + '</h3>'
-      + '<p class="gift-brand">' + esc(g.brand) + '</p>'
+      + (g.brand && g.brand !== 'Monzo' ? '<p class="gift-brand">' + esc(g.brand) + '</p>' : '')
       + '<p class="gift-desc">' + esc(g.description) + '</p>'
       + (g.note ? '<p class="gift-note-line">' + esc(g.note) + '</p>' : '')
       + giftProgress(g)
+      + '</div>'
       + '<div class="gift-footer">'
       + '<span class="gift-price">' + esc(g.target === null ? 'Any amount' : g.price || money(g.target)) + '</span>'
-      + '<div class="gift-actions">' + giveBtn + shop + '</div>'
+      + '<div class="gift-actions">' + shop + action + '</div>'
       + '</div></div>';
   }).join('');
 }
 
-// Shared gifts show how far along they are, as a percentage only.
+// Shared gifts show how far along they are, as a percentage only. The bar
+// appears once someone has chipped in.
 function giftProgress(g){
-  if(g.full || g.mode === 'buy' || g.target === null) return '';
-  var text = g.started ? g.pct + '% covered · ' + money(g.left) + ' to go'
-    : g.mode === 'either' ? 'Buy it, or chip in with others' : 'Chip in any amount';
-  return '<div class="gift-progress"><div class="gift-bar"><span style="width:' + g.pct + '%"></span></div>'
-    + '<p class="gift-status">' + text + '</p></div>';
+  if(g.full || g.mode === 'buy') return '';
+  if(g.started && g.target !== null){
+    return '<div class="gift-progress"><div class="gift-bar"><span style="width:' + g.pct + '%"></span></div>'
+      + '<p class="gift-status">' + g.pct + '% covered · ' + money(g.left) + ' to go</p></div>';
+  }
+  return '<p class="gift-share">' + (g.mode === 'either' ? 'Buy it, or chip in with others' : 'Chip in any amount') + '</p>';
 }
 
 function filterCat(cat, btn){
@@ -287,6 +331,16 @@ function filterCat(cat, btn){
 // -1 opens it for a message without a gift.
 function give(i){
   window.parent.regOpenModal(gifts[i] || null);
+}
+
+// The honeymoon box gives to the open honeymoon fund if there is one, or else
+// shows the honeymoon gifts.
+function giveToFund(){
+  var fund = gifts.filter(function(g){ return g.category === 'honeymoon' && g.target === null && !g.full; })[0];
+  if(fund) return give(gifts.indexOf(fund));
+  var tab = [].filter.call(document.querySelectorAll('.tab'), function(t){ return t.getAttribute('onclick').indexOf("'honeymoon'") > -1; })[0];
+  if(tab) filterCat('honeymoon', tab);
+  document.getElementById('registry').scrollIntoView({behavior:'smooth'});
 }
 
 // The shell tells us when someone has given, so the bars catch up.
@@ -314,6 +368,7 @@ function canPreviewDraft(){
 function showDraft(){
   document.getElementById('soon').hidden = true;
   document.getElementById('draft').hidden = false;
+  document.getElementById('draft-bar').hidden = false;
   try { sessionStorage.setItem(DRAFT_KEY, '1'); } catch(e){}
   if(!draftLoaded){ draftLoaded = true; loadGifts(); }
   window.scrollTo(0, 0);
@@ -321,6 +376,7 @@ function showDraft(){
 
 function hideDraft(){
   document.getElementById('draft').hidden = true;
+  document.getElementById('draft-bar').hidden = true;
   document.getElementById('soon').hidden = false;
   try { sessionStorage.removeItem(DRAFT_KEY); } catch(e){}
   window.scrollTo(0, 0);
