@@ -315,6 +315,12 @@ body{display:flex;flex-direction:column;background:var(--cream)}
 .rm-success .rm-after{margin-top:0.9rem;font-size:0.75rem;color:#9C9A94}
 .rm-shop{display:inline-block;margin-top:1.1rem;font-size:0.68rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#5C7A5C;text-decoration:none}
 .rm-shop:hover{text-decoration:underline}
+.rm-note-label{margin-top:1.1rem}
+.rm-note-text{font-family:"Cormorant Garamond",serif;font-size:1.2rem;font-style:italic;color:#2C2C2A;line-height:1.45}
+.rm-arrive{margin-top:1.5rem;padding-top:1.3rem;border-top:1px solid rgba(44,44,42,0.1)}
+.rm-arrive p:first-child{font-size:0.85rem;color:#5C5A56;line-height:1.6}
+.rm-arrive .rm-hint{margin-top:0.6rem}
+.rm-delivery-intro{font-size:0.88rem;color:#5C5A56;line-height:1.6}
 @media(max-width:600px){.rm-header,.rm-body{padding-left:1.4rem;padding-right:1.4rem}.rm-chip{margin-left:1.4rem;margin-right:1.4rem}}
 </style>
 </head>
@@ -346,6 +352,7 @@ body{display:flex;flex-direction:column;background:var(--cream)}
     <input class="gate-input" id="name-input" type="text"
       placeholder="e.g. Jane Smith"
       autocomplete="name"
+      oninput="nameTyped()"
       onkeydown="if(event.key==='Enter')checkName()"/>
     <button class="gate-btn" id="name-btn" onclick="checkName()">Find my invitation</button>
     <p class="gate-err" id="name-err"></p>
@@ -463,6 +470,42 @@ function lookupGuest(name) {
     .then(function(data) { return data.guest; });
 }
 
+// The name gate starts checking once a first name and surname are typed and
+// the guest pauses, so the answer is usually back before they press the button.
+var pendingLookup = {name: '', promise: null};
+var typingTimer = null;
+
+function normaliseName(s) {
+  return s.trim().toLowerCase().replace(/\s+/g, ' ');
+}
+
+function lookupGuestOnce(name) {
+  var key = normaliseName(name);
+  if (pendingLookup.name !== key || !pendingLookup.promise) {
+    var promise = lookupGuest(name);
+    pendingLookup = {name: key, promise: promise};
+    promise.catch(function() { if (pendingLookup.promise === promise) pendingLookup.promise = null; });
+  }
+  return pendingLookup.promise;
+}
+
+function nameTyped() {
+  clearTimeout(typingTimer);
+  var val = document.getElementById('name-input').value;
+  if (normaliseName(val).split(' ').length < 2) return;
+  typingTimer = setTimeout(function() { lookupGuestOnce(val); }, 350);
+}
+
+// The registry's gift list, fetched in the background once someone is in the
+// site, so the Registry page can show it straight away. Used once, then fresh.
+var giftsPrefetch = null;
+
+function prefetchGifts() {
+  var promise = fetch(SITE_API).then(function(r) { return r.json(); });
+  giftsPrefetch = {at: Date.now(), promise: promise};
+  promise.catch(function() { if (giftsPrefetch && giftsPrefetch.promise === promise) giftsPrefetch = null; });
+}
+
 // ── Name gate logic ───────────────────────────────────────
 function trackNameAttempt(name, result) {
   try {
@@ -496,7 +539,8 @@ function checkName() {
   btn.disabled = true; btn.textContent = 'Checking\u2026';
   function done() { btn.disabled = false; btn.textContent = 'Find my invitation'; }
 
-  lookupGuest(val).then(function(guest) {
+  clearTimeout(typingTimer);
+  lookupGuestOnce(val).then(function(guest) {
     done();
     if (guest) {
       trackNameAttempt(val, 'found');
@@ -552,6 +596,7 @@ function showResult(guest) {
 
 function unlockSite() {
   logActivity(currentPage);
+  prefetchGifts();
   document.getElementById('name-gate').classList.add('hidden');
   document.getElementById('nav').style.visibility = '';
   document.getElementById('content-frame').style.visibility = '';
@@ -584,6 +629,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('nav').style.visibility = '';
     document.getElementById('content-frame').style.visibility = '';
     document.getElementById('spotify-toggle').style.visibility = '';
+    prefetchGifts();
   } else {
     // Hide site until authenticated
     document.getElementById('nav').style.visibility = 'hidden';
@@ -719,11 +765,35 @@ logActivity(initPage);
         <p class="rm-label">Please send it to</p>
         <p id="rm-address-text" class="rm-address-text"></p>
         <button class="rm-copy" id="rm-copy" onclick="regCopyAddress()">Copy address</button>
+        <div id="rm-note" style="display:none">
+          <p class="rm-label rm-note-label">Delivery note for your order</p>
+          <p id="rm-note-text" class="rm-note-text"></p>
+        </div>
         <p class="rm-hint">This is a family home, so please keep the address to yourself.</p>
       </div>
       <a id="rm-pay" class="rm-pay" target="_blank" rel="noopener" style="display:none"></a>
       <p id="rm-pay-after" class="rm-after" style="display:none">Your gift already counts towards the total, so please send it soon.</p>
       <a id="rm-shop" class="rm-shop" target="_blank" rel="noopener" style="display:none">Go to the shop &rarr;</a>
+      <div id="rm-arrive" class="rm-arrive" style="display:none">
+        <p>Once you've ordered, tell us when it's due so someone's in to take it.</p>
+        <button class="rm-copy" onclick="regOpenDelivery(rmMine)">Add the delivery date</button>
+        <p class="rm-hint">Or do it later: the gift will show &ldquo;Add delivery date&rdquo; on the registry.</p>
+      </div>
+    </div>
+    <div id="rm-delivery" class="rm-body" style="display:none">
+      <p class="rm-delivery-intro">When is it due to arrive? We'll let them know at the address so someone's in to take it.</p>
+      <div class="rm-field">
+        <label class="rm-label" for="rm-date">Expected delivery date <span>*</span></label>
+        <input class="rm-input" id="rm-date" type="date"/>
+        <p class="rm-hint">You can change it here later if the date moves.</p>
+      </div>
+      <div id="rm-delivery-error" class="rm-error" style="display:none"></div>
+      <button class="rm-submit" id="rm-delivery-submit" onclick="regSaveDelivery()">Save the date &rarr;</button>
+    </div>
+    <div id="rm-delivery-done" class="rm-success" style="display:none">
+      <div class="rm-success-icon">&#x1F4E6;</div>
+      <h3>Thank you!</h3>
+      <p id="rm-delivery-done-msg"></p>
     </div>
   </div>
 </div>
@@ -734,11 +804,29 @@ logActivity(initPage);
 // the registry page reads the gift list from it too. The delivery address only
 // comes back to a guest who has just reserved a gift to buy.
 var rmGift = null;  // the gift the modal is open for, or null for just a message
+var rmMine = '';    // id of the gift this guest has just reserved, for its delivery date
+var MY_GIFTS_KEY = 'bs_my_gifts';  // {giftId: {key, name, date}} for gifts bought on this device
+
+// Shows one part of the modal: the form, a thank-you, or the delivery date
+function regView(id) {
+  ['rm-form', 'rm-success', 'rm-delivery', 'rm-delivery-done'].forEach(function(v) {
+    document.getElementById(v).style.display = v === id ? (v === 'rm-form' || v === 'rm-delivery' ? 'flex' : 'block') : 'none';
+  });
+}
+
+function regMyGifts() {
+  try { return JSON.parse(localStorage.getItem(MY_GIFTS_KEY)) || {}; } catch(e) { return {}; }
+}
+
+function regSaveMine(giftId, entry) {
+  var mine = regMyGifts();
+  mine[giftId] = entry;
+  try { localStorage.setItem(MY_GIFTS_KEY, JSON.stringify(mine)); } catch(e) {}
+}
 
 function regOpenModal(gift) {
   rmGift = gift || null;
-  document.getElementById('rm-form').style.display = 'flex';
-  document.getElementById('rm-success').style.display = 'none';
+  regView('rm-form');
   document.getElementById('rm-error').style.display = 'none';
   document.getElementById('rm-email').value = '';
   document.getElementById('rm-message').value = '';
@@ -856,14 +944,13 @@ function regSubmit() {
     })
     .catch(function() {
       regUpdateKind(); btn.disabled = false;
-      fail('Something went wrong — please try again or email us directly.');
+      fail('Something went wrong — please try again, or message either of us.');
     });
 }
 
 function regShowSuccess(res) {
-  document.getElementById('rm-form').style.display = 'none';
+  regView('rm-success');
   document.getElementById('rm-chip').style.display = 'none';
-  document.getElementById('rm-success').style.display = 'block';
   var title = document.getElementById('rm-success-title');
   var msg = document.getElementById('rm-success-msg');
   var address = document.getElementById('rm-address');
@@ -871,6 +958,7 @@ function regShowSuccess(res) {
   var shop = document.getElementById('rm-shop');
   address.style.display = pay.style.display = shop.style.display = 'none';
   document.getElementById('rm-pay-after').style.display = 'none';
+  document.getElementById('rm-arrive').style.display = 'none';
 
   if (res.kind === 'buy') {
     title.textContent = 'It\'s all yours to give';
@@ -880,9 +968,16 @@ function regShowSuccess(res) {
       document.getElementById('rm-copy').textContent = 'Copy address';
       address.style.display = 'block';
     } else {
-      msg.textContent += ' Drop us a line at brunoandsally2027@gmail.com and we\'ll send you the address to post it to.';
+      msg.textContent += ' Message either of us and we\'ll send you the address to post it to.';
     }
+    document.getElementById('rm-note-text').textContent = res.deliveryNote || '';
+    document.getElementById('rm-note').style.display = res.deliveryNote ? 'block' : 'none';
     if (/^https?:\/\//.test(res.link || '')) { shop.href = res.link; shop.style.display = 'inline-block'; }
+    if (res.key) {
+      rmMine = res.giftId;
+      regSaveMine(res.giftId, {key: res.key, name: res.gift, date: ''});
+      document.getElementById('rm-arrive').style.display = 'block';
+    }
   } else if (res.kind === 'chip') {
     title.textContent = 'Thank you so much!';
     msg.textContent = 'We\'ve put your ' + regMoney(res.amount) + ' towards the ' + res.gift + '. The Monzo link below has the amount and reference already filled in.';
@@ -901,6 +996,56 @@ function regCopyAddress() {
   navigator.clipboard.writeText(text).then(function() {
     document.getElementById('rm-copy').textContent = 'Copied';
   }, function() {});
+}
+
+// The delivery date form, for a gift this guest bought on this device. Opened
+// from the thank-you screen, or later from the gift's card on the registry.
+function regOpenDelivery(giftId) {
+  var mine = regMyGifts()[giftId];
+  if (!mine) return;
+  rmMine = giftId;
+  regView('rm-delivery');
+  document.getElementById('rm-title').innerHTML = 'When will it <em>arrive</em>?';
+  var chip = document.getElementById('rm-chip');
+  chip.style.display = 'block';
+  chip.innerHTML = '';
+  var strong = document.createElement('strong');
+  strong.textContent = mine.name;
+  chip.appendChild(strong);
+  var date = document.getElementById('rm-date');
+  date.min = new Date().toISOString().slice(0, 10);
+  date.value = mine.date || '';
+  document.getElementById('rm-delivery-error').style.display = 'none';
+  var btn = document.getElementById('rm-delivery-submit');
+  btn.disabled = false; btn.textContent = 'Save the date \u2192';
+  document.getElementById('reg-modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function regSaveDelivery() {
+  var mine = regMyGifts()[rmMine];
+  var date = document.getElementById('rm-date').value;
+  var errEl = document.getElementById('rm-delivery-error');
+  errEl.style.display = 'none';
+  function fail(text) { errEl.textContent = text; errEl.style.display = 'block'; btn.disabled = false; btn.textContent = 'Save the date \u2192'; }
+  var btn = document.getElementById('rm-delivery-submit');
+  if (!date) return fail('Please choose the date it\'s due to arrive.');
+  var guest = '';
+  try { guest = JSON.parse(localStorage.getItem(AUTH_KEY)).name; } catch(e) {}
+  btn.disabled = true; btn.textContent = 'Saving\u2026';
+  fetch(SITE_API, {method: 'POST', body: JSON.stringify({guest: guest, kind: 'delivery', key: mine.key, date: date})})
+    .then(function(r) { return r.json(); })
+    .then(function(res) {
+      if (!res.ok) return fail(res.error);
+      mine.date = date;
+      regSaveMine(rmMine, mine);
+      document.getElementById('rm-chip').style.display = 'none';
+      document.getElementById('rm-delivery-done-msg').textContent = 'We\'ve let them know the ' + mine.name + ' is due on '
+        + new Date(date + 'T12:00').toLocaleDateString('en-GB', {weekday: 'long', day: 'numeric', month: 'long'}) + '.';
+      regView('rm-delivery-done');
+      regRefreshList();
+    })
+    .catch(function() { fail('Something went wrong — please try again, or message either of us.'); });
 }
 
 // Tell the registry page to reload the gift list so the bars catch up

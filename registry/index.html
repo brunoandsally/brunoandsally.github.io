@@ -89,6 +89,9 @@ h2{font-family:"Cormorant Garamond",serif;font-weight:300;font-size:clamp(1.9rem
 .gift-card.gifted{background:transparent;box-shadow:none;transform:none}
 .gift-card.gifted .gift-body,.gift-card.gifted .gift-price{opacity:0.45}
 .gift-gifted{font-family:"Cormorant Garamond",serif;font-size:1.05rem;font-style:italic;color:var(--sage);white-space:nowrap}
+.gift-card.mine{border-color:var(--sage-light);box-shadow:inset 3px 0 0 var(--sage)}
+.gift-date-btn{padding:0.5rem 0.9rem;background:transparent;color:var(--sage);border:1.5px solid var(--sage);border-radius:1px;font-family:"Jost",sans-serif;font-size:0.6rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;white-space:nowrap;cursor:pointer;transition:all 0.2s}
+.gift-date-btn:hover{background:var(--sage);color:#fff}
 .grid-note{grid-column:1/-1;padding:3rem 1.5rem;text-align:center;font-size:0.9rem;color:var(--ink-soft)}
 
 /* Honeymoon fund, and the note for anyone stuck */
@@ -98,8 +101,8 @@ h2{font-family:"Cormorant Garamond",serif;font-weight:300;font-size:clamp(1.9rem
 .honey p{font-size:0.9rem;color:var(--ink-soft);margin-top:0.35rem;line-height:1.65}
 .help{margin-top:1.5rem;padding:1.4rem 1.5rem;background:var(--stone);border-radius:2px;font-size:0.9rem;color:var(--ink-soft)}
 .help strong{display:block;font-size:0.72rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--warm);margin-bottom:0.3rem}
-.help a,.soon-note a{color:var(--sage);font-weight:500;text-decoration:none}
-.help a:hover,.soon-note a:hover{text-decoration:underline}
+.help-link{background:none;border:none;padding:0;cursor:pointer;font:inherit;color:var(--sage);font-weight:500}
+.help-link:hover{text-decoration:underline}
 
 /* Under construction: what guests see until the list is ready */
 .soon-panel{max-width:760px;text-align:center;padding:4rem 3rem}
@@ -156,7 +159,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.4);text-align:center;paddi
     <p class="lead">There's nothing to see here just yet. We'll let everyone know as soon as it's ready.</p>
     <p class="lead">In the meantime, your presence at our wedding really is the greatest gift.</p>
     <button class="soon-preview" id="soon-preview" onclick="showDraft()" hidden>Preview the draft &rarr;</button>
-    <p class="soon-note">Any questions? Drop us a message at <a href="mailto:brunoandsally2027@gmail.com">brunoandsally2027@gmail.com</a></p>
+    <p class="soon-note">Any questions? Just ask either of us.</p>
   </div>
 </div>
 
@@ -207,7 +210,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.4);text-align:center;paddi
 
     <div class="help">
       <strong>Can't buy online?</strong>
-      Or want to give something that isn't here? Drop us a message at <a href="mailto:brunoandsally2027@gmail.com">brunoandsally2027@gmail.com</a> and we'll sort it out.
+      Or want to give something that isn't here? <button class="help-link" onclick="give(-1)">Leave us a message</button> and we'll sort it out.
     </div>
   </div>
 </div>
@@ -237,13 +240,38 @@ function category(id){
   return CATEGORIES.filter(function(c){ return c.id === id; })[0] || {id:id, tab:id, label:id, icon:GIFT_ICON};
 }
 
+// Shows the copy of the list this browser saw last straight away, then the
+// fresh one: from the shell's background fetch if it's recent, or a new fetch.
+var GIFTS_CACHE_KEY = 'bs_gifts';
+
 function loadGifts(){
   var api = window.parent.SITE_API;
-  if(!api || api === 'PASTE_WEB_APP_URL_HERE'){ showNote('The gift list isn’t connected to the Google Sheet yet.'); return; }
-  fetch(api, {cache:'no-store'})
-    .then(function(r){ return r.json(); })
-    .then(function(data){ gifts = data.gifts || []; renderTabs(); renderGifts(currentCat); })
-    .catch(function(){ showNote('We couldn’t load the gift list just now. Please refresh the page, or email us.'); });
+  if(!gifts.length){
+    try {
+      var saved = JSON.parse(localStorage.getItem(GIFTS_CACHE_KEY));
+      if(saved && saved.length){ gifts = saved; renderTabs(); renderGifts(currentCat); }
+    } catch(e){}
+  }
+  var pre = window.parent.giftsPrefetch;
+  window.parent.giftsPrefetch = null;
+  var fresh = pre && Date.now() - pre.at < 60000 ? pre.promise
+    : fetch(api, {cache:'no-store'}).then(function(r){ return r.json(); });
+  fresh
+    .then(function(data){
+      gifts = data.gifts || [];
+      try { localStorage.setItem(GIFTS_CACHE_KEY, JSON.stringify(gifts)); } catch(e){}
+      renderTabs(); renderGifts(currentCat);
+    })
+    .catch(function(){ if(!gifts.length) showNote('We couldn’t load the gift list just now. Please refresh the page.'); });
+}
+
+// Gifts this guest reserved to buy on this device, so they can add a delivery date
+function myGifts(){
+  try { return window.parent.regMyGifts(); } catch(e){ return {}; }
+}
+
+function shortDate(iso){
+  return new Date(iso + 'T12:00').toLocaleDateString('en-GB', {weekday:'short', day:'numeric', month:'short'});
 }
 
 function showNote(text){
@@ -279,21 +307,29 @@ function renderTabs(){
 
 function renderGifts(cat){
   var list = cat === 'all' ? gifts : gifts.filter(function(g){ return g.category === cat; });
-  // Gifts that are already covered sink to the end
-  list = list.slice().sort(function(a, b){ return a.full - b.full; });
+  var mine = myGifts();
+  // Gifts you're giving come first; others' covered gifts sink to the end
+  function rank(g){ return g.full ? (mine[g.id] ? 0 : 2) : 1; }
+  list = list.slice().sort(function(a, b){ return rank(a) - rank(b); });
   var given = list.filter(function(g){ return g.full; }).length;
   document.getElementById('gift-meta').textContent = list.length + (list.length === 1 ? ' gift' : ' gifts') + (given ? ' · ' + given + ' given' : '');
   if(!list.length){ showNote('Nothing here yet.'); return; }
 
   document.getElementById('gift-grid').innerHTML = list.map(function(g){
     var c = category(g.category);
+    var my = g.full && mine[g.id];
     var shop = !g.full && g.link && g.mode !== 'chip' && /^https?:\/\//.test(g.link)
       ? '<a href="' + esc(g.link) + '" target="_blank" rel="noopener" class="gift-link">View <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" width="10" height="10"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg></a>'
       : '';
-    var action = g.full
+    var action = my
+      ? '<button class="gift-date-btn" data-gift="' + esc(g.id) + '" onclick="window.parent.regOpenDelivery(this.dataset.gift)">'
+        + (my.date ? 'Due ' + esc(shortDate(my.date)) : 'Add delivery date') + '</button>'
+      : g.full
       ? '<span class="gift-gifted">Gifted &hearts;</span>'
       : '<button class="gift-select-btn" onclick="give(' + gifts.indexOf(g) + ')">Give this</button>';
-    return '<div class="gift-card' + (g.full ? ' gifted' : '') + '">'
+    var price = my ? '<span class="gift-gifted">You&rsquo;re giving this</span>'
+      : '<span class="gift-price">' + esc(g.target === null ? 'Any amount' : g.price || money(g.target)) + '</span>';
+    return '<div class="gift-card' + (my ? ' mine' : g.full ? ' gifted' : '') + '">'
       + '<div class="gift-body">'
       + '<div class="gift-top">' + icon(c.icon) + '<p class="gift-cat">' + esc(c.label) + '</p></div>'
       + '<h3 class="gift-name">' + esc(g.name) + '</h3>'
@@ -303,7 +339,7 @@ function renderGifts(cat){
       + giftProgress(g)
       + '</div>'
       + '<div class="gift-footer">'
-      + '<span class="gift-price">' + esc(g.target === null ? 'Any amount' : g.price || money(g.target)) + '</span>'
+      + price
       + '<div class="gift-actions">' + shop + action + '</div>'
       + '</div></div>';
   }).join('');

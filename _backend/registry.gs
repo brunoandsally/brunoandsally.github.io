@@ -16,6 +16,12 @@
 // guest list itself, or anyone's contact details or messages. The delivery
 // address is sent only to a guest who has just reserved a gift to buy.
 //
+// Guests who buy a gift can say when it will arrive; the people in "Parents'
+// email" (Settings) get an email then, and a round-up every Monday morning.
+//
+// The gift and guest lists are kept in Google's cache for a few minutes so the
+// site loads quickly. Any edit to the Sheet, or anything a guest sends, clears it.
+//
 // Setup: in the Sheet, Extensions → Apps Script, paste this file, run setup()
 // once, then Deploy → New deployment → Web app, execute as Me, access Anyone.
 // Put the /exec URL in SITE_API in index.html.
@@ -30,9 +36,12 @@ var CONTRIBUTIONS = 'Contributions';
 var GUESTS = 'Guests';
 var SETTINGS = 'Settings';
 var DELIVERY_ADDRESS = 'Delivery address';
+var DELIVERY_NOTE = 'Delivery instructions';
+var PARENTS_EMAIL = "Parents' email";
+var CACHE_SECONDS = 300;
 
 var GIFT_HEADERS = ['id', 'name', 'category', 'brand', 'description', 'price', 'target', 'mode', 'link', 'show', 'guest note', 'our notes', 'given so far', 'reserved to buy'];
-var CONTRIBUTION_HEADERS = ['When', 'From', 'Guest', 'Gift', 'Gift id', 'Type', 'Amount', 'Monzo reference', 'Contact', 'Message', 'Received', 'Thanked', 'Notes'];
+var CONTRIBUTION_HEADERS = ['When', 'From', 'Guest', 'Gift', 'Gift id', 'Type', 'Amount', 'Monzo reference', 'Contact', 'Message', 'Received', 'Thanked', 'Notes', 'Expected delivery', 'Delivery key'];
 var GUEST_HEADERS = ['Name', 'Invite'];
 var TYPE = {buy: 'Buying it', chip: 'Chipping in', message: 'Message only'};
 var CATEGORIES = ['kitchen', 'home', 'hosting', 'adventures', 'tech', 'art', 'honeymoon'];
@@ -48,7 +57,7 @@ function doGet(e) {
   if (e && e.parameter && 'guest' in e.parameter) {
     return json_({guest: findGuest_(e.parameter.guest)});
   }
-  return json_({gifts: gifts_().map(publicGift_)});
+  return json_({gifts: cached_('gifts', function () { return gifts_().map(publicGift_); })});
 }
 
 function doPost(e) {
@@ -62,7 +71,7 @@ function doPost(e) {
     return json_(give_(JSON.parse(e.postData.contents)));
   } catch (err) {
     console.error(err);
-    return json_({ok: false, error: 'Something went wrong. Please try again, or email us directly.'});
+    return json_({ok: false, error: 'Something went wrong. Please try again, or message either of us.'});
   } finally {
     lock.releaseLock();
   }
@@ -75,13 +84,14 @@ function give_(req) {
   if (!guest) {
     return {ok: false, error: 'We couldn’t match you to the guest list. Please sign in again with your name as it appears on your invitation.'};
   }
+  if (req.kind === 'delivery') return setDelivery_(req.key, req.date);
   var from = clean_(req.name, 100) || guest.name;
   var contact = clean_(req.contact, 200);
   var message = clean_(req.message, 2000);
   if (!message) return {ok: false, error: 'Please leave us a message, even a short one!'};
 
   if (req.kind === 'message') {
-    record_([new Date(), from, guest.name, '', '', TYPE.message, '', '', contact, message]);
+    record_({'When': new Date(), 'From': from, 'Guest': guest.name, 'Type': TYPE.message, 'Contact': contact, 'Message': message});
     return {ok: true, kind: 'message'};
   }
 
@@ -94,8 +104,13 @@ function give_(req) {
     if (gift.covered > 0) {
       return {ok: false, error: 'Others have already chipped in to this one, so it can’t be bought whole any more. You can still chip in.', refresh: true};
     }
-    record_([new Date(), from, guest.name, gift.name, gift.id, TYPE.buy, '', '', contact, message]);
-    return {ok: true, kind: 'buy', gift: gift.name, link: gift.link, address: setting_(DELIVERY_ADDRESS)};
+    var key = Utilities.getUuid();
+    record_({'When': new Date(), 'From': from, 'Guest': guest.name, 'Gift': gift.name, 'Gift id': gift.id, 'Type': TYPE.buy,
+             'Contact': contact, 'Message': message, 'Delivery key': key});
+    return {
+      ok: true, kind: 'buy', gift: gift.name, giftId: gift.id, link: gift.link, key: key,
+      address: setting_(DELIVERY_ADDRESS), deliveryNote: setting_(DELIVERY_NOTE)
+    };
   }
 
   if (req.kind === 'chip') {
@@ -107,14 +122,92 @@ function give_(req) {
       return {ok: false, error: 'Only £' + money_(left) + ' is still needed for this one. Could you make it £' + money_(left) + ' or less?', refresh: true};
     }
     var reference = (gift.name + ' from ' + from).slice(0, 60);
-    record_([new Date(), from, guest.name, gift.name, gift.id, TYPE.chip, amount, reference, contact, message]);
+    record_({'When': new Date(), 'From': from, 'Guest': guest.name, 'Gift': gift.name, 'Gift id': gift.id, 'Type': TYPE.chip,
+             'Amount': amount, 'Monzo reference': reference, 'Contact': contact, 'Message': message});
     return {
       ok: true, kind: 'chip', gift: gift.name, amount: amount, reference: reference,
       monzo: MONZO_URL + '/' + amount.toFixed(2) + '?' + MONZO_QUERY + '&d=' + encodeURIComponent(reference)
     };
   }
 
-  return {ok: false, error: 'Something went wrong. Please try again, or email us directly.'};
+  return {ok: false, error: 'Something went wrong. Please try again, or message either of us.'};
+}
+
+// ── DELIVERIES ────────────────────────────────────────────────────────────────
+
+// Saves when a bought gift is due, for the row the guest's delivery key points
+// to, and emails the parents. The key was handed back when they reserved it, so
+// only the guest who bought it can set the date.
+function setDelivery_(key, date) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(date))) return {ok: false, error: 'Please choose the date it’s due to arrive.'};
+  var sheet = sheet_(CONTRIBUTIONS);
+  var values = sheet.getDataRange().getValues();
+  var head = values[0];
+  var keyCol = head.indexOf('Delivery key'), dateCol = head.indexOf('Expected delivery');
+  for (var i = 1; i < values.length; i++) {
+    if (!key || values[i][keyCol] !== key) continue;
+    var p = date.split('-');
+    var due = new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
+    sheet.getRange(i + 1, dateCol + 1).setValue(due);
+    SpreadsheetApp.flush();
+    var row = {};
+    head.forEach(function (h, j) { row[h] = values[i][j]; });
+    var note = setting_(DELIVERY_NOTE);
+    emailParents_('Wedding gift arriving ' + day_(due) + ': ' + row['Gift'], [
+      'Hi,',
+      '',
+      row['From'] + ' has bought the ' + row['Gift'] + ' for Bruno & Sally, and it’s due to arrive on ' + day_(due) + '.',
+      note ? '\nThey were asked to add this delivery note: “' + note + '”' : '',
+      '',
+      'Every Monday morning you’ll also get a list of what’s due that fortnight.',
+      '',
+      'Thank you so much for taking these in!',
+      'Bruno & Sally'
+    ]);
+    return {ok: true, kind: 'delivery', date: date};
+  }
+  return {ok: false, error: 'We couldn’t find that gift. Please message either of us with the date instead.'};
+}
+
+// Runs every Monday morning (set up by setup()): emails the parents a list of
+// bought gifts not yet ticked as Received, due in the next fortnight or not
+// yet dated.
+function weeklyDeliveries() {
+  var today = new Date();
+  today.setHours(0, 0, 0, 0);
+  var horizon = new Date(today.getTime() + 14 * 864e5);
+  var waiting = rows_(CONTRIBUTIONS).filter(function (r) { return r['Type'] === TYPE.buy && r['Received'] !== true; });
+  var due = waiting.filter(function (r) { var d = r['Expected delivery']; return d instanceof Date && d >= today && d <= horizon; })
+    .sort(function (a, b) { return a['Expected delivery'] - b['Expected delivery']; });
+  var undated = waiting.filter(function (r) { return !(r['Expected delivery'] instanceof Date); });
+  if (!due.length && !undated.length) return;
+  var lines = ['Hi,', ''];
+  if (due.length) {
+    lines.push('Wedding gifts due in the next fortnight:');
+    due.forEach(function (r) { lines.push('• ' + day_(r['Expected delivery']) + ': ' + r['Gift'] + ', from ' + r['From']); });
+    lines.push('');
+  }
+  if (undated.length) {
+    lines.push('On their way, no date yet:');
+    undated.forEach(function (r) { lines.push('• ' + r['Gift'] + ', from ' + r['From']); });
+    lines.push('');
+  }
+  lines.push('Thank you!', 'Bruno & Sally');
+  emailParents_('Wedding gifts due ' + (due.length ? 'from ' + day_(due[0]['Expected delivery']) : 'soon'), lines);
+}
+
+function emailParents_(subject, lines) {
+  var to = setting_(PARENTS_EMAIL);
+  if (!to) return;
+  try {
+    MailApp.sendEmail({to: to, subject: subject, body: lines.join('\n'), name: 'Bruno & Sally'});
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+function day_(d) {
+  return Utilities.formatDate(d, Session.getScriptTimeZone(), 'EEEE d MMMM');
 }
 
 // ── GIFTS ─────────────────────────────────────────────────────────────────────
@@ -171,13 +264,12 @@ function publicGift_(g) {
 function findGuest_(name) {
   var q = normaliseName_(name);
   if (!q) return null;
-  var guests = rows_(GUESTS);
+  var guests = cached_('guests', function () {
+    return rows_(GUESTS).map(function (g) { return [String(g['Name']).trim(), String(g['Invite'])]; });
+  });
   for (var i = 0; i < guests.length; i++) {
-    if (normaliseName_(guests[i]['Name']) === q) {
-      return {
-        name: String(guests[i]['Name']).trim(),
-        invite_type: /ceremony/i.test(guests[i]['Invite']) ? 'ceremony_reception' : 'reception_only'
-      };
+    if (normaliseName_(guests[i][0]) === q) {
+      return {name: guests[i][0], invite_type: /ceremony/i.test(guests[i][1]) ? 'ceremony_reception' : 'reception_only'};
     }
   }
   return null;
@@ -212,9 +304,33 @@ function setting_(name) {
   return '';
 }
 
-function record_(row) {
-  sheet_(CONTRIBUTIONS).appendRow(row.map(safe_));
+// Adds a Contributions row from {header: value}, whatever order the columns are in.
+function record_(fields) {
+  var sheet = sheet_(CONTRIBUTIONS);
+  var head = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  sheet.appendRow(head.map(function (h) { return h in fields ? safe_(fields[h]) : ''; }));
   SpreadsheetApp.flush();
+  clearCache_();
+}
+
+// The value built by build(), from Google's cache when it's there.
+function cached_(key, build) {
+  var cache = CacheService.getScriptCache();
+  var hit = cache.get(key);
+  if (hit) return JSON.parse(hit);
+  var value = build();
+  try { cache.put(key, JSON.stringify(value), CACHE_SECONDS); } catch (err) { console.error(err); }
+  return value;
+}
+
+function clearCache_() {
+  CacheService.getScriptCache().removeAll(['gifts', 'guests']);
+}
+
+// Runs whenever someone edits the Sheet (set up by setup()), so the site shows
+// changes straight away.
+function onSheetEdit() {
+  clearCache_();
 }
 
 // Guests' text is stored as plain text, never run as a formula.
@@ -263,7 +379,7 @@ var LAYOUT = {
     }
   },
   Contributions: {
-    widths: [140, 180, 160, 220, 200, 110, 90, 300, 200, 420, 80, 80, 220],
+    widths: [140, 180, 160, 220, 200, 110, 90, 300, 200, 420, 80, 80, 220, 150, 110],
     notes: {
       'When': 'The website adds a row each time a guest gives or sends a message. You can add rows yourselves too, e.g. for cards or cash on the day: fill in Gift id, Type and Amount for it to count towards that gift.\nDeleting a row frees that gift up again.',
       'From': 'The name they gave, which can include whoever they are giving with.',
@@ -272,7 +388,9 @@ var LAYOUT = {
       'Amount': 'What the guest said they would send. Tick Received once it has arrived.',
       'Monzo reference': 'The reference filled in on their Monzo payment, to match it up.',
       'Received': 'Tick when the money or parcel arrives.',
-      'Thanked': 'Tick once you have sent a thank-you.'
+      'Thanked': 'Tick once you have sent a thank-you.',
+      'Expected delivery': 'When a guest who is buying a gift says it will arrive. Your parents get an email when it is added.',
+      'Delivery key': 'Lets the guest who bought the gift add its delivery date later. Leave it as it is.'
     }
   },
   Guests: {
@@ -287,6 +405,12 @@ var LAYOUT = {
     notes: {'Value': 'Private values the website uses. The delivery address is shown only to a guest who has just reserved a gift to buy.'}
   }
 };
+
+// The Settings rows, with a note on each
+var SETTING_NOTES = {};
+SETTING_NOTES[DELIVERY_ADDRESS] = 'Where guests send gifts they buy. Shown only to a guest who has just reserved a gift.';
+SETTING_NOTES[DELIVERY_NOTE] = 'Shown with the address, for guests to paste into their order, e.g. "If no one is in, please leave it in the porch." Leave blank for none.';
+SETTING_NOTES[PARENTS_EMAIL] = 'Who gets an email when a guest adds a delivery date, plus a Monday round-up of what is due. Separate several addresses with commas. Leave blank to send nothing.';
 
 // Adds the formatting, header notes, tickboxes, dropdowns and running totals.
 // Creates any tab that's missing, but never changes the gifts, guests or
@@ -312,21 +436,39 @@ function setup() {
   contributions.getRange('A2:A').setNumberFormat('d mmm yyyy, h:mm');
   contributions.getRange('G2:G').setNumberFormat('£#,##0.00');
   contributions.getRange('K2:L').setDataValidation(checkbox);
+  var due = contributions.getRange(1, 1, 1, contributions.getLastColumn()).getValues()[0].indexOf('Expected delivery') + 1;
+  contributions.getRange(2, due, contributions.getMaxRows() - 1, 1).setNumberFormat('ddd d mmm yyyy');
 
   var guests = tab_(ss, GUESTS, GUEST_HEADERS);
   guests.getRange('B2:B').setDataValidation(oneOf(INVITES));
 
   var settings = tab_(ss, SETTINGS, ['Setting', 'Value']);
-  if (settings.getLastRow() === 1) settings.appendRow([DELIVERY_ADDRESS, '']);
+  var have = settings.getRange(1, 1, settings.getLastRow(), 1).getValues().map(function (r) { return String(r[0]).trim(); });
+  Object.keys(SETTING_NOTES).forEach(function (name) {
+    if (have.indexOf(name) < 0) { settings.appendRow([name, '']); have.push(name); }
+    settings.getRange(have.indexOf(name) + 1, 1).setNote(SETTING_NOTES[name]);
+  });
   settings.getRange('A2:B').setVerticalAlignment('top').setWrap(true);
+
+  // Clear the site's cache whenever the Sheet is edited, and send the Monday round-up
+  var handlers = ScriptApp.getProjectTriggers().map(function (t) { return t.getHandlerFunction(); });
+  if (handlers.indexOf('onSheetEdit') < 0) ScriptApp.newTrigger('onSheetEdit').forSpreadsheet(ss).onEdit().create();
+  if (handlers.indexOf('weeklyDeliveries') < 0) {
+    ScriptApp.newTrigger('weeklyDeliveries').timeBased().onWeekDay(ScriptApp.WeekDay.MONDAY).atHour(8).create();
+  }
+  clearCache_();
 }
 
-// The named tab, created with its header row if missing, then laid out and
-// annotated from LAYOUT.
+// The named tab, created with its header row if missing, with any new columns
+// added on the right, then laid out and annotated from LAYOUT.
 function tab_(ss, name, headers) {
   var sheet = ss.getSheetByName(name) || ss.insertSheet(name);
   if (sheet.getLastRow() === 0) sheet.appendRow(headers);
-  var head = sheet.getRange(1, 1, 1, headers.length);
+  var have = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  var missing = headers.filter(function (h) { return have.indexOf(h) < 0; });
+  if (missing.length) sheet.getRange(1, have.length + 1, 1, missing.length).setValues([missing]);
+  var head = sheet.getRange(1, 1, 1, have.length + missing.length);
+  headers = have.concat(missing);
   head.setFontWeight('bold').setBackground('#EDF2ED');
   sheet.setFrozenRows(1);
   var layout = LAYOUT[name];
