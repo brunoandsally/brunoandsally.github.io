@@ -1,4 +1,4 @@
-f<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Bruno &amp; Sally — Wedding Party</title>
@@ -40,13 +40,15 @@ footer{background:var(--ink);color:rgba(255,255,255,0.4);text-align:center;paddi
 })();
 </script>
 <style>
-/* Hero collage: two rows (three on phones), one extra column per photo added.
-   The first photo spans both rows so an odd number of photos leaves no gap. */
+/* Hero collage: two rows (three on tablets and phones), one extra column per photo added.
+   The first photo spans both rows so an odd number of photos leaves no gap.
+   Phones show the first 15 photos in 5 columns so tiles stay close to the photos' shape. */
 .wp-hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#1B3A4B 0%,#5C7A5C 100%);height:40vh;min-height:260px;display:flex;align-items:flex-end;padding:2.5rem 2rem}
 .wp-collage{position:absolute;inset:0;display:grid;grid-template-rows:repeat(2,minmax(0,1fr));grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:2px}
 .wp-collage img{width:100%;height:100%;object-fit:cover;display:block}
 .wp-collage .tall{grid-row:span 2}
-@media(max-width:600px){.wp-collage{grid-template-rows:repeat(3,minmax(0,1fr))}}
+@media(max-width:600px),(max-aspect-ratio:8/7){.wp-collage{grid-template-rows:repeat(3,minmax(0,1fr))}}
+@media(max-width:600px){.wp-collage .tall{grid-row:auto}.wp-collage img:nth-child(n+16){display:none}}
 .wp-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(27,58,75,0.92) 0%,rgba(27,58,75,0.45) 55%,rgba(27,58,75,0.15) 100%)}
 </style>
 <div class="wp-hero">
